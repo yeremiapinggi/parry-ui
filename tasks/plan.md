@@ -74,6 +74,14 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - [x] Task 9: README — cara pakai di Next.js dan Vite
 - [x] Task 10: Landing page bergaya Astryx; showcase pindah ke `/components`
 
+### Phase 5: Situs bergaya Astryx (permintaan user 2026-10-23, referensi: rekaman layar astryx.atmeta.com)
+- [x] Task 11: Navbar sticky + footer bersama di root layout (semua halaman)
+- [x] Task 12: Landing lengkap: hero, section fitur, keunggulan, CTA penutup
+- [x] Task 13: Docs: /docs (Getting Started) dan /docs/theming dengan sidebar kiri + daftar isi kanan
+- [x] Task 14: Components: /components dirombak jadi sidebar + grid preview per kategori
+- [x] Task 15: Themes: /themes dengan preview UI dan tabel token light/dark dari registry.json
+- Di luar lingkup: Templates, Playground, section blog.
+
 ### Checkpoint: Complete
 - [ ] Semua acceptance criteria terpenuhi, siap review
 

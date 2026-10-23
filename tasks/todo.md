@@ -235,6 +235,25 @@ di 1024/375px, light & dark, urutan Tab logis. Progress bar tidak dipakai karena
 
 ---
 
+## Task 11–15: Situs bergaya Astryx
+Navbar sticky + footer di layout; landing lengkap; /docs dan /docs/theming (sidebar + TOC); /components (sidebar + grid
+per kategori); /themes (preview + tabel token dari `registry.json`). Tanpa Templates, Playground, blog.
+
+**Acceptance criteria:**
+- [x] Navbar (dengan state aktif) dan footer tampil di semua halaman; menu mobile memakai DropdownMenu
+- [x] Semua halaman rapi di light & dark, tanpa scroll horizontal di 375px
+- [x] Hanya komponen dari `components/ui`; token tetap lolos `npm run check:contrast`
+
+**Hasil (2026-10-23):** navbar sticky (state aktif via `aria-current`, menu mobile = DropdownMenu) + footer di root layout.
+Daftar komponen di sidebar Docs dan tabel token Themes dibaca dari `registry.json`. Dicek 1280px light/dark dan 375px
+tanpa scroll horizontal di semua halaman. Batasan: sidebar Docs/Components tersembunyi di bawah `lg`.
+
+**Verification:**
+- [x] `npm run build` dan `npm run lint` sukses
+- [x] Manual: navigasi antar halaman via navbar, screenshot desktop & 375px
+
+---
+
 ## Checkpoint: Complete
 - [ ] Semua acceptance criteria terpenuhi
 - [ ] Siap review

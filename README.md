@@ -84,7 +84,7 @@ Selain token bawaan shadcn, theme menambahkan warna semantic `success`, `warning
 
 ```bash
 npm install
-npm run dev            # showcase di http://localhost:3001 (atau port yang ditampilkan)
+npm run dev            # situs (/, /docs, /components, /themes) di http://localhost:3001 atau port yang ditampilkan
 ```
 
 | Perintah | Fungsi |
@@ -97,7 +97,7 @@ npm run dev            # showcase di http://localhost:3001 (atau port yang ditam
 `npm run registry:build`. Jangan edit bagian `parry-theme` di `registry.json` secara manual; isinya ditimpa script.
 
 **Menambah komponen:** `npx shadcn@latest add <nama>` di repo ini, daftarkan sebagai item `registry:ui` di `registry.json`
-(isi `dependencies` sesuai import file), tampilkan di `app/page.tsx`, lalu `npm run registry:build`. Komponen sengaja
+(isi `dependencies` sesuai import file), tambahkan preview-nya di `app/components/page.tsx`, lalu `npm run registry:build`. Komponen sengaja
 tidak dimodifikasi dari output shadcn agar update upstream mudah di-diff.
 
 **Catatan dev server:** jangan jalankan `npm run build` saat `npm run dev` hidup, karena keduanya memakai folder `.next`.

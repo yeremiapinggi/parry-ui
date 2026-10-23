@@ -1,0 +1,41 @@
+"use client"
+
+import { useSyncExternalStore } from "react"
+import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "next-themes"
+
+import { Button } from "@/components/ui/button"
+
+const modes = [
+  { value: "light", label: "Terang", icon: SunIcon },
+  { value: "dark", label: "Gelap", icon: MoonIcon },
+  { value: "system", label: "Sistem", icon: LaptopIcon },
+] as const
+
+// The stored theme is only known on the client; render no selection on the server to avoid a hydration mismatch.
+const useMounted = () => useSyncExternalStore(() => () => {}, () => true, () => false)
+
+export function ThemeModePicker() {
+  const { theme, setTheme } = useTheme()
+  const mounted = useMounted()
+
+  return (
+    <div role="group" aria-label="Mode tema" className="grid grid-cols-3 gap-2">
+      {modes.map(({ value, label, icon: Icon }) => {
+        const active = mounted && theme === value
+        return (
+          <Button
+            key={value}
+            variant={active ? "default" : "outline"}
+            aria-pressed={active}
+            onClick={() => setTheme(value)}
+            className="h-auto flex-col gap-1 py-3"
+          >
+            <Icon />
+            {label}
+          </Button>
+        )
+      })}
+    </div>
+  )
+}

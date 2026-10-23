@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { ArrowRightIcon, ArrowUpIcon, PlusIcon, SparklesIcon } from "lucide-react";
+import { ArrowRightIcon, ArrowUpIcon, BlocksIcon, LayersIcon, PlusIcon, ShieldCheckIcon, SparklesIcon, ZapIcon } from "lucide-react";
 
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,35 +11,15 @@ import { Switch } from "@/components/ui/switch";
 
 const bars = [40, 55, 48, 62, 58, 75, 90];
 
-const install = [
-  ["Siapkan project", "npx shadcn@latest init -t next -b radix -p nova"],
-  ["Pasang theme", "npx shadcn@latest add @parry/parry-theme"],
-  ["Pasang komponen", "npx shadcn@latest add @parry/button @parry/card"],
+const features = [
+  { icon: ZapIcon, title: "Cepat dipasang", text: "Theme dan komponen masuk lewat shadcn CLI dari registry @parry, tanpa paket npm tambahan.", href: "/docs", cta: "Instalasi" },
+  { icon: ShieldCheckIcon, title: "Aksesibel", text: "Semua pasangan warna dicek otomatis terhadap WCAG AA di mode terang dan gelap.", href: "/docs/theming", cta: "Tentang token" },
+  { icon: SparklesIcon, title: "Konsisten", text: "Satu sumber token di globals.css yang disalin ke registry, sehingga showcase dan project selalu sama.", href: "/themes", cta: "Lihat theme" },
 ] as const;
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top,var(--accent),var(--background)_70%)]">
-      <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4">
-        <Link href="/" className="flex items-center gap-2 font-heading text-lg font-extrabold">
-          <span aria-hidden className="grid size-7 place-items-center rounded-lg bg-primary text-primary-foreground">
-            P
-          </span>
-          Parry UI
-        </Link>
-        <nav aria-label="Utama" className="hidden items-center gap-6 text-sm sm:flex">
-          <Link href="/components" className="text-muted-foreground hover:text-foreground">Components</Link>
-          <Link href="/components#warna" className="text-muted-foreground hover:text-foreground">Tokens</Link>
-          <Link href="#install" className="text-muted-foreground hover:text-foreground">Install</Link>
-        </nav>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Button asChild className="rounded-full">
-            <Link href="#install">Get started</Link>
-          </Button>
-        </div>
-      </header>
-
       <main className="flex flex-col">
         <section className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-10 px-4 pt-16 pb-20 text-center xl:min-h-[780px] lg:pt-24">
           <h1 className="font-heading font-extrabold tracking-tighter text-primary text-[clamp(4.5rem,17vw,11rem)] leading-[0.85]">
@@ -52,7 +31,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="h-12 rounded-full px-8 text-base">
-              <Link href="#install">Get started</Link>
+              <Link href="/docs">Get started</Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="h-12 rounded-full px-8 text-base">
               <Link href="/components">Browse components</Link>
@@ -135,35 +114,92 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="install" className="mx-auto flex w-full max-w-3xl scroll-mt-8 flex-col gap-6 px-4 pb-24">
-          <div className="flex flex-col gap-2 text-center">
-            <h2 className="font-heading text-3xl font-bold tracking-tight">Mulai dalam tiga langkah</h2>
+        <section className="px-4 pb-24">
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 rounded-3xl border bg-card p-6 shadow-sm sm:p-10 lg:grid-cols-[1fr_1.2fr_1.2fr]">
+            <div className="flex flex-col gap-3">
+              <h2 className="font-heading text-3xl font-bold tracking-tight">
+                Mulai dari mana saja.
+                <br />
+                Ubah apa saja.
+                <br />
+                Rilis lebih cepat.
+              </h2>
+              <p className="text-muted-foreground">
+                Komponen disalin ke project Anda lewat shadcn CLI, jadi tetap bisa diubah sesuai kebutuhan produk.
+              </p>
+            </div>
+
+            <Link href="/components" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
+              <p className="font-heading text-xl font-semibold">19 komponen siap pakai</p>
+              <p className="mt-1 text-sm text-muted-foreground">Form, feedback, overlay, layout, dan data.</p>
+              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                Lihat komponen <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </span>
+              <div className="mt-6 flex flex-wrap items-center gap-2" aria-hidden>
+                <Badge>default</Badge>
+                <Badge variant="secondary">secondary</Badge>
+                <Badge className="border-success/30 bg-success-soft text-success">success</Badge>
+                <Badge className="border-info/30 bg-info-soft text-info">info</Badge>
+                {/* Static look-alike: a real <button> must not sit inside this link. */}
+                <span className={buttonVariants({ size: "sm" })}>Button</span>
+              </div>
+            </Link>
+
+            <Link href="/docs" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
+              <p className="font-heading text-xl font-semibold">Satu theme, dua framework</p>
+              <p className="mt-1 text-sm text-muted-foreground">Dipasang dengan perintah yang sama di Next.js dan Vite.</p>
+              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                Baca panduan <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </span>
+              <pre className="mt-6 overflow-x-auto rounded-lg bg-sidebar p-4 font-mono text-xs text-sidebar-foreground" aria-hidden>
+                npx shadcn@latest add @parry/parry-theme
+              </pre>
+            </Link>
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-7xl gap-10 px-4 pb-24 lg:grid-cols-[1fr_2fr]">
+          <div className="flex flex-col gap-3">
+            <h2 className="font-heading text-3xl font-bold tracking-tight">Dibangun untuk produk Ivosights</h2>
             <p className="text-muted-foreground">
-              Daftarkan registry <code className="font-mono text-sm">@parry</code> di <code className="font-mono text-sm">components.json</code>,
-              lalu pasang theme dan komponen dengan shadcn CLI.
+              Satu sumber token, kontras yang terukur, dan komponen yang tidak di-fork dari upstream.
             </p>
           </div>
-          <ol className="flex flex-col gap-3">
-            {install.map(([title, cmd], i) => (
-              <li key={title}>
-                <Card className="gap-2 py-4">
-                  <CardHeader>
-                    <CardTitle className="text-sm">
-                      {i + 1}. {title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-sm">{cmd}</pre>
-                  </CardContent>
-                </Card>
-              </li>
+          <div className="grid gap-8 sm:grid-cols-3">
+            {features.map(({ icon: Icon, title, text, href, cta }) => (
+              <div key={title} className="flex flex-col gap-2">
+                <span className="grid size-9 place-items-center rounded-lg bg-accent text-accent-foreground">
+                  <Icon className="size-4" />
+                </span>
+                <h3 className="font-semibold">{title}</h3>
+                <p className="text-sm text-muted-foreground">{text}</p>
+                <Link href={href} className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                  {cta} <ArrowRightIcon className="size-4" />
+                </Link>
+              </div>
             ))}
-          </ol>
-          <Button asChild variant="link" className="self-center">
-            <Link href="/components">
-              Lihat semua komponen <ArrowRightIcon data-icon="inline-end" />
-            </Link>
-          </Button>
+          </div>
+        </section>
+
+        <section className="px-4 pb-24">
+          <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-6 overflow-hidden rounded-3xl bg-[radial-gradient(ellipse_at_center,var(--accent),var(--muted)_75%)] px-6 py-20 text-center">
+            <LayersIcon aria-hidden className="absolute -top-6 -left-6 size-40 -rotate-12 text-primary/10" />
+            <BlocksIcon aria-hidden className="absolute -right-8 -bottom-8 size-48 rotate-12 text-primary/10" />
+            <h2 className="max-w-xl font-heading text-4xl font-bold tracking-tight text-balance">
+              Jelajahi <span className="text-primary">parry</span> selengkapnya
+            </h2>
+            <p className="max-w-lg text-muted-foreground">
+              Pasang theme sekali, lalu tambahkan komponen satu per satu sesuai kebutuhan.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild size="lg" className="rounded-full px-6">
+                <Link href="/docs">Get started</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+                <Link href="/themes">Lihat theme</Link>
+              </Button>
+            </div>
+          </div>
         </section>
       </main>
     </div>
