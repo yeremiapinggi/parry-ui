@@ -193,11 +193,14 @@ dalam card. Diganti `#2C3440` (muted-foreground tetap 4.9:1). Dicek di 1280px (3
 **Description:** Dokumentasikan cara pakai di Next.js dan Vite (init, add theme, add komponen, dark mode toggle, font), cara menambah item baru ke registry, dan cara mengubah token.
 
 **Acceptance criteria:**
-- [ ] Mengikuti README dari nol menghasilkan app yang sama dengan Task 4/5
-- [ ] Langkah manual yang tercatat di Task 4/5 terdokumentasi
+- [x] Mengikuti README dari nol menghasilkan app yang sama dengan Task 4/5
+- [x] Langkah manual yang tercatat di Task 4/5 terdokumentasi
 
 **Verification:**
-- [ ] Manual: ulangi Task 5 hanya berbekal README
+- [x] Manual: ulangi Task 5 hanya berbekal README
+
+**Hasil (2026-10-23):** README diikuti dari nol di app Vite baru (`shadcn@latest` = 4.22.1) memakai namespace
+`@parry` di `components.json`: theme + button/input/card terpasang, font & token identik dengan showcase di light & dark.
 
 **Dependencies:** Task 4, 5, 6–8
 **Files likely touched:** `README.md`

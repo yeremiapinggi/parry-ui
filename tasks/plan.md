@@ -71,7 +71,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - [x] Semua item ada di `public/r`, showcase lengkap, `npm run check:contrast` lolos
 
 ### Phase 4: Docs & landing
-- [ ] Task 9: README — cara pakai di Next.js dan Vite
+- [x] Task 9: README — cara pakai di Next.js dan Vite
 - [ ] Task 10: Landing page bergaya Astryx; showcase pindah ke `/components`
 
 ### Checkpoint: Complete
