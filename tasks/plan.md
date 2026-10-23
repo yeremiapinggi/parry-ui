@@ -54,7 +54,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - [ ] Review warna & font dengan Anda sebelum lanjut (paling murah diganti di titik ini)
 
 ### Phase 2: Registry & portabilitas
-- [ ] Task 3: Registry `parry-theme` + `button`, `shadcn build` ke `public/r`
+- [x] Task 3: Registry `parry-theme` + `button`, `shadcn build` ke `public/r`
 - [ ] Task 4: Install dari registry ke app Next.js kosong
 - [ ] Task 5: Install dari registry ke app Vite kosong
 
@@ -79,7 +79,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 ## Risks and Mitigations
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Field `css`/`dependencies` di item registry tidak cukup untuk memasang font otomatis di versi CLI yang dipakai | Med | Cek di Task 3; fallback: README instruksi 1 baris `@import` font |
+| Field `css` (`@import` fontsource) + `dependencies` di `parry-theme` tidak dipasang benar oleh CLI. Tipe `registry:font` bawaan hanya mendukung Google Fonts via `next/font` | Med | Dibuktikan di Task 4/5; fallback: README instruksi 1 baris `@import` font |
 | Primary baru gagal kontras AA (teks putih di atas primary, ring, muted-foreground) | Med | `npm run check:contrast` di setiap checkpoint |
 | Upstream shadcn berubah format (mis. versi Tailwind/CLI) | Low | Pin versi CLI di script; komponen tidak di-fork jadi re-add mudah |
 | Hosting registry belum ditentukan → URL konsumen belum final | Low | Task 4–5 pakai `localhost`; hosting jadi keputusan terpisah |

@@ -51,13 +51,13 @@ font vars, dependency fontsource) dan `button` (type `registry:ui`, `registryDep
 Script `registry:build` → `shadcn build` ke `public/r/`.
 
 **Acceptance criteria:**
-- [ ] `public/r/parry-theme.json` dan `public/r/button.json` ter-generate dari `npm run registry:build`
-- [ ] `http://localhost:3000/r/button.json` dapat diakses saat `npm run dev`
-- [ ] Nilai token di `parry-theme` sama persis dengan `globals.css` (satu sumber; dicek manual atau via diff)
+- [x] `public/r/parry-theme.json` dan `public/r/button.json` ter-generate dari `npm run registry:build`
+- [x] `http://localhost:3000/r/button.json` dapat diakses saat `npm run dev`
+- [x] Nilai token di `parry-theme` sama persis dengan `globals.css` (di-generate dari `globals.css` oleh `scripts/sync-theme.mjs`)
 
 **Verification:**
-- [ ] `npm run registry:build && npm run build` sukses
-- [ ] `curl -s localhost:3000/r/parry-theme.json | jq .cssVars` menampilkan light & dark
+- [x] `npm run registry:build && npm run build` sukses
+- [x] `curl localhost:3001/r/parry-theme.json` → 39 token light, 38 dark
 
 **Dependencies:** Task 2
 **Files likely touched:** `registry.json`, `package.json`, `public/r/*` (generated)
