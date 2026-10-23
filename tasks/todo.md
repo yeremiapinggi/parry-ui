@@ -92,11 +92,16 @@ Font, token semantic, dan mapping `@theme` ikut terpasang otomatis. Langkah manu
 **Description:** Sama dengan Task 4 tetapi `create vite` (react-ts) + Tailwind v4 + `shadcn init`. Membuktikan registry portable.
 
 **Acceptance criteria:**
-- [ ] Button tampil identik dengan showcase di light & dark (toggle class `.dark` manual)
-- [ ] Font termuat tanpa `next/font`
+- [x] Button tampil identik dengan showcase di light & dark (toggle class `.dark` manual)
+- [x] Font termuat tanpa `next/font`
 
 **Verification:**
-- [ ] `npm run build` app Vite sukses; screenshot dibandingkan dengan showcase
+- [x] `npm run build` app Vite sukses; screenshot dibandingkan dengan showcase
+
+**Hasil (2026-10-23):** scaffold via `npx shadcn init -t vite -b radix -p nova` (Vite 8 + Tailwind v4). Setelah `add parry-theme`,
+27 properti terhitung identik dengan showcase & app Next di light & dark; font termuat lewat fontsource. Langkah manual untuk README:
+- Hapus `@import "@fontsource-variable/geist"` dan paketnya (sisa template Vite, tidak dipakai lagi).
+- Template Vite sudah membawa `components/theme-provider.tsx` untuk toggle `.dark`.
 
 **Dependencies:** Task 3
 **Files likely touched:** tidak ada di repo (kecuali perbaikan `registry.json` bila gagal)
@@ -105,7 +110,7 @@ Font, token semantic, dan mapping `@theme` ikut terpasang otomatis. Langkah manu
 ---
 
 ## Checkpoint: Registry
-- [ ] Next.js & Vite konsumen tampil identik dengan showcase
+- [x] Next.js & Vite konsumen tampil identik dengan showcase
 - [ ] Review dengan user
 
 ---
