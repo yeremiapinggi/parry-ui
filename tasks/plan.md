@@ -62,7 +62,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - [x] Kedua app konsumen tampil identik dengan showcase (warna, font, dark mode)
 
 ### Phase 3: Komponen
-- [ ] Task 6: Form — input, label, textarea, select, checkbox, switch
+- [x] Task 6: Form — input, label, textarea, select, checkbox, switch
 - [ ] Task 7: Feedback & overlay — alert, badge, dialog, dropdown-menu, tooltip, sonner
 - [ ] Task 8: Layout & data — card, tabs, table, separator, avatar, skeleton
 
@@ -89,4 +89,5 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - Registry akan di-host di mana (Vercel, internal)? Publik atau private (perlu auth header)?
 - Package manager: npm (pnpm tidak terpasang di mesin dev).
 - Landing page (Task 10): pakai wordmark teks Plus Jakarta Sans ExtraBold, atau ada SVG logo Ivosights/Parry?
+- `--input` (Border Interactive #D0D7E2) gagal kontras non-teks 3:1 untuk Checkbox/Switch. Gelapkan token, atau terima sebagai keputusan brand?
 - Daftar komponen di Task 6–8 adalah usulan; tambah/kurangi sesuai kebutuhan produk.

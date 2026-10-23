@@ -119,13 +119,16 @@ Font, token semantic, dan mapping `@theme` ikut terpasang otomatis. Langkah manu
 **Description:** `shadcn add` input, label, textarea, select, checkbox, switch; daftarkan di `registry.json`; tambah seksi showcase (state default, focus, disabled, invalid).
 
 **Acceptance criteria:**
-- [ ] Ke-6 item ter-build di `public/r/`
-- [ ] Focus ring memakai `--ring` Parry dan terlihat jelas di light & dark
-- [ ] State `aria-invalid` memakai warna destructive
+- [x] Ke-6 item ter-build di `public/r/`
+- [x] Focus ring memakai `--ring` Parry dan terlihat jelas di light & dark
+- [x] State `aria-invalid` memakai warna destructive
 
 **Verification:**
-- [ ] `npm run registry:build && npm run build` sukses
-- [ ] Manual: navigasi keyboard (Tab) di seksi form, cek ring & kontras
+- [x] `npm run registry:build && npm run build` sukses
+- [x] Manual: navigasi keyboard (Tab) di seksi form, cek ring & kontras
+
+**Temuan (2026-10-23):** border `--input` (#D0D7E2 light / #313A46 dark) hanya 1.25–1.5:1 terhadap latar, di bawah 3:1
+(WCAG 1.4.11). Paling berdampak pada Checkbox unchecked dan track Switch off, yang bentuknya hanya ditandai border. Menunggu keputusan user.
 
 **Dependencies:** Task 3
 **Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`
