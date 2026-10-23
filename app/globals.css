@@ -86,7 +86,7 @@
   --info: #1D4ED8;
   --info-soft: #DBEAFE;
   --border: #E2E8F0; /* Border Default */
-  --input: #D0D7E2; /* Border Interactive */
+  --input: #7F8CA0; /* Border Interactive #D0D7E2 darkened: field/checkbox/switch edges need 3:1 */
   --ring: #5B8DEF; /* Frost Blue; Focus Ring #93C5FD is 1.8:1, below the 3:1 non-text minimum */
   --chart-1: #93C5FD;
   --chart-2: #5B8DEF;
@@ -128,7 +128,7 @@
   --info: #60A5FA;
   --info-soft: #172A4A;
   --border: #313A46;
-  --input: #313A46;
+  --input: #77869C; /* field/checkbox/switch edges need 3:1, incl. switch track at 80% */
   --ring: #5B8DEF;
   --chart-1: #93C5FD;
   --chart-2: #5B8DEF;

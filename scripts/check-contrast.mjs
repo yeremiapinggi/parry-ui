@@ -42,6 +42,10 @@ const pairs = (t, dark) => [
   ["warning", "warning-soft", 4.5],
   ["info", "info-soft", 4.5],
   ["destructive", "destructive-soft", 4.5],
+  // Field, checkbox and switch edges are drawn with --input; switch track is bg-input (dark: /80)
+  ["input", "background", 3],
+  ["input", "card", 3],
+  [mix(t.input, t.card, dark ? 0.8 : 1), "card", 3],
   ["ring", "background", 3],
   ["ring", "card", 3],
   ["sidebar-foreground", "sidebar", 4.5],

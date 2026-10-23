@@ -128,7 +128,8 @@ Font, token semantic, dan mapping `@theme` ikut terpasang otomatis. Langkah manu
 - [x] Manual: navigasi keyboard (Tab) di seksi form, cek ring & kontras
 
 **Temuan (2026-10-23):** border `--input` (#D0D7E2 light / #313A46 dark) hanya 1.25–1.5:1 terhadap latar, di bawah 3:1
-(WCAG 1.4.11). Paling berdampak pada Checkbox unchecked dan track Switch off, yang bentuknya hanya ditandai border. Menunggu keputusan user.
+(WCAG 1.4.11). Diputuskan user: `--input` digelapkan ke `#7F8CA0` (light) / `#77869C` (dark), dicek di `check:contrast`
+termasuk track Switch dark (`bg-input/80`). Efek samping: isian `disabled:bg-input/50` (light) dan `dark:bg-input/30` ikut lebih pekat.
 
 **Dependencies:** Task 3
 **Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`

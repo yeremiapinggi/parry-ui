@@ -19,7 +19,8 @@ light + dark.
 - **Palet: "Midnight System + Frost Blue Accent"** (referensi dari user, 2026-10-23):
   - Light: background Snow `#F7F8FA`, card putih, sidebar Midnight `#171C24` (tetap gelap). Dark: background Midnight, card Graphite `#232A35`.
   - Hex brand dipakai apa adanya bila lolos AA. Yang gagal diganti shade lebih gelap untuk teks: primary `#3366E0` (Frost Blue `#5B8DEF` + teks putih 3.2:1),
-    muted-foreground `#475569` (Text Muted `#94A3B8` 2.6:1), destructive `#C81E1E`, success/warning versi -700. Frost Blue jadi `--ring` dan primary di dark.
+    muted-foreground `#475569` (Text Muted `#94A3B8` 2.6:1), destructive `#C81E1E`, success/warning versi -700,
+    `--input` `#7F8CA0`/`#77869C` (Border Interactive `#D0D7E2` 1.4:1; batas field/checkbox/switch butuh 3:1). Frost Blue jadi `--ring` dan primary di dark.
   - Token tambahan di luar shadcn: `success`, `warning`, `info` + `*-soft`, dan `destructive-soft`.
   - Sans: **Plus Jakarta Sans**. Mono: **JetBrains Mono**. Radius: `0.5rem`.
   - Kontras dicek otomatis: `npm run check:contrast` (`scripts/check-contrast.mjs`, exit 1 bila ada pasangan < AA).
@@ -89,5 +90,4 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - Registry akan di-host di mana (Vercel, internal)? Publik atau private (perlu auth header)?
 - Package manager: npm (pnpm tidak terpasang di mesin dev).
 - Landing page (Task 10): pakai wordmark teks Plus Jakarta Sans ExtraBold, atau ada SVG logo Ivosights/Parry?
-- `--input` (Border Interactive #D0D7E2) gagal kontras non-teks 3:1 untuk Checkbox/Switch. Gelapkan token, atau terima sebagai keputusan brand?
 - Daftar komponen di Task 6–8 adalah usulan; tambah/kurangi sesuai kebutuhan produk.
