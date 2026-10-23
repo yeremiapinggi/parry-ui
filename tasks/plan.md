@@ -65,10 +65,10 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 ### Phase 3: Komponen
 - [x] Task 6: Form — input, label, textarea, select, checkbox, switch
 - [x] Task 7: Feedback & overlay — alert, badge, dialog, dropdown-menu, tooltip, sonner
-- [ ] Task 8: Layout & data — card, tabs, table, separator, avatar, skeleton
+- [x] Task 8: Layout & data — card, tabs, table, separator, avatar, skeleton
 
 ### Checkpoint: Komponen
-- [ ] Semua item ada di `public/r`, showcase lengkap, `npm run check:contrast` lolos
+- [x] Semua item ada di `public/r`, showcase lengkap, `npm run check:contrast` lolos
 
 ### Phase 4: Docs & landing
 - [ ] Task 9: README — cara pakai di Next.js dan Vite

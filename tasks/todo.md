@@ -166,12 +166,15 @@ termasuk track Switch dark (`bg-input/80`). Efek samping: isian `disabled:bg-inp
 **Description:** card, tabs, table, separator, avatar, skeleton; registry + seksi showcase.
 
 **Acceptance criteria:**
-- [ ] Ke-6 item ter-build di `public/r/`
-- [ ] Card & table memakai `--card`/`--border`/`--muted` Parry dan konsisten di dark mode
+- [x] Ke-6 item ter-build di `public/r/`
+- [x] Card & table memakai `--card`/`--border`/`--muted` Parry dan konsisten di dark mode
 
 **Verification:**
-- [ ] `npm run registry:build && npm run build` sukses
-- [ ] Manual: cek showcase di lebar 375px dan desktop
+- [x] `npm run registry:build && npm run build` sukses
+- [x] Manual: cek showcase di lebar 375px dan desktop
+
+**Catatan (2026-10-23):** dark `--muted` sebelumnya sama dengan `--card` (#232A35), jadi Skeleton dan TabsList hilang di
+dalam card. Diganti `#2C3440` (muted-foreground tetap 4.9:1). Dicek di 1280px (3 kolom) dan 375px (tanpa scroll horizontal).
 
 **Dependencies:** Task 3
 **Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`
@@ -180,8 +183,8 @@ termasuk track Switch dark (`bg-input/80`). Efek samping: isian `disabled:bg-inp
 ---
 
 ## Checkpoint: Komponen
-- [ ] Semua item ada di `public/r/`, showcase lengkap
-- [ ] `npm run check:contrast` lolos
+- [x] Semua item ada di `public/r/`, showcase lengkap
+- [x] `npm run check:contrast` lolos
 - [ ] Review dengan user
 
 ---

@@ -3,8 +3,14 @@ import { ArrowRightIcon, CircleCheckIcon, InfoIcon, OctagonXIcon, PlusIcon, Tria
 import { OverlayDemo } from "@/components/overlay-demo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +45,14 @@ const semantic = [
   { name: "info", icon: InfoIcon, className: "border-info/30 bg-info-soft text-info", title: "Fitur baru", text: "Ekspor laporan kini mendukung format CSV." },
   { name: "error", icon: OctagonXIcon, className: "border-destructive/30 bg-destructive-soft text-destructive", title: "Gagal terhubung", text: "Periksa koneksi lalu coba lagi." },
 ] as const;
+
+const team = [
+  { initials: "JD", name: "Jordan Doe", role: "Admin", status: "Aktif" },
+  { initials: "SR", name: "Sari Rahma", role: "Editor", status: "Aktif" },
+  { initials: "BT", name: "Budi Tan", role: "Viewer", status: "Diundang" },
+] as const;
+
+const bars = [40, 55, 48, 62, 58, 75, 90];
 
 const formStates = [
   { id: "default", label: "Default" },
@@ -193,6 +207,102 @@ export default function Home() {
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">Overlay</h2>
         <OverlayDemo />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Layout &amp; data</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardDescription>Total Components</CardDescription>
+              <CardTitle className="text-3xl">48</CardTitle>
+              <CardAction>
+                <Badge className="border-success/30 bg-success-soft text-success">↑ 12%</Badge>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="flex h-16 items-end gap-1.5" aria-hidden>
+              {bars.map((h, i) => (
+                <div key={i} className="flex-1 rounded-sm bg-chart-2" style={{ height: `${h}%` }} />
+              ))}
+            </CardContent>
+            <CardFooter className="text-sm text-muted-foreground">Dari bulan lalu</CardFooter>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Design system</CardTitle>
+              <CardDescription>Komponen, token, dan panduan untuk produk Ivosights.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="overview">
+                <TabsList>
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="tokens">Tokens</TabsTrigger>
+                </TabsList>
+                <TabsContent value="overview" className="pt-2 text-sm text-muted-foreground">
+                  20 item registry siap dipasang lewat shadcn CLI.
+                </TabsContent>
+                <TabsContent value="tokens" className="pt-2 text-sm text-muted-foreground">
+                  Warna Midnight + Frost Blue, lolos WCAG AA.
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+            <CardFooter>
+              <Button variant="link" className="px-0">
+                Pelajari <ArrowRightIcon data-icon="inline-end" />
+              </Button>
+            </CardFooter>
+          </Card>
+
+          <Card aria-busy="true" aria-label="Memuat">
+            <CardHeader>
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-7 w-16" />
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-4/5" />
+              <Skeleton className="h-3 w-3/5" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Anggota tim</CardTitle>
+            <CardDescription>Tabel dengan avatar, badge status, dan separator.</CardDescription>
+          </CardHeader>
+          <Separator />
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nama</TableHead>
+                  <TableHead>Peran</TableHead>
+                  <TableHead className="text-right">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {team.map((m) => (
+                  <TableRow key={m.initials}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Avatar>
+                          <AvatarFallback>{m.initials}</AvatarFallback>
+                        </Avatar>
+                        {m.name}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{m.role}</TableCell>
+                    <TableCell className="text-right">
+                      <Badge variant={m.status === "Aktif" ? "secondary" : "outline"}>{m.status}</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </section>
     </main>
   );

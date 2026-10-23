@@ -115,7 +115,7 @@
   --primary-foreground: #111827;
   --secondary: #313A46; /* Slate Ink */
   --secondary-foreground: #F7F8FA;
-  --muted: #232A35;
+  --muted: #2C3440; /* between Graphite and Slate Ink: must differ from --card or skeletons/tab lists vanish on cards */
   --muted-foreground: #94A3B8; /* Text Muted */
   --accent: #1E2A40;
   --accent-foreground: #BFDBFE;
