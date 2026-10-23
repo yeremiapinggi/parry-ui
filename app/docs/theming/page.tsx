@@ -36,11 +36,13 @@ export default function ThemingPage() {
         <p>
           The theme uses shadcn token names (<code className="font-mono text-sm">background</code>, <code className="font-mono text-sm">primary</code>,{" "}
           <code className="font-mono text-sm">muted</code>, and so on) with separate values for light and dark mode. Every value is listed on{" "}
-          <Link href="/themes" className="text-primary underline underline-offset-4">Themes</Link>.
+          <Link href="/themes" className="text-link underline underline-offset-4">Themes</Link>.
         </p>
         <p>
-          Brand colors are used as-is when they pass WCAG AA. Those that fail are replaced with a darker shade for text, for example primary{" "}
-          <code className="font-mono text-sm">#3366E0</code> instead of Frost Blue <code className="font-mono text-sm">#5B8DEF</code> in light mode.
+          Primary is Midnight <code className="font-mono text-sm">#171C24</code> (inverted in dark mode), links use{" "}
+          <code className="font-mono text-sm">#2563EB</code>, and Frost Blue <code className="font-mono text-sm">#5B8DEF</code> marks focus and active states. Brand colors
+          are used as-is when they pass WCAG AA; those that fail are replaced with an accessible shade, for example the Focus Ring{" "}
+          <code className="font-mono text-sm">#93C5FD</code> (1.8:1) is drawn with Frost Blue instead.
         </p>
 
         <h2 id="semantic" className={h2}>Semantic colors</h2>
@@ -59,7 +61,7 @@ export default function ThemingPage() {
 
         <h2 id="fonts" className={h2}>Fonts &amp; radius</h2>
         <p>
-          Text uses <strong>Plus Jakarta Sans</strong> and code uses <code className="font-mono text-sm">JetBrains Mono</code>, loaded from the{" "}
+          Text uses <strong>DM Sans</strong> and code uses <code className="font-mono text-sm">JetBrains Mono</code>, loaded from the{" "}
           <code className="font-mono text-sm">@fontsource-variable/*</code> packages so they work in both Next.js and Vite. The base radius is{" "}
           <code className="font-mono text-sm">0.5rem</code>.
         </p>

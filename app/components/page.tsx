@@ -304,7 +304,7 @@ export default function ComponentsPage() {
           </section>
         ))}
 
-        <Link href="/themes" className="inline-flex items-center gap-1 self-center text-sm font-medium text-primary hover:underline">
+        <Link href="/themes" className="inline-flex items-center gap-1 self-center text-sm font-medium text-link hover:underline">
           See the color tokens on Themes <ArrowRightIcon className="size-4" />
         </Link>
       </div>

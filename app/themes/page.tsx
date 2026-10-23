@@ -55,7 +55,7 @@ export default function ThemesPage() {
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-xs">npx shadcn@latest add @parry/parry-theme</pre>
-              <Link href="/docs/theming" className="text-sm font-medium text-primary hover:underline">Theming guide</Link>
+              <Link href="/docs/theming" className="text-sm font-medium text-link hover:underline">Theming guide</Link>
             </CardContent>
           </Card>
         </aside>
@@ -70,8 +70,8 @@ export default function ThemesPage() {
                   key={label}
                   className={
                     active
-                      ? "flex items-center gap-2 rounded-md bg-sidebar-primary px-2 py-1.5 text-sm text-sidebar-primary-foreground"
-                      : "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+                      ? "relative flex items-center gap-2 rounded-md bg-sidebar-accent px-2 py-1.5 text-sm text-sidebar-accent-foreground before:absolute before:inset-y-1.5 before:-left-1 before:w-0.5 before:rounded-full before:bg-sidebar-primary"
+                      : "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-sidebar-border hover:text-sidebar-accent-foreground"
                   }
                 >
                   <Icon className="size-4" /> {label}

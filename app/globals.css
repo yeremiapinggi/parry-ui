@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource-variable/dm-sans";
 @import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
@@ -9,9 +9,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
-  --font-heading: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -44,6 +44,9 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-link: var(--link);
+  --color-placeholder: var(--placeholder);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -69,8 +72,11 @@
   --card-foreground: #111827;
   --popover: #FFFFFF;
   --popover-foreground: #111827;
-  --primary: #3366E0; /* Frost Blue #5B8DEF darkened: white text on it was 3.2:1 */
+  --primary: #171C24; /* Midnight */
   --primary-foreground: #FFFFFF;
+  --primary-hover: #232A35; /* Graphite */
+  --link: #2563EB;
+  --placeholder: #64748B; /* neutral-600; 4.76:1 on the white input background */
   --secondary: #F1F3F6; /* Mist */
   --secondary-foreground: #111827;
   --muted: #F1F3F6;
@@ -96,11 +102,11 @@
   --radius: 0.5rem;
   --sidebar: #171C24; /* Midnight: sidebar stays dark in light mode */
   --sidebar-foreground: #CBD5E1; /* Sidebar Text */
-  --sidebar-primary: #3366E0;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary: #5B8DEF; /* active indicator */
+  --sidebar-primary-foreground: #171C24;
   --sidebar-accent: #232A35; /* Graphite */
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #232A35;
+  --sidebar-border: #313A46; /* Slate Ink, also the hover background */
   --sidebar-ring: #5B8DEF;
 }
 
@@ -111,8 +117,11 @@
   --card-foreground: #F7F8FA;
   --popover: #232A35;
   --popover-foreground: #F7F8FA;
-  --primary: #5B8DEF; /* Frost Blue */
-  --primary-foreground: #111827;
+  --primary: #F7F8FA; /* inverted Midnight */
+  --primary-foreground: #171C24;
+  --primary-hover: #E2E8F0;
+  --link: #60A5FA;
+  --placeholder: #94A3B8;
   --secondary: #313A46; /* Slate Ink */
   --secondary-foreground: #F7F8FA;
   --muted: #2C3440; /* between Graphite and Slate Ink: must differ from --card or skeletons/tab lists vanish on cards */
@@ -138,10 +147,10 @@
   --sidebar: #11151C;
   --sidebar-foreground: #CBD5E1;
   --sidebar-primary: #5B8DEF;
-  --sidebar-primary-foreground: #111827;
+  --sidebar-primary-foreground: #171C24;
   --sidebar-accent: #232A35;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #232A35;
+  --sidebar-border: #313A46;
   --sidebar-ring: #5B8DEF;
 }
 

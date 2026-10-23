@@ -29,6 +29,11 @@ const pairs = (t, dark) => [
   ["popover-foreground", "popover", 4.5],
   ["primary-foreground", "primary", 4.5],
   ["primary", "background", 4.5],
+  ["primary-foreground", "primary-hover", 4.5],
+  ["link", "background", 4.5],
+  ["link", "card", 4.5],
+  // Fields are filled with --card (Parry change to input/textarea/select), so placeholders sit on it
+  ["placeholder", "card", 4.5],
   ["secondary-foreground", "secondary", 4.5],
   ["muted-foreground", "muted", 4.5],
   ["muted-foreground", "background", 4.5],

@@ -2,16 +2,16 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "parry-theme",
   "title": "Parry theme",
-  "description": "Midnight + Frost Blue tokens, Plus Jakarta Sans / JetBrains Mono. Generated from app/globals.css by scripts/sync-theme.mjs.",
+  "description": "Midnight + Frost Blue tokens, DM Sans / JetBrains Mono. Generated from app/globals.css by scripts/sync-theme.mjs.",
   "dependencies": [
-    "@fontsource-variable/plus-jakarta-sans",
+    "@fontsource-variable/dm-sans",
     "@fontsource-variable/jetbrains-mono"
   ],
   "cssVars": {
     "theme": {
-      "font-sans": "\"Plus Jakarta Sans Variable\", ui-sans-serif, system-ui, sans-serif",
+      "font-sans": "\"DM Sans Variable\", ui-sans-serif, system-ui, sans-serif",
       "font-mono": "\"JetBrains Mono Variable\", ui-monospace, monospace",
-      "font-heading": "\"Plus Jakarta Sans Variable\", ui-sans-serif, system-ui, sans-serif"
+      "font-heading": "\"DM Sans Variable\", ui-sans-serif, system-ui, sans-serif"
     },
     "light": {
       "background": "#F7F8FA",
@@ -20,8 +20,11 @@
       "card-foreground": "#111827",
       "popover": "#FFFFFF",
       "popover-foreground": "#111827",
-      "primary": "#3366E0",
+      "primary": "#171C24",
       "primary-foreground": "#FFFFFF",
+      "primary-hover": "#232A35",
+      "link": "#2563EB",
+      "placeholder": "#64748B",
       "secondary": "#F1F3F6",
       "secondary-foreground": "#111827",
       "muted": "#F1F3F6",
@@ -47,11 +50,11 @@
       "radius": "0.5rem",
       "sidebar": "#171C24",
       "sidebar-foreground": "#CBD5E1",
-      "sidebar-primary": "#3366E0",
-      "sidebar-primary-foreground": "#FFFFFF",
+      "sidebar-primary": "#5B8DEF",
+      "sidebar-primary-foreground": "#171C24",
       "sidebar-accent": "#232A35",
       "sidebar-accent-foreground": "#FFFFFF",
-      "sidebar-border": "#232A35",
+      "sidebar-border": "#313A46",
       "sidebar-ring": "#5B8DEF"
     },
     "dark": {
@@ -61,8 +64,11 @@
       "card-foreground": "#F7F8FA",
       "popover": "#232A35",
       "popover-foreground": "#F7F8FA",
-      "primary": "#5B8DEF",
-      "primary-foreground": "#111827",
+      "primary": "#F7F8FA",
+      "primary-foreground": "#171C24",
+      "primary-hover": "#E2E8F0",
+      "link": "#60A5FA",
+      "placeholder": "#94A3B8",
       "secondary": "#313A46",
       "secondary-foreground": "#F7F8FA",
       "muted": "#2C3440",
@@ -88,15 +94,15 @@
       "sidebar": "#11151C",
       "sidebar-foreground": "#CBD5E1",
       "sidebar-primary": "#5B8DEF",
-      "sidebar-primary-foreground": "#111827",
+      "sidebar-primary-foreground": "#171C24",
       "sidebar-accent": "#232A35",
       "sidebar-accent-foreground": "#FFFFFF",
-      "sidebar-border": "#232A35",
+      "sidebar-border": "#313A46",
       "sidebar-ring": "#5B8DEF"
     }
   },
   "css": {
-    "@import \"@fontsource-variable/plus-jakarta-sans\"": {},
+    "@import \"@fontsource-variable/dm-sans\"": {},
     "@import \"@fontsource-variable/jetbrains-mono\"": {}
   },
   "type": "registry:theme"

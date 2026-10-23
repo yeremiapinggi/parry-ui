@@ -1,7 +1,7 @@
 # Parry UI
 
 The Ivosights design system, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
-**Midnight + Frost Blue** palette, **Plus Jakarta Sans** and **JetBrains Mono** fonts, and light/dark modes.
+**Midnight + Frost Blue** palette, **DM Sans** and **JetBrains Mono** fonts, and light/dark modes.
 
 Parry UI is a **shadcn registry**: components are copied into your project with the `shadcn` CLI instead of being installed
 as an npm package. The same registry works in **Next.js** and **Vite**.
@@ -74,7 +74,7 @@ theme from `next-themes`.
 | Layout & data | `card`, `tabs`, `table`, `separator`, `avatar`, `skeleton` |
 
 On top of the built-in shadcn tokens, the theme adds the semantic colors `success`, `warning`, `info` and their `*-soft`
-pairs (plus `destructive-soft`). Alert and Badge have no dedicated variants for these; use the token utilities:
+pairs (plus `destructive-soft`), and `primary-hover`, `link`, and `placeholder`. Alert and Badge have no dedicated variants for these; use the token utilities:
 
 ```tsx
 <Alert className="border-success/30 bg-success-soft text-success">…</Alert>
@@ -99,7 +99,17 @@ npm run dev            # site (/, /docs, /components, /themes) at http://localho
 
 **Adding a component:** run `npx shadcn@latest add <name>` in this repo, register it as a `registry:ui` item in
 `registry.json` (fill `dependencies` from the file's imports), add its preview to `app/components/page.tsx`, then run
-`npm run registry:build`. Components are intentionally left as shadcn generates them so upstream updates are easy to diff.
+`npm run registry:build`. Components stay as close to the shadcn output as possible so upstream updates are easy to diff. The only Parry changes
+are color/state classes required by the brand spec:
+
+| Component | Parry change |
+|-----------|--------------|
+| `button` | Primary hover uses `--primary-hover`; outline is white (`bg-card`); link uses `--link` |
+| `input`, `textarea`, `select` | White field (`bg-card`, no dark fill), `--placeholder` text, `bg-muted` when disabled |
+| `tabs` | Active tab uses `bg-accent` + `text-primary`; line indicator uses `--ring`; inactive text `muted-foreground` |
+| `table` | Header row `bg-muted/50`, row hover `bg-muted` |
+
+When re-adding a component from shadcn, re-apply these changes.
 
 **Dev server note:** don't run `npm run build` while `npm run dev` is running, since both use the `.next` folder. If the
 page looks stale, stop the dev server, delete `.next`, and start it again.

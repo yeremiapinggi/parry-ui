@@ -59,7 +59,7 @@ export default function GettingStartedPage() {
         <CodeBlock>npx shadcn@latest add @parry/parry-theme</CodeBlock>
         <p>
           Then add the components you need. The full list is on{" "}
-          <Link href="/components" className="text-primary underline underline-offset-4">Components</Link>.
+          <Link href="/components" className="text-link underline underline-offset-4">Components</Link>.
         </p>
         <CodeBlock>npx shadcn@latest add @parry/button @parry/input @parry/card</CodeBlock>
 
@@ -86,7 +86,7 @@ export default function GettingStartedPage() {
   <Toaster />
 </ThemeProvider>`}</CodeBlock>
         <p>
-          Next: <Link href="/docs/theming" className="text-primary underline underline-offset-4">Theming</Link>.
+          Next: <Link href="/docs/theming" className="text-link underline underline-offset-4">Theming</Link>.
         </p>
       </article>
       <aside className="hidden xl:block">

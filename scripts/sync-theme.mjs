@@ -17,6 +17,7 @@ const theme = Object.fromEntries(Object.entries(block("@theme inline")).filter((
 const fontImports = [...css.matchAll(/^@import "(@fontsource[^"]+)";/gm)].map((m) => `@import "${m[1]}"`)
 
 const item = registry.items.find((i) => i.name === "parry-theme")
+item.dependencies = fontImports.map((i) => i.match(/"(.+)"/)[1])
 item.css = Object.fromEntries(fontImports.map((i) => [i, {}]))
 item.cssVars = { theme, light: block(":root"), dark: block(".dark") }
 

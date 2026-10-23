@@ -23,6 +23,11 @@ light + dark.
     `--input` `#7F8CA0`/`#77869C` (Border Interactive `#D0D7E2` 1.4:1; batas field/checkbox/switch butuh 3:1). Frost Blue jadi `--ring` dan primary di dark.
   - Token tambahan di luar shadcn: `success`, `warning`, `info` + `*-soft`, dan `destructive-soft`.
   - Sans: **Plus Jakarta Sans**. Mono: **JetBrains Mono**. Radius: `0.5rem`.
+  - **Diselaraskan ke spec "Parry UI — Color Palette & Design Tokens" (2026-10-23):** primary Midnight `#171C24` (hover
+    Graphite, dibalik di dark), font DM Sans, token baru `--link` `#2563EB`, `--primary-hover`, `--placeholder` `#64748B`;
+    sidebar aktif Graphite + indikator Frost Blue, hover Slate Ink. Kelas warna/state di `button`, `input`, `textarea`,
+    `select`, `tabs`, `table` diubah (daftar di README). Deviasi AA tetap: Focus Ring, Border Interactive, Text Muted,
+    teks semantic, tab tidak aktif `#475569`. Product theme separation belum dikerjakan.
   - Kontras dicek otomatis: `npm run check:contrast` (`scripts/check-contrast.mjs`, exit 1 bila ada pasangan < AA).
 
 ### Soal Next.js ↔ Vite

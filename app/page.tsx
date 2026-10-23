@@ -132,7 +132,7 @@ export default function Home() {
             <Link href="/components" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
               <p className="font-heading text-xl font-semibold">19 ready-to-use components</p>
               <p className="mt-1 text-sm text-muted-foreground">Forms, feedback, overlays, layout, and data.</p>
-              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
+              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-link">
                 Browse components <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
               </span>
               <div className="mt-6 flex flex-wrap items-center gap-2" aria-hidden>
@@ -148,7 +148,7 @@ export default function Home() {
             <Link href="/docs" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
               <p className="font-heading text-xl font-semibold">One theme, two frameworks</p>
               <p className="mt-1 text-sm text-muted-foreground">Installed with the same commands in Next.js and Vite.</p>
-              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
+              <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-link">
                 Read the guide <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
               </span>
               <pre className="mt-6 overflow-x-auto rounded-lg bg-sidebar p-4 font-mono text-xs text-sidebar-foreground" aria-hidden>
@@ -162,7 +162,7 @@ export default function Home() {
           <div className="flex flex-col gap-3">
             <h2 className="font-heading text-3xl font-bold tracking-tight">Built for Ivosights products</h2>
             <p className="text-muted-foreground">
-              One source of tokens, measured contrast, and components that are never forked from upstream.
+              One source of tokens, measured contrast, and components kept close to shadcn so upstream updates stay easy to adopt.
             </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
@@ -173,7 +173,7 @@ export default function Home() {
                 </span>
                 <h3 className="font-semibold">{title}</h3>
                 <p className="text-sm text-muted-foreground">{text}</p>
-                <Link href={href} className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                <Link href={href} className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-link hover:underline">
                   {cta} <ArrowRightIcon className="size-4" />
                 </Link>
               </div>
@@ -186,7 +186,7 @@ export default function Home() {
             <LayersIcon aria-hidden className="absolute -top-6 -left-6 size-40 -rotate-12 text-primary/10" />
             <BlocksIcon aria-hidden className="absolute -right-8 -bottom-8 size-48 rotate-12 text-primary/10" />
             <h2 className="max-w-xl font-heading text-4xl font-bold tracking-tight text-balance">
-              Discover the full <span className="text-primary">parry</span> design system
+              Discover the full <span className="text-link">parry</span> design system
             </h2>
             <p className="max-w-lg text-muted-foreground">
               Install the theme once, then add components one at a time as you need them.
