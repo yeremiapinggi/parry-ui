@@ -72,7 +72,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 
 ### Phase 4: Docs & landing
 - [x] Task 9: README — cara pakai di Next.js dan Vite
-- [ ] Task 10: Landing page bergaya Astryx; showcase pindah ke `/components`
+- [x] Task 10: Landing page bergaya Astryx; showcase pindah ke `/components`
 
 ### Checkpoint: Complete
 - [ ] Semua acceptance criteria terpenuhi, siap review
@@ -89,5 +89,5 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 - Warna & font usulan di atas oke, atau ada brand guideline Ivosights yang harus diikuti?
 - Registry akan di-host di mana (Vercel, internal)? Publik atau private (perlu auth header)?
 - Package manager: npm (pnpm tidak terpasang di mesin dev).
-- Landing page (Task 10): pakai wordmark teks Plus Jakarta Sans ExtraBold, atau ada SVG logo Ivosights/Parry?
+- Landing page: wordmark masih teks; ganti dengan SVG logo bila sudah ada.
 - Daftar komponen di Task 6–8 adalah usulan; tambah/kurangi sesuai kebutuhan produk.

@@ -216,13 +216,18 @@ yang dirakit dari komponen Parry asli (stat card, input chat, progress, badge, p
 Snow → Accent Soft. Showcase saat ini pindah ke `/components`.
 
 **Acceptance criteria:**
-- [ ] Kartu demo memakai komponen dari `components/ui`, bukan markup tiruan
-- [ ] Light & dark rapi; di 375px kartu melayang disembunyikan/ditumpuk tanpa scroll horizontal
-- [ ] `npm run check:contrast` lolos; semua CTA dan link bisa diakses keyboard
+- [x] Kartu demo memakai komponen dari `components/ui`, bukan markup tiruan
+- [x] Light & dark rapi; di 375px kartu melayang disembunyikan/ditumpuk tanpa scroll horizontal
+- [x] `npm run check:contrast` lolos; semua CTA dan link bisa diakses keyboard
 
 **Verification:**
-- [ ] `npm run build` sukses
-- [ ] Manual: screenshot desktop & 375px di light dan dark
+- [x] `npm run build` sukses
+- [x] Manual: screenshot desktop & 375px di light dan dark
+
+**Hasil (2026-10-23):** wordmark teks Plus Jakarta Sans ExtraBold. Kartu demo (statistik, input chat, preferensi
+dengan Switch, kartu anggota) memakai komponen registry. Kartu melayang mulai `xl` (≥1280px; di bawah itu kolom tengah
+terlalu lebar), dan menjadi grid 1–2 kolom di bawahnya. Dicek tanpa tumpang-tindih di 1280/1440px, tanpa scroll horizontal
+di 1024/375px, light & dark, urutan Tab logis. Progress bar tidak dipakai karena belum ada di registry.
 
 **Dependencies:** Task 6, 7, 8
 **Files likely touched:** `app/page.tsx`, `app/components/page.tsx`, `components/landing/*.tsx`
