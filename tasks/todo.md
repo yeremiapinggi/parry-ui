@@ -1,0 +1,184 @@
+# Todo: Parry UI
+
+## Task 1: Scaffold Next.js + Tailwind v4 + shadcn init
+**Description:** Buat app Next.js (App Router, TypeScript, Tailwind v4) di root repo lalu `shadcn init` dengan CSS variables.
+
+**Acceptance criteria:**
+- [x] `components.json` ada, `cssVariables: true`, alias `@/components`, `@/lib/utils`
+- [x] `app/globals.css` berisi token default shadcn (`:root`, `.dark`, `@theme inline`)
+
+**Verification:**
+- [x] `npm run build` sukses
+- [x] `npm run dev` → halaman root terbuka tanpa error console
+
+**Dependencies:** None
+**Files likely touched:** `package.json`, `components.json`, `app/globals.css`, `app/layout.tsx`, `lib/utils.ts`
+**Estimated scope:** S
+
+---
+
+## Task 2: Tuning token warna, font, dark mode (dibuktikan lewat Button)
+**Description:** Ganti nilai token di `globals.css` dengan palet Parry (primary, secondary, accent, destructive, muted,
+border, ring, chart-1..5, sidebar-*) untuk light & dark; pasang Plus Jakarta Sans + JetBrains Mono via
+`@fontsource-variable/*` dan set `--font-sans`/`--font-mono`; tambah `next-themes` + toggle. `shadcn add button`
+dan tampilkan semua variant Button + swatch token di halaman showcase.
+
+**Acceptance criteria:**
+- [ ] Semua variant Button (default, secondary, outline, ghost, link, destructive) tampil dengan warna Parry di light & dark
+- [ ] Font teks UI = Plus Jakarta Sans, kode = JetBrains Mono (cek computed style)
+- [ ] Pasangan foreground/background utama lolos WCAG AA (≥4.5:1) di kedua mode
+
+**Verification:**
+- [ ] `npm run build` sukses
+- [ ] Manual: toggle dark mode di showcase, cek kontras via DevTools (color picker contrast ratio)
+
+**Dependencies:** Task 1
+**Files likely touched:** `app/globals.css`, `app/layout.tsx`, `app/page.tsx`, `components/theme-toggle.tsx`, `components/ui/button.tsx`
+**Estimated scope:** M
+
+---
+
+## Checkpoint: Foundation
+- [ ] Build bersih
+- [ ] Review warna & font bersama user sebelum lanjut
+
+---
+
+## Task 3: Registry `parry-theme` + `button`
+**Description:** Buat `registry.json` berisi item `parry-theme` (type `registry:theme`/`registry:style`: cssVars light/dark,
+font vars, dependency fontsource) dan `button` (type `registry:ui`, `registryDependencies: ["parry-theme"]` bila didukung).
+Script `registry:build` → `shadcn build` ke `public/r/`.
+
+**Acceptance criteria:**
+- [ ] `public/r/parry-theme.json` dan `public/r/button.json` ter-generate dari `npm run registry:build`
+- [ ] `http://localhost:3000/r/button.json` dapat diakses saat `npm run dev`
+- [ ] Nilai token di `parry-theme` sama persis dengan `globals.css` (satu sumber; dicek manual atau via diff)
+
+**Verification:**
+- [ ] `npm run registry:build && npm run build` sukses
+- [ ] `curl -s localhost:3000/r/parry-theme.json | jq .cssVars` menampilkan light & dark
+
+**Dependencies:** Task 2
+**Files likely touched:** `registry.json`, `package.json`, `public/r/*` (generated)
+**Estimated scope:** S
+
+---
+
+## Task 4: Install ke app Next.js kosong
+**Description:** Di folder scratch (di luar repo), `create-next-app` + `shadcn init`, lalu
+`npx shadcn add http://localhost:3000/r/parry-theme.json http://localhost:3000/r/button.json`.
+
+**Acceptance criteria:**
+- [ ] Button di app konsumen tampil identik dengan showcase (warna, font, radius) di light & dark
+- [ ] Tidak ada langkah manual selain yang tertulis di README (catat bila ada)
+
+**Verification:**
+- [ ] `npm run build` app konsumen sukses; screenshot dibandingkan dengan showcase
+
+**Dependencies:** Task 3
+**Files likely touched:** tidak ada di repo (kecuali perbaikan `registry.json` bila gagal)
+**Estimated scope:** XS
+
+---
+
+## Task 5: Install ke app Vite kosong
+**Description:** Sama dengan Task 4 tetapi `create vite` (react-ts) + Tailwind v4 + `shadcn init`. Membuktikan registry portable.
+
+**Acceptance criteria:**
+- [ ] Button tampil identik dengan showcase di light & dark (toggle class `.dark` manual)
+- [ ] Font termuat tanpa `next/font`
+
+**Verification:**
+- [ ] `npm run build` app Vite sukses; screenshot dibandingkan dengan showcase
+
+**Dependencies:** Task 3
+**Files likely touched:** tidak ada di repo (kecuali perbaikan `registry.json` bila gagal)
+**Estimated scope:** XS
+
+---
+
+## Checkpoint: Registry
+- [ ] Next.js & Vite konsumen tampil identik dengan showcase
+- [ ] Review dengan user
+
+---
+
+## Task 6: Komponen form
+**Description:** `shadcn add` input, label, textarea, select, checkbox, switch; daftarkan di `registry.json`; tambah seksi showcase (state default, focus, disabled, invalid).
+
+**Acceptance criteria:**
+- [ ] Ke-6 item ter-build di `public/r/`
+- [ ] Focus ring memakai `--ring` Parry dan terlihat jelas di light & dark
+- [ ] State `aria-invalid` memakai warna destructive
+
+**Verification:**
+- [ ] `npm run registry:build && npm run build` sukses
+- [ ] Manual: navigasi keyboard (Tab) di seksi form, cek ring & kontras
+
+**Dependencies:** Task 3
+**Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`
+**Estimated scope:** M
+
+---
+
+## Task 7: Komponen feedback & overlay
+**Description:** alert, badge, dialog, dropdown-menu, tooltip, sonner; registry + seksi showcase.
+
+**Acceptance criteria:**
+- [ ] Ke-6 item ter-build di `public/r/`
+- [ ] Overlay (dialog/dropdown/tooltip) memakai `--popover`/`--popover-foreground` dan terbaca di dark mode
+- [ ] Dialog bisa ditutup dengan Esc dan fokus kembali ke trigger
+
+**Verification:**
+- [ ] `npm run registry:build && npm run build` sukses
+- [ ] Manual: buka tiap overlay di light & dark
+
+**Dependencies:** Task 3
+**Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`, `app/layout.tsx` (Toaster)
+**Estimated scope:** M
+
+---
+
+## Task 8: Komponen layout & data
+**Description:** card, tabs, table, separator, avatar, skeleton; registry + seksi showcase.
+
+**Acceptance criteria:**
+- [ ] Ke-6 item ter-build di `public/r/`
+- [ ] Card & table memakai `--card`/`--border`/`--muted` Parry dan konsisten di dark mode
+
+**Verification:**
+- [ ] `npm run registry:build && npm run build` sukses
+- [ ] Manual: cek showcase di lebar 375px dan desktop
+
+**Dependencies:** Task 3
+**Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`
+**Estimated scope:** M
+
+---
+
+## Checkpoint: Komponen
+- [ ] Semua item ada di `public/r/`, showcase lengkap
+- [ ] Kontras AA lolos di light & dark
+- [ ] Review dengan user
+
+---
+
+## Task 9: README konsumsi
+**Description:** Dokumentasikan cara pakai di Next.js dan Vite (init, add theme, add komponen, dark mode toggle, font), cara menambah item baru ke registry, dan cara mengubah token.
+
+**Acceptance criteria:**
+- [ ] Mengikuti README dari nol menghasilkan app yang sama dengan Task 4/5
+- [ ] Langkah manual yang tercatat di Task 4/5 terdokumentasi
+
+**Verification:**
+- [ ] Manual: ulangi Task 5 hanya berbekal README
+
+**Dependencies:** Task 4, 5, 6–8
+**Files likely touched:** `README.md`
+**Estimated scope:** XS
+
+---
+
+## Checkpoint: Complete
+- [ ] Semua acceptance criteria terpenuhi
+- [ ] Siap review
