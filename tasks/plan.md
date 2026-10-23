@@ -64,7 +64,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 
 ### Phase 3: Komponen
 - [x] Task 6: Form — input, label, textarea, select, checkbox, switch
-- [ ] Task 7: Feedback & overlay — alert, badge, dialog, dropdown-menu, tooltip, sonner
+- [x] Task 7: Feedback & overlay — alert, badge, dialog, dropdown-menu, tooltip, sonner
 - [ ] Task 8: Layout & data — card, tabs, table, separator, avatar, skeleton
 
 ### Checkpoint: Komponen

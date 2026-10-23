@@ -1,6 +1,9 @@
-import { ArrowRightIcon, PlusIcon } from "lucide-react";
+import { ArrowRightIcon, CircleCheckIcon, InfoIcon, OctagonXIcon, PlusIcon, TriangleAlertIcon } from "lucide-react";
 
+import { OverlayDemo } from "@/components/overlay-demo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -26,6 +29,16 @@ const swatches = [
 const charts = [1, 2, 3, 4, 5];
 
 const variants = ["default", "secondary", "outline", "ghost", "destructive", "link"] as const;
+
+const badgeVariants = ["default", "secondary", "outline", "ghost", "destructive", "link"] as const;
+
+// Semantic colors are applied with token utilities instead of forking Alert/Badge with new variants.
+const semantic = [
+  { name: "success", icon: CircleCheckIcon, className: "border-success/30 bg-success-soft text-success", title: "Berhasil disimpan", text: "Perubahan sudah tersinkron ke semua anggota tim." },
+  { name: "warning", icon: TriangleAlertIcon, className: "border-warning/30 bg-warning-soft text-warning", title: "Kuota hampir habis", text: "Tersisa 12% dari kuota bulan ini." },
+  { name: "info", icon: InfoIcon, className: "border-info/30 bg-info-soft text-info", title: "Fitur baru", text: "Ekspor laporan kini mendukung format CSV." },
+  { name: "error", icon: OctagonXIcon, className: "border-destructive/30 bg-destructive-soft text-destructive", title: "Gagal terhubung", text: "Periksa koneksi lalu coba lagi." },
+] as const;
 
 const formStates = [
   { id: "default", label: "Default" },
@@ -140,6 +153,46 @@ export default function Home() {
             );
           })}
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Feedback</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Alert>
+            <InfoIcon />
+            <AlertTitle>Default</AlertTitle>
+            <AlertDescription>Alert bawaan memakai warna card.</AlertDescription>
+          </Alert>
+          <Alert variant="destructive">
+            <OctagonXIcon />
+            <AlertTitle>Destructive</AlertTitle>
+            <AlertDescription>Variant destructive bawaan shadcn.</AlertDescription>
+          </Alert>
+          {semantic.map(({ name, icon: Icon, className, title, text }) => (
+            <Alert key={name} className={className}>
+              <Icon />
+              <AlertTitle>{title}</AlertTitle>
+              <AlertDescription className="text-current">{text}</AlertDescription>
+            </Alert>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {badgeVariants.map((v) => (
+            <Badge key={v} variant={v}>
+              {v}
+            </Badge>
+          ))}
+          {semantic.map(({ name, className }) => (
+            <Badge key={name} className={className}>
+              {name}
+            </Badge>
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Overlay</h2>
+        <OverlayDemo />
       </section>
     </main>
   );

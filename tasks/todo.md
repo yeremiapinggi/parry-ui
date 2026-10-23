@@ -141,13 +141,20 @@ termasuk track Switch dark (`bg-input/80`). Efek samping: isian `disabled:bg-inp
 **Description:** alert, badge, dialog, dropdown-menu, tooltip, sonner; registry + seksi showcase.
 
 **Acceptance criteria:**
-- [ ] Ke-6 item ter-build di `public/r/`
-- [ ] Overlay (dialog/dropdown/tooltip) memakai `--popover`/`--popover-foreground` dan terbaca di dark mode
-- [ ] Dialog bisa ditutup dengan Esc dan fokus kembali ke trigger
+- [x] Ke-6 item ter-build di `public/r/`
+- [x] Overlay (dialog/dropdown/tooltip) memakai `--popover`/`--popover-foreground` dan terbaca di dark mode
+- [x] Dialog bisa ditutup dengan Esc dan fokus kembali ke trigger
 
 **Verification:**
-- [ ] `npm run registry:build && npm run build` sukses
-- [ ] Manual: buka tiap overlay di light & dark
+- [x] `npm run registry:build && npm run build` sukses
+- [x] Manual: buka tiap overlay di light & dark
+
+**Catatan (2026-10-23):**
+- Warna semantic (success/warning/info/error) untuk Alert & Badge dipakai lewat utility token
+  (`bg-success-soft text-success border-success/30`), bukan variant baru, agar komponen tidak di-fork.
+- Konsumen wajib memasang `<TooltipProvider>` dan `<Toaster />` di root layout (README).
+- `sonner` bergantung pada `next-themes`; di Vite juga jalan, tapi tema toast harus mengikuti provider yang sama.
+- `dialog` memakai `registryDependencies: ["button"]` yang mengambil Button dari registry shadcn resmi (identik dengan milik Parry).
 
 **Dependencies:** Task 3
 **Files likely touched:** `components/ui/*.tsx` (generated), `registry.json`, `app/page.tsx`, `app/layout.tsx` (Toaster)
