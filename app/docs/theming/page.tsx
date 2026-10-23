@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 export const metadata: Metadata = { title: "Theming · Parry UI" };
 
 const toc = [
-  { id: "token", label: "Token warna" },
-  { id: "semantic", label: "Warna semantic" },
-  { id: "font", label: "Font & radius" },
-  { id: "mengubah", label: "Mengubah warna" },
+  { id: "tokens", label: "Color tokens" },
+  { id: "semantic", label: "Semantic colors" },
+  { id: "fonts", label: "Fonts & radius" },
+  { id: "changing-colors", label: "Changing colors" },
 ];
 
 const h2 = "scroll-mt-20 font-heading text-2xl font-bold tracking-tight";
@@ -29,25 +29,25 @@ export default function ThemingPage() {
       <article className="flex max-w-3xl min-w-0 flex-col gap-6 leading-7">
         <header className="flex flex-col gap-2">
           <h1 className="font-heading text-4xl font-bold tracking-tight">Theming</h1>
-          <p className="text-lg text-muted-foreground">Palet Midnight + Frost Blue, font, dan cara mengubahnya.</p>
+          <p className="text-lg text-muted-foreground">The Midnight + Frost Blue palette, fonts, and how to change them.</p>
         </header>
 
-        <h2 id="token" className={h2}>Token warna</h2>
+        <h2 id="tokens" className={h2}>Color tokens</h2>
         <p>
-          Theme memakai nama token shadcn (<code className="font-mono text-sm">background</code>, <code className="font-mono text-sm">primary</code>,{" "}
-          <code className="font-mono text-sm">muted</code>, dst.) dengan nilai berbeda untuk mode terang dan gelap. Semua nilainya bisa dilihat di{" "}
+          The theme uses shadcn token names (<code className="font-mono text-sm">background</code>, <code className="font-mono text-sm">primary</code>,{" "}
+          <code className="font-mono text-sm">muted</code>, and so on) with separate values for light and dark mode. Every value is listed on{" "}
           <Link href="/themes" className="text-primary underline underline-offset-4">Themes</Link>.
         </p>
         <p>
-          Warna brand dipakai apa adanya bila lolos WCAG AA. Yang gagal diganti shade yang lebih gelap untuk teks, misalnya primary{" "}
-          <code className="font-mono text-sm">#3366E0</code> menggantikan Frost Blue <code className="font-mono text-sm">#5B8DEF</code> di mode terang.
+          Brand colors are used as-is when they pass WCAG AA. Those that fail are replaced with a darker shade for text, for example primary{" "}
+          <code className="font-mono text-sm">#3366E0</code> instead of Frost Blue <code className="font-mono text-sm">#5B8DEF</code> in light mode.
         </p>
 
-        <h2 id="semantic" className={h2}>Warna semantic</h2>
+        <h2 id="semantic" className={h2}>Semantic colors</h2>
         <p>
-          Selain token shadcn, theme menambahkan <code className="font-mono text-sm">success</code>, <code className="font-mono text-sm">warning</code>,{" "}
-          <code className="font-mono text-sm">info</code>, dan pasangan <code className="font-mono text-sm">*-soft</code>. Alert dan Badge tidak punya variant
-          khusus; pakai utility token:
+          On top of the shadcn tokens, the theme adds <code className="font-mono text-sm">success</code>, <code className="font-mono text-sm">warning</code>,{" "}
+          <code className="font-mono text-sm">info</code>, and their <code className="font-mono text-sm">*-soft</code> pairs. Alert and Badge have no dedicated
+          variants for them; use the token utilities:
         </p>
         <div className="flex flex-wrap gap-2">
           {semantic.map(({ name, className }) => (
@@ -57,25 +57,25 @@ export default function ThemingPage() {
         <CodeBlock>{`<Badge className="border-success/30 bg-success-soft text-success">success</Badge>
 <Alert className="border-warning/30 bg-warning-soft text-warning">…</Alert>`}</CodeBlock>
 
-        <h2 id="font" className={h2}>Font &amp; radius</h2>
+        <h2 id="fonts" className={h2}>Fonts &amp; radius</h2>
         <p>
-          Teks memakai <strong>Plus Jakarta Sans</strong> dan kode memakai <code className="font-mono text-sm">JetBrains Mono</code>, dimuat lewat paket{" "}
-          <code className="font-mono text-sm">@fontsource-variable/*</code> sehingga jalan di Next.js maupun Vite. Radius dasar{" "}
+          Text uses <strong>Plus Jakarta Sans</strong> and code uses <code className="font-mono text-sm">JetBrains Mono</code>, loaded from the{" "}
+          <code className="font-mono text-sm">@fontsource-variable/*</code> packages so they work in both Next.js and Vite. The base radius is{" "}
           <code className="font-mono text-sm">0.5rem</code>.
         </p>
 
-        <h2 id="mengubah" className={h2}>Mengubah warna</h2>
-        <p>Di repo Parry UI, <code className="font-mono text-sm">app/globals.css</code> adalah satu-satunya sumber token:</p>
+        <h2 id="changing-colors" className={h2}>Changing colors</h2>
+        <p>In the Parry UI repo, <code className="font-mono text-sm">app/globals.css</code> is the single source of tokens:</p>
         <ol className="ml-5 list-decimal space-y-2">
-          <li>Edit nilai hex di blok <code className="font-mono text-sm">:root</code> (terang) atau <code className="font-mono text-sm">.dark</code> (gelap).</li>
-          <li>Jalankan pengecekan kontras; perintah gagal bila ada pasangan di bawah WCAG AA.</li>
-          <li>Build ulang registry agar <code className="font-mono text-sm">parry-theme</code> ikut berubah.</li>
+          <li>Edit the hex values in the <code className="font-mono text-sm">:root</code> (light) or <code className="font-mono text-sm">.dark</code> (dark) block.</li>
+          <li>Run the contrast check; it fails if any pair is below WCAG AA.</li>
+          <li>Rebuild the registry so <code className="font-mono text-sm">parry-theme</code> picks up the change.</li>
         </ol>
         <CodeBlock>{`npm run check:contrast
 npm run registry:build`}</CodeBlock>
         <Alert>
-          <AlertTitle>Jangan edit registry.json secara manual</AlertTitle>
-          <AlertDescription>Bagian parry-theme di registry.json ditimpa oleh script setiap kali registry di-build.</AlertDescription>
+          <AlertTitle>Don&apos;t edit registry.json by hand</AlertTitle>
+          <AlertDescription>The parry-theme section of registry.json is overwritten by a script every time the registry is built.</AlertDescription>
         </Alert>
       </article>
       <aside className="hidden xl:block">

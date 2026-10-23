@@ -7,9 +7,9 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 const modes = [
-  { value: "light", label: "Terang", icon: SunIcon },
-  { value: "dark", label: "Gelap", icon: MoonIcon },
-  { value: "system", label: "Sistem", icon: LaptopIcon },
+  { value: "light", label: "Light", icon: SunIcon },
+  { value: "dark", label: "Dark", icon: MoonIcon },
+  { value: "system", label: "System", icon: LaptopIcon },
 ] as const
 
 // The stored theme is only known on the client; render no selection on the server to avoid a hydration mismatch.
@@ -20,7 +20,7 @@ export function ThemeModePicker() {
   const mounted = useMounted()
 
   return (
-    <div role="group" aria-label="Mode tema" className="grid grid-cols-3 gap-2">
+    <div role="group" aria-label="Theme mode" className="grid grid-cols-3 gap-2">
       {modes.map(({ value, label, icon: Icon }) => {
         const active = mounted && theme === value
         return (

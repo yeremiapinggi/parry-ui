@@ -12,9 +12,9 @@ import { Switch } from "@/components/ui/switch";
 const bars = [40, 55, 48, 62, 58, 75, 90];
 
 const features = [
-  { icon: ZapIcon, title: "Cepat dipasang", text: "Theme dan komponen masuk lewat shadcn CLI dari registry @parry, tanpa paket npm tambahan.", href: "/docs", cta: "Instalasi" },
-  { icon: ShieldCheckIcon, title: "Aksesibel", text: "Semua pasangan warna dicek otomatis terhadap WCAG AA di mode terang dan gelap.", href: "/docs/theming", cta: "Tentang token" },
-  { icon: SparklesIcon, title: "Konsisten", text: "Satu sumber token di globals.css yang disalin ke registry, sehingga showcase dan project selalu sama.", href: "/themes", cta: "Lihat theme" },
+  { icon: ZapIcon, title: "Fast to install", text: "The theme and components come in through the shadcn CLI from the @parry registry, with no extra npm package.", href: "/docs", cta: "Installation" },
+  { icon: ShieldCheckIcon, title: "Accessible", text: "Every color pair is checked automatically against WCAG AA in both light and dark mode.", href: "/docs/theming", cta: "About tokens" },
+  { icon: SparklesIcon, title: "Consistent", text: "A single token source in globals.css is copied into the registry, so the showcase and your project always match.", href: "/themes", cta: "View theme" },
 ] as const;
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
             <span className="sr-only"> UI</span>
           </h1>
           <p className="max-w-2xl text-balance text-3xl leading-tight tracking-tight sm:text-5xl">
-            Design system Ivosights yang <span className="font-bold">siap pakai di Next.js dan Vite</span>
+            The Ivosights design system, <span className="font-bold">ready for Next.js and Vite</span>
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="h-12 rounded-full px-8 text-base">
@@ -38,9 +38,9 @@ export default function Home() {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Dibangun di atas{" "}
+            Built on{" "}
             <a href="https://ui.shadcn.com" className="underline underline-offset-4 hover:text-foreground">shadcn/ui</a>,
-            Radix, dan Tailwind v4
+            Radix, and Tailwind v4
           </p>
 
           {/* Demo cards: a grid below the hero on smaller screens, floating beside it from xl up (where the side gutters fit them). */}
@@ -51,10 +51,10 @@ export default function Home() {
 
             <Card className="xl:absolute xl:top-[330px] xl:left-4 xl:w-64 xl:-rotate-2">
               <CardHeader>
-                <CardDescription>Komponen di registry</CardDescription>
+                <CardDescription>Registry components</CardDescription>
                 <CardTitle className="text-3xl">20</CardTitle>
                 <CardAction>
-                  <Badge className="border-success/30 bg-success-soft text-success">↑ 6 baru</Badge>
+                  <Badge className="border-success/30 bg-success-soft text-success">↑ 6 new</Badge>
                 </CardAction>
               </CardHeader>
               <CardContent className="flex h-14 items-end gap-1.5" aria-hidden>
@@ -66,13 +66,13 @@ export default function Home() {
 
             <Card className="xl:absolute xl:top-[560px] xl:left-10 xl:w-64">
               <CardContent className="flex flex-col gap-3">
-                <Label htmlFor="ask" className="text-muted-foreground">Ada yang bisa dibantu?</Label>
-                <Input id="ask" placeholder="Cari komponen atau token…" />
+                <Label htmlFor="ask" className="text-muted-foreground">How can I help?</Label>
+                <Input id="ask" placeholder="Search components or tokens…" />
                 <div className="flex justify-between">
-                  <Button variant="outline" size="icon" className="rounded-full" aria-label="Lampirkan">
+                  <Button variant="outline" size="icon" className="rounded-full" aria-label="Attach">
                     <PlusIcon />
                   </Button>
-                  <Button size="icon" className="rounded-full" aria-label="Kirim">
+                  <Button size="icon" className="rounded-full" aria-label="Send">
                     <ArrowUpIcon />
                   </Button>
                 </div>
@@ -81,16 +81,16 @@ export default function Home() {
 
             <Card className="xl:absolute xl:top-[310px] xl:right-4 xl:w-64 xl:rotate-2">
               <CardHeader>
-                <CardTitle>Preferensi</CardTitle>
-                <CardDescription>Komponen form asli dari registry.</CardDescription>
+                <CardTitle>Preferences</CardTitle>
+                <CardDescription>Real form components from the registry.</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-2">
-                  <Label htmlFor="hero-dark">Mode gelap</Label>
+                  <Label htmlFor="hero-dark">Dark mode</Label>
                   <Switch id="hero-dark" defaultChecked />
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <Label htmlFor="hero-notif">Notifikasi email</Label>
+                  <Label htmlFor="hero-notif">Email notifications</Label>
                   <Switch id="hero-notif" />
                 </div>
               </CardContent>
@@ -108,7 +108,7 @@ export default function Home() {
                   </div>
                   <Badge variant="secondary">Admin</Badge>
                 </div>
-                <Button variant="outline" className="w-full">Undang ke tim</Button>
+                <Button variant="outline" className="w-full">Invite to team</Button>
               </CardContent>
             </Card>
           </div>
@@ -118,22 +118,22 @@ export default function Home() {
           <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 rounded-3xl border bg-card p-6 shadow-sm sm:p-10 lg:grid-cols-[1fr_1.2fr_1.2fr]">
             <div className="flex flex-col gap-3">
               <h2 className="font-heading text-3xl font-bold tracking-tight">
-                Mulai dari mana saja.
+                Start anywhere.
                 <br />
-                Ubah apa saja.
+                Change anything.
                 <br />
-                Rilis lebih cepat.
+                Ship faster.
               </h2>
               <p className="text-muted-foreground">
-                Komponen disalin ke project Anda lewat shadcn CLI, jadi tetap bisa diubah sesuai kebutuhan produk.
+                Components are copied into your project with the shadcn CLI, so you can still adapt them to your product.
               </p>
             </div>
 
             <Link href="/components" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
-              <p className="font-heading text-xl font-semibold">19 komponen siap pakai</p>
-              <p className="mt-1 text-sm text-muted-foreground">Form, feedback, overlay, layout, dan data.</p>
+              <p className="font-heading text-xl font-semibold">19 ready-to-use components</p>
+              <p className="mt-1 text-sm text-muted-foreground">Forms, feedback, overlays, layout, and data.</p>
               <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                Lihat komponen <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
+                Browse components <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
               </span>
               <div className="mt-6 flex flex-wrap items-center gap-2" aria-hidden>
                 <Badge>default</Badge>
@@ -146,10 +146,10 @@ export default function Home() {
             </Link>
 
             <Link href="/docs" className="group rounded-2xl bg-muted p-6 transition-colors hover:bg-accent">
-              <p className="font-heading text-xl font-semibold">Satu theme, dua framework</p>
-              <p className="mt-1 text-sm text-muted-foreground">Dipasang dengan perintah yang sama di Next.js dan Vite.</p>
+              <p className="font-heading text-xl font-semibold">One theme, two frameworks</p>
+              <p className="mt-1 text-sm text-muted-foreground">Installed with the same commands in Next.js and Vite.</p>
               <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                Baca panduan <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
+                Read the guide <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
               </span>
               <pre className="mt-6 overflow-x-auto rounded-lg bg-sidebar p-4 font-mono text-xs text-sidebar-foreground" aria-hidden>
                 npx shadcn@latest add @parry/parry-theme
@@ -160,9 +160,9 @@ export default function Home() {
 
         <section className="mx-auto grid w-full max-w-7xl gap-10 px-4 pb-24 lg:grid-cols-[1fr_2fr]">
           <div className="flex flex-col gap-3">
-            <h2 className="font-heading text-3xl font-bold tracking-tight">Dibangun untuk produk Ivosights</h2>
+            <h2 className="font-heading text-3xl font-bold tracking-tight">Built for Ivosights products</h2>
             <p className="text-muted-foreground">
-              Satu sumber token, kontras yang terukur, dan komponen yang tidak di-fork dari upstream.
+              One source of tokens, measured contrast, and components that are never forked from upstream.
             </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
@@ -186,17 +186,17 @@ export default function Home() {
             <LayersIcon aria-hidden className="absolute -top-6 -left-6 size-40 -rotate-12 text-primary/10" />
             <BlocksIcon aria-hidden className="absolute -right-8 -bottom-8 size-48 rotate-12 text-primary/10" />
             <h2 className="max-w-xl font-heading text-4xl font-bold tracking-tight text-balance">
-              Jelajahi <span className="text-primary">parry</span> selengkapnya
+              Discover the full <span className="text-primary">parry</span> design system
             </h2>
             <p className="max-w-lg text-muted-foreground">
-              Pasang theme sekali, lalu tambahkan komponen satu per satu sesuai kebutuhan.
+              Install the theme once, then add components one at a time as you need them.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="rounded-full px-6">
                 <Link href="/docs">Get started</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-                <Link href="/themes">Lihat theme</Link>
+                <Link href="/themes">View theme</Link>
               </Button>
             </div>
           </div>

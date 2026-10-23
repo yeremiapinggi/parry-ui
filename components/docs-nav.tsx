@@ -17,9 +17,9 @@ export function DocsNav({ components }: { components: string[] }) {
   const pathname = usePathname()
 
   return (
-    <nav aria-label="Dokumentasi" className="flex flex-col gap-6 text-sm">
+    <nav aria-label="Documentation" className="flex flex-col gap-6 text-sm">
       <div className="flex flex-col gap-1">
-        <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">Panduan</p>
+        <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">Guides</p>
         {guides.map(({ href, label }) => (
           <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined} className={linkClass}>
             {label}
@@ -27,7 +27,7 @@ export function DocsNav({ components }: { components: string[] }) {
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">Komponen</p>
+        <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">Components</p>
         {components.map((name) => (
           <Link key={name} href={`/components#${name}`} className={cn(linkClass, "capitalize")}>
             {name.replace("-", " ")}
@@ -40,8 +40,8 @@ export function DocsNav({ components }: { components: string[] }) {
 
 export function DocsToc({ items }: { items: { id: string; label: string }[] }) {
   return (
-    <nav aria-label="Di halaman ini" className="flex flex-col gap-2 text-sm">
-      <p className="font-medium">Di halaman ini</p>
+    <nav aria-label="On this page" className="flex flex-col gap-2 text-sm">
+      <p className="font-medium">On this page</p>
       {items.map(({ id, label }) => (
         <a key={id} href={`#${id}`} className="text-muted-foreground hover:text-foreground">
           {label}

@@ -38,7 +38,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto grid h-14 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4">
         <Logo />
-        <nav aria-label="Utama" className="hidden items-center gap-6 text-sm sm:flex">
+        <nav aria-label="Main" className="hidden items-center gap-6 text-sm sm:flex">
           {siteNav.map(({ href, label }) => (
             <Link
               key={href}
@@ -57,7 +57,7 @@ export function SiteHeader() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="sm:hidden" aria-label="Buka menu">
+              <Button variant="outline" size="icon" className="sm:hidden" aria-label="Open menu">
                 <MenuIcon />
               </Button>
             </DropdownMenuTrigger>

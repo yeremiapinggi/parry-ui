@@ -21,8 +21,8 @@ const colorTokens = Object.keys(light).filter((k) => light[k].startsWith("#"));
 
 const nav = [
   { icon: LayoutDashboardIcon, label: "Dashboard", active: true },
-  { icon: FolderIcon, label: "Proyek" },
-  { icon: SettingsIcon, label: "Pengaturan" },
+  { icon: FolderIcon, label: "Projects" },
+  { icon: SettingsIcon, label: "Settings" },
 ];
 
 const bars = [40, 55, 48, 62, 58, 75, 90];
@@ -44,24 +44,24 @@ export default function ThemesPage() {
           <div className="flex flex-col gap-2">
             <h1 className="font-heading text-3xl font-bold tracking-tight">Themes</h1>
             <p className="text-sm text-muted-foreground">
-              Parry memakai satu theme, <strong className="text-foreground">Midnight + Frost Blue</strong>, dengan mode terang dan gelap.
-              Pilih mode untuk melihat perubahannya di preview.
+              Parry ships one theme, <strong className="text-foreground">Midnight + Frost Blue</strong>, with light and dark modes.
+              Pick a mode to see it in the preview.
             </p>
           </div>
           <ThemeModePicker />
           <Card className="gap-3 py-4">
             <CardHeader>
-              <CardTitle className="text-sm">Pasang theme</CardTitle>
+              <CardTitle className="text-sm">Install the theme</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-xs">npx shadcn@latest add @parry/parry-theme</pre>
-              <Link href="/docs/theming" className="text-sm font-medium text-primary hover:underline">Panduan theming</Link>
+              <Link href="/docs/theming" className="text-sm font-medium text-primary hover:underline">Theming guide</Link>
             </CardContent>
           </Card>
         </aside>
 
         {/* Live preview built from registry components; it follows the site-wide theme. */}
-        <section aria-label="Preview theme" className="overflow-hidden rounded-2xl border bg-background">
+        <section aria-label="Theme preview" className="overflow-hidden rounded-2xl border bg-background">
           <div className="grid min-h-[520px] md:grid-cols-[200px_1fr]">
             <div className="hidden flex-col gap-1 bg-sidebar p-4 text-sidebar-foreground md:flex">
               <p className="px-2 pb-4 font-heading font-extrabold text-sidebar-accent-foreground">Parry UI</p>
@@ -82,9 +82,9 @@ export default function ThemesPage() {
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
                   <SearchIcon className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input aria-label="Cari" placeholder="Cari komponen…" className="pl-8" />
+                  <Input aria-label="Search" placeholder="Search components…" className="pl-8" />
                 </div>
-                <Button variant="ghost" size="icon" aria-label="Notifikasi">
+                <Button variant="ghost" size="icon" aria-label="Notifications">
                   <BellIcon />
                 </Button>
                 <Avatar>
@@ -93,12 +93,12 @@ export default function ThemesPage() {
               </div>
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Mulai</p>
-                  <p className="font-heading text-2xl font-bold">Bangun sesuatu yang luar biasa</p>
+                  <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Get started</p>
+                  <p className="font-heading text-2xl font-bold">Build something exceptional</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline">Dokumentasi</Button>
-                  <Button>Mulai</Button>
+                  <Button variant="outline">Documentation</Button>
+                  <Button>Get started</Button>
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -118,8 +118,8 @@ export default function ThemesPage() {
                 </Card>
                 <Alert className="border-warning/30 bg-warning-soft text-warning">
                   <TriangleAlertIcon />
-                  <AlertTitle>Kuota hampir habis</AlertTitle>
-                  <AlertDescription className="text-current">Tersisa 12% dari kuota bulan ini.</AlertDescription>
+                  <AlertTitle>Quota almost used up</AlertTitle>
+                  <AlertDescription className="text-current">12% of this month&apos;s quota remains.</AlertDescription>
                 </Alert>
               </div>
               <Card className="py-2">
@@ -127,18 +127,18 @@ export default function ThemesPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Proyek</TableHead>
+                        <TableHead>Project</TableHead>
                         <TableHead className="text-right">Status</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       <TableRow>
-                        <TableCell>Kampanye Q4</TableCell>
-                        <TableCell className="text-right"><Badge className="border-info/30 bg-info-soft text-info">Berjalan</Badge></TableCell>
+                        <TableCell>Q4 Campaign</TableCell>
+                        <TableCell className="text-right"><Badge className="border-info/30 bg-info-soft text-info">In progress</Badge></TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Riset audiens</TableCell>
-                        <TableCell className="text-right"><Badge variant="secondary">Selesai</Badge></TableCell>
+                        <TableCell>Audience research</TableCell>
+                        <TableCell className="text-right"><Badge variant="secondary">Done</Badge></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -151,9 +151,9 @@ export default function ThemesPage() {
 
       <section id="token" className="flex scroll-mt-20 flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="font-heading text-2xl font-bold tracking-tight">Token warna</h2>
+          <h2 className="font-heading text-2xl font-bold tracking-tight">Color tokens</h2>
           <p className="text-sm text-muted-foreground">
-            Nilai dari <code className="font-mono">registry.json</code>, digenerate dari <code className="font-mono">app/globals.css</code>.
+            Values from <code className="font-mono">registry.json</code>, generated from <code className="font-mono">app/globals.css</code>.
           </p>
         </div>
         <Card className="py-2">
@@ -162,8 +162,8 @@ export default function ThemesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Token</TableHead>
-                  <TableHead>Terang</TableHead>
-                  <TableHead>Gelap</TableHead>
+                  <TableHead>Light</TableHead>
+                  <TableHead>Dark</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -29,19 +29,19 @@ export function DialogDemo() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Buka dialog</Button>
+        <Button variant="outline">Open dialog</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Hapus proyek?</DialogTitle>
-          <DialogDescription>Proyek &ldquo;Kampanye Q4&rdquo; dan semua datanya akan dihapus permanen.</DialogDescription>
+          <DialogTitle>Delete project?</DialogTitle>
+          <DialogDescription>The &ldquo;Q4 Campaign&rdquo; project and all of its data will be permanently deleted.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Batal</Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button variant="destructive">Hapus</Button>
+            <Button variant="destructive">Delete</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
@@ -53,21 +53,21 @@ export function DropdownMenuDemo() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Aksi lain">
+        <Button variant="outline" size="icon" aria-label="More actions">
           <MoreHorizontalIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuLabel>Proyek</DropdownMenuLabel>
+        <DropdownMenuLabel>Project</DropdownMenuLabel>
         <DropdownMenuItem>
-          <PencilIcon /> Ubah <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
+          <PencilIcon /> Edit <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CopyIcon /> Duplikat <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+          <CopyIcon /> Duplicate <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
-          <TrashIcon /> Hapus
+          <TrashIcon /> Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -78,9 +78,9 @@ export function TooltipDemo() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="outline">Arahkan ke sini</Button>
+        <Button variant="outline">Hover me</Button>
       </TooltipTrigger>
-      <TooltipContent>Tooltip dengan warna terbalik</TooltipContent>
+      <TooltipContent>Tooltips use inverted colors</TooltipContent>
     </Tooltip>
   )
 }
@@ -88,9 +88,9 @@ export function TooltipDemo() {
 export function ToastDemo() {
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      <Button variant="outline" onClick={() => toast("Perubahan disimpan")}>Toast</Button>
-      <Button variant="outline" onClick={() => toast.success("Proyek dipublikasikan")}>Sukses</Button>
-      <Button variant="outline" onClick={() => toast.error("Gagal menyimpan")}>Error</Button>
+      <Button variant="outline" onClick={() => toast("Changes saved")}>Toast</Button>
+      <Button variant="outline" onClick={() => toast.success("Project published")}>Success</Button>
+      <Button variant="outline" onClick={() => toast.error("Could not save")}>Error</Button>
     </div>
   )
 }

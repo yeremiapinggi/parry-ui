@@ -13,7 +13,7 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
-      aria-label="Ganti tema terang/gelap"
+      aria-label="Toggle light/dark theme"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       <SunIcon className="dark:hidden" />

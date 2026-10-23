@@ -1,29 +1,30 @@
 # Parry UI
 
-Design system Ivosights berbasis [shadcn/ui](https://ui.shadcn.com) (primitive Radix, style `radix-nova`) dengan palet
-**Midnight + Frost Blue**, font **Plus Jakarta Sans** dan **JetBrains Mono**, serta mode terang/gelap.
+The Ivosights design system, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
+**Midnight + Frost Blue** palette, **Plus Jakarta Sans** and **JetBrains Mono** fonts, and light/dark modes.
 
-Parry UI adalah **shadcn registry**: komponen disalin ke project Anda lewat `shadcn` CLI, bukan di-install sebagai paket npm.
-Registry yang sama bisa dipakai di **Next.js** dan **Vite**.
+Parry UI is a **shadcn registry**: components are copied into your project with the `shadcn` CLI instead of being installed
+as an npm package. The same registry works in **Next.js** and **Vite**.
 
-> `REGISTRY_URL` di bawah adalah alamat tempat repo ini di-deploy. Untuk mencoba lokal, jalankan `npm run dev` di repo ini
-> dan pakai `http://localhost:3001` (port mengikuti output `next dev`).
+> `REGISTRY_URL` below is the address this repo is deployed to. To try it locally, run `npm run dev` in this repo and use
+> `http://localhost:3001` (the port follows the `next dev` output).
 
-## Memakai Parry UI di project Anda
+## Using Parry UI in your project
 
-### 1. Siapkan project dengan shadcn (Radix)
+### 1. Set up the project with shadcn (Radix)
 
-Project baru:
+New project:
 
 ```bash
 npx shadcn@latest init -t next -b radix -p nova
 ```
 
-Ganti `-t next` dengan `-t vite` untuk Vite. Untuk project yang sudah ada, jalankan `npx shadcn@latest init -b radix -p nova` di root project.
+Use `-t vite` instead of `-t next` for Vite. For an existing project, run `npx shadcn@latest init -b radix -p nova` in the
+project root.
 
-### 2. Daftarkan registry Parry
+### 2. Register the Parry registry
 
-Tambahkan ke `components.json`:
+Add this to `components.json`:
 
 ```json
 {
@@ -33,7 +34,7 @@ Tambahkan ke `components.json`:
 }
 ```
 
-### 3. Pasang theme, lalu komponen
+### 3. Install the theme, then components
 
 ```bash
 npx shadcn@latest add @parry/parry-theme
@@ -43,62 +44,62 @@ npx shadcn@latest add @parry/parry-theme
 npx shadcn@latest add @parry/button @parry/input @parry/card
 ```
 
-`parry-theme` menulis token warna, font, dan radius ke file CSS global Anda, serta memasang paket font
-`@fontsource-variable/*`. Pasang theme **sekali** sebelum komponen.
+`parry-theme` writes the color, font, and radius tokens to your global CSS file and installs the `@fontsource-variable/*`
+font packages. Install the theme **once**, before any component.
 
-### 4. Rapikan sisa template
+### 4. Clean up the template
 
-- **Next.js:** hapus import `Geist`/`Geist_Mono` dari `next/font/google` di `app/layout.tsx` beserta class variabelnya.
-  Font sekarang datang dari theme.
-- **Vite:** hapus `@import "@fontsource-variable/geist";` di `src/index.css` dan jalankan `npm uninstall @fontsource-variable/geist`.
+- **Next.js:** remove the `Geist`/`Geist_Mono` imports from `next/font/google` in `app/layout.tsx`, along with their class
+  variables. Fonts now come from the theme.
+- **Vite:** remove `@import "@fontsource-variable/geist";` from `src/index.css` and run `npm uninstall @fontsource-variable/geist`.
 
-### 5. Provider di root layout
+### 5. Providers in the root layout
 
-Dark mode memakai class `.dark` di `<html>`.
+Dark mode uses the `.dark` class on `<html>`.
 
-- **Next.js:** pakai `next-themes`, mis. `<ThemeProvider attribute="class" defaultTheme="system" enableSystem>`, dan tambahkan
-  `suppressHydrationWarning` di `<html>`.
-- **Vite:** template `shadcn init -t vite` sudah membawa `components/theme-provider.tsx`.
+- **Next.js:** use `next-themes`, e.g. `<ThemeProvider attribute="class" defaultTheme="system" enableSystem>`, and add
+  `suppressHydrationWarning` to `<html>`.
+- **Vite:** the `shadcn init -t vite` template already ships `components/theme-provider.tsx`.
 
-Jika memakai `tooltip` atau `sonner`, bungkus app dengan `<TooltipProvider>` dan render `<Toaster />` satu kali. `sonner` membaca
-tema dari `next-themes`.
+If you use `tooltip` or `sonner`, wrap the app in `<TooltipProvider>` and render `<Toaster />` once. `sonner` reads the
+theme from `next-themes`.
 
-## Isi registry
+## Registry contents
 
-| Item | Isi |
-|------|-----|
-| `parry-theme` | Token light/dark, font, radius |
+| Item | Contents |
+|------|----------|
+| `parry-theme` | Light/dark tokens, fonts, radius |
 | Form | `button`, `input`, `label`, `textarea`, `select`, `checkbox`, `switch` |
 | Feedback & overlay | `alert`, `badge`, `dialog`, `dropdown-menu`, `tooltip`, `sonner` |
 | Layout & data | `card`, `tabs`, `table`, `separator`, `avatar`, `skeleton` |
 
-Selain token bawaan shadcn, theme menambahkan warna semantic `success`, `warning`, `info` dan pasangan `*-soft`-nya
-(juga `destructive-soft`). Alert dan Badge tidak punya variant khusus untuk ini; pakai utility token:
+On top of the built-in shadcn tokens, the theme adds the semantic colors `success`, `warning`, `info` and their `*-soft`
+pairs (plus `destructive-soft`). Alert and Badge have no dedicated variants for these; use the token utilities:
 
 ```tsx
 <Alert className="border-success/30 bg-success-soft text-success">…</Alert>
 <Badge className="border-warning/30 bg-warning-soft text-warning">warning</Badge>
 ```
 
-## Mengembangkan repo ini
+## Developing this repo
 
 ```bash
 npm install
-npm run dev            # situs (/, /docs, /components, /themes) di http://localhost:3001 atau port yang ditampilkan
+npm run dev            # site (/, /docs, /components, /themes) at http://localhost:3001 or the port shown
 ```
 
-| Perintah | Fungsi |
-|----------|--------|
-| `npm run registry:build` | Salin token dari `app/globals.css` ke `registry.json`, lalu build `public/r/*.json` |
-| `npm run check:contrast` | Cek kontras WCAG AA semua pasangan token light/dark; gagal (exit 1) jika ada yang di bawah batas |
-| `npm run build` / `npm run lint` | Build dan lint app showcase |
+| Command | What it does |
+|---------|--------------|
+| `npm run registry:build` | Copies the tokens from `app/globals.css` into `registry.json`, then builds `public/r/*.json` |
+| `npm run check:contrast` | Checks WCAG AA contrast for every light/dark token pair; fails (exit 1) if any is below the minimum |
+| `npm run build` / `npm run lint` | Builds and lints the site |
 
-**Mengubah warna:** edit `:root` / `.dark` di `app/globals.css` (format hex), jalankan `npm run check:contrast`, lalu
-`npm run registry:build`. Jangan edit bagian `parry-theme` di `registry.json` secara manual; isinya ditimpa script.
+**Changing colors:** edit `:root` / `.dark` in `app/globals.css` (hex format), run `npm run check:contrast`, then
+`npm run registry:build`. Don't edit the `parry-theme` section of `registry.json` by hand; the script overwrites it.
 
-**Menambah komponen:** `npx shadcn@latest add <nama>` di repo ini, daftarkan sebagai item `registry:ui` di `registry.json`
-(isi `dependencies` sesuai import file), tambahkan preview-nya di `app/components/page.tsx`, lalu `npm run registry:build`. Komponen sengaja
-tidak dimodifikasi dari output shadcn agar update upstream mudah di-diff.
+**Adding a component:** run `npx shadcn@latest add <name>` in this repo, register it as a `registry:ui` item in
+`registry.json` (fill `dependencies` from the file's imports), add its preview to `app/components/page.tsx`, then run
+`npm run registry:build`. Components are intentionally left as shadcn generates them so upstream updates are easy to diff.
 
-**Catatan dev server:** jangan jalankan `npm run build` saat `npm run dev` hidup, karena keduanya memakai folder `.next`.
-Jika tampilan terlihat basi, hentikan dev server, hapus `.next`, lalu jalankan lagi.
+**Dev server note:** don't run `npm run build` while `npm run dev` is running, since both use the `.next` folder. If the
+page looks stale, stop the dev server, delete `.next`, and start it again.

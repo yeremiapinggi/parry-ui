@@ -9,13 +9,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Parry UI",
-  description: "Design system Ivosights berbasis shadcn",
+  description: "Ivosights design system built on shadcn/ui",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     // next-themes sets the class on <html> before hydration
-    <html lang="id" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TooltipProvider>
