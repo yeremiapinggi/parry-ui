@@ -19,18 +19,19 @@
 
 ## Task 2: Tuning token warna, font, dark mode (dibuktikan lewat Button)
 **Description:** Ganti nilai token di `globals.css` dengan palet Parry (primary, secondary, accent, destructive, muted,
-border, ring, chart-1..5, sidebar-*) untuk light & dark; pasang Plus Jakarta Sans + JetBrains Mono via
+border, ring, chart-1..5, sidebar-*, plus success/warning/info + *-soft) untuk light & dark; pasang Plus Jakarta Sans + JetBrains Mono via
 `@fontsource-variable/*` dan set `--font-sans`/`--font-mono`; tambah `next-themes` + toggle. `shadcn add button`
 dan tampilkan semua variant Button + swatch token di halaman showcase.
 
 **Acceptance criteria:**
-- [ ] Semua variant Button (default, secondary, outline, ghost, link, destructive) tampil dengan warna Parry di light & dark
-- [ ] Font teks UI = Plus Jakarta Sans, kode = JetBrains Mono (cek computed style)
-- [ ] Pasangan foreground/background utama lolos WCAG AA (≥4.5:1) di kedua mode
+- [x] Semua variant Button (default, secondary, outline, ghost, link, destructive) tampil dengan warna Parry di light & dark
+- [x] Font teks UI = Plus Jakarta Sans, kode = JetBrains Mono (cek computed style)
+- [x] Pasangan foreground/background utama lolos WCAG AA (≥4.5:1) di kedua mode
 
 **Verification:**
-- [ ] `npm run build` sukses
-- [ ] Manual: toggle dark mode di showcase, cek kontras via DevTools (color picker contrast ratio)
+- [x] `npm run build` sukses
+- [x] `npm run check:contrast` lolos
+- [x] Manual: toggle dark mode di showcase
 
 **Dependencies:** Task 1
 **Files likely touched:** `app/globals.css`, `app/layout.tsx`, `app/page.tsx`, `components/theme-toggle.tsx`, `components/ui/button.tsx`
@@ -39,7 +40,7 @@ dan tampilkan semua variant Button + swatch token di halaman showcase.
 ---
 
 ## Checkpoint: Foundation
-- [ ] Build bersih
+- [x] Build bersih
 - [ ] Review warna & font bersama user sebelum lanjut
 
 ---
@@ -158,7 +159,7 @@ Script `registry:build` → `shadcn build` ke `public/r/`.
 
 ## Checkpoint: Komponen
 - [ ] Semua item ada di `public/r/`, showcase lengkap
-- [ ] Kontras AA lolos di light & dark
+- [ ] `npm run check:contrast` lolos
 - [ ] Review dengan user
 
 ---
@@ -176,6 +177,28 @@ Script `registry:build` → `shadcn build` ke `public/r/`.
 **Dependencies:** Task 4, 5, 6–8
 **Files likely touched:** `README.md`
 **Estimated scope:** XS
+
+---
+
+## Task 10: Landing page
+**Description:** Landing page di `/` dengan pola tata letak astryx.atmeta.com (hanya pola; tanpa aset, logo, atau
+wordmark Meta): navbar (logo, Docs/Components/Themes, search, toggle tema, GitHub, "Get started"), hero dengan
+wordmark "Parry" besar berwarna primary, tagline 2 baris, dua CTA, baris keterangan kecil, dan kartu melayang di kiri/kanan
+yang dirakit dari komponen Parry asli (stat card, input chat, progress, badge, potongan sidebar). Latar gradasi
+Snow → Accent Soft. Showcase saat ini pindah ke `/components`.
+
+**Acceptance criteria:**
+- [ ] Kartu demo memakai komponen dari `components/ui`, bukan markup tiruan
+- [ ] Light & dark rapi; di 375px kartu melayang disembunyikan/ditumpuk tanpa scroll horizontal
+- [ ] `npm run check:contrast` lolos; semua CTA dan link bisa diakses keyboard
+
+**Verification:**
+- [ ] `npm run build` sukses
+- [ ] Manual: screenshot desktop & 375px di light dan dark
+
+**Dependencies:** Task 6, 7, 8
+**Files likely touched:** `app/page.tsx`, `app/components/page.tsx`, `components/landing/*.tsx`
+**Estimated scope:** M
 
 ---
 
