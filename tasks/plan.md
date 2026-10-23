@@ -55,7 +55,7 @@ Detail tiap task (acceptance criteria, verifikasi, file) ada di `tasks/todo.md`.
 
 ### Phase 2: Registry & portabilitas
 - [x] Task 3: Registry `parry-theme` + `button`, `shadcn build` ke `public/r`
-- [ ] Task 4: Install dari registry ke app Next.js kosong
+- [x] Task 4: Install dari registry ke app Next.js kosong
 - [ ] Task 5: Install dari registry ke app Vite kosong
 
 ### Checkpoint: Registry

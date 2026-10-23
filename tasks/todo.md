@@ -70,11 +70,17 @@ Script `registry:build` → `shadcn build` ke `public/r/`.
 `npx shadcn add http://localhost:3000/r/parry-theme.json http://localhost:3000/r/button.json`.
 
 **Acceptance criteria:**
-- [ ] Button di app konsumen tampil identik dengan showcase (warna, font, radius) di light & dark
-- [ ] Tidak ada langkah manual selain yang tertulis di README (catat bila ada)
+- [x] Button di app konsumen tampil identik dengan showcase (warna, font, radius) di light & dark
+- [x] Tidak ada langkah manual selain yang tertulis di README (catat bila ada)
 
 **Verification:**
-- [ ] `npm run build` app konsumen sukses; screenshot dibandingkan dengan showcase
+- [x] `npm run build` app konsumen sukses; screenshot dibandingkan dengan showcase
+
+**Hasil (2026-10-23):** 27 properti terhitung (font, latar, 11 swatch, semua tombol) identik dengan showcase di light & dark.
+Font, token semantic, dan mapping `@theme` ikut terpasang otomatis. Langkah manual untuk README:
+- Hapus import Geist `next/font` dari `app/layout.tsx` app konsumen (tidak dipakai lagi, hanya beban download).
+- Dark mode: konsumen memasang toggle class `.dark` sendiri (mis. `next-themes`).
+- `button` di-skip saat `add` karena identik dengan output `shadcn init` radix-nova (memang tidak di-fork).
 
 **Dependencies:** Task 3
 **Files likely touched:** tidak ada di repo (kecuali perbaikan `registry.json` bila gagal)
