@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 
+import { ProductThemeStyle } from "@/components/product-theme";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <div className="flex flex-1 flex-col">{children}</div>
             <SiteFooter />
           </TooltipProvider>
+          <ProductThemeStyle />
           <Toaster />
         </ThemeProvider>
       </body>

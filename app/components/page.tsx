@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-react";
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
+import { ProductSwitcher } from "@/components/product-theme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -285,6 +286,10 @@ export default function ComponentsPage() {
               <Link href="/themes">View theme</Link>
             </Button>
           </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            Preview as
+            <ProductSwitcher className="w-56" />
+          </div>
         </header>
 
         {groups.map((g) => (
@@ -293,7 +298,7 @@ export default function ComponentsPage() {
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {g.items.map(({ name, preview }) => (
                 <div key={name} id={name} className="flex scroll-mt-20 flex-col gap-2">
-                  <div className="flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
+                  <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
                   <div className="flex items-center justify-between gap-2 px-1">
                     <h3 className="text-sm font-medium capitalize">{label(name)}</h3>
                     <code className="truncate font-mono text-xs text-muted-foreground">@parry/{name}</code>

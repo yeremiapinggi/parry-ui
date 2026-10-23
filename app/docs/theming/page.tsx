@@ -12,6 +12,7 @@ const toc = [
   { id: "semantic", label: "Semantic colors" },
   { id: "fonts", label: "Fonts & radius" },
   { id: "changing-colors", label: "Changing colors" },
+  { id: "product-themes", label: "Product themes" },
 ];
 
 const h2 = "scroll-mt-20 font-heading text-2xl font-bold tracking-tight";
@@ -79,6 +80,19 @@ npm run registry:build`}</CodeBlock>
           <AlertTitle>Don&apos;t edit registry.json by hand</AlertTitle>
           <AlertDescription>The parry-theme section of registry.json is overwritten by a script every time the registry is built.</AlertDescription>
         </Alert>
+
+        <h2 id="product-themes" className={h2}>Product themes</h2>
+        <p>
+          Components can be previewed in the Cognivo, Sociomile, Ripple10, and Agentics themes with the switcher on{" "}
+          <Link href="/components" className="text-link underline underline-offset-4">Components</Link> and{" "}
+          <Link href="/themes" className="text-link underline underline-offset-4">Themes</Link>. Each product keeps its own primary color and
+          font; only the previews change, never the Parry site around them.
+        </p>
+        <p>
+          Product tokens live in <code className="font-mono text-sm">lib/products.json</code> and are checked by{" "}
+          <code className="font-mono text-sm">npm run check:contrast</code>. Sociomile and Ripple10 use dark text on their primary color because white
+          text is below 4.5:1, and Cognivo and Agentics use a lighter primary in dark mode.
+        </p>
       </article>
       <aside className="hidden xl:block">
         <div className="sticky top-24">

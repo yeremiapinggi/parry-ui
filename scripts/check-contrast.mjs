@@ -58,17 +58,32 @@ const pairs = (t, dark) => [
   ["sidebar-accent-foreground", "sidebar-accent", 4.5],
 ]
 
+// Product preview themes (lib/products.json) override a subset of tokens on top of Parry's.
+const productPairs = [
+  ["primary-foreground", "primary", 4.5],
+  ["primary-foreground", "primary-hover", 4.5],
+  ["accent-foreground", "accent", 4.5],
+  ["ring", "card", 3],
+]
+const products = JSON.parse(readFileSync(new URL("../lib/products.json", import.meta.url), "utf8"))
+
 let failed = 0
-for (const [selector, dark] of [[":root", false], [".dark", true]]) {
-  const t = tokens(selector)
-  for (const [fg, bg, min] of pairs(t, dark)) {
+function check(label, t, list) {
+  for (const [fg, bg, min] of list) {
     const a = t[fg] ?? fg
     const b = t[bg] ?? bg
-    if (!a?.startsWith("#") || !b?.startsWith("#")) throw new Error(`${selector}: missing hex token ${fg} or ${bg}`)
+    if (!a?.startsWith("#") || !b?.startsWith("#")) throw new Error(`${label}: missing hex token ${fg} or ${bg}`)
     const r = ratio(a, b)
     const ok = r >= min
     if (!ok) failed++
-    console.log(`${ok ? "ok  " : "FAIL"} ${selector.padEnd(5)} ${fg} on ${t[bg] ? bg : `mix ${b}`}: ${r.toFixed(2)} (min ${min})`)
+    console.log(`${ok ? "ok  " : "FAIL"} ${label.padEnd(15)} ${fg} on ${t[bg] ? bg : `mix ${b}`}: ${r.toFixed(2)} (min ${min})`)
+  }
+}
+for (const [selector, dark] of [[":root", false], [".dark", true]]) {
+  const t = tokens(selector)
+  check(selector, t, pairs(t, dark))
+  for (const [id, p] of Object.entries(products)) {
+    check(`${id}${dark ? " dark" : ""}`, { ...t, ...p[dark ? "dark" : "light"] }, productPairs)
   }
 }
 process.exit(failed ? 1 : 0)

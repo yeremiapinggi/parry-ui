@@ -27,7 +27,8 @@ light + dark.
     Graphite, dibalik di dark), font DM Sans, token baru `--link` `#2563EB`, `--primary-hover`, `--placeholder` `#64748B`;
     sidebar aktif Graphite + indikator Frost Blue, hover Slate Ink. Kelas warna/state di `button`, `input`, `textarea`,
     `select`, `tabs`, `table` diubah (daftar di README). Deviasi AA tetap: Focus Ring, Border Interactive, Text Muted,
-    teks semantic, tab tidak aktif `#475569`. Product theme separation belum dikerjakan.
+    teks semantic, tab tidak aktif `#475569`. Product theme separation dikerjakan sebagai preview di situs (Cognivo, Sociomile, Ripple10, Agentics; token di
+    `lib/products.json`, dicek `check:contrast`); belum jadi item registry.
   - Kontras dicek otomatis: `npm run check:contrast` (`scripts/check-contrast.mjs`, exit 1 bila ada pasangan < AA).
 
 ### Soal Next.js ↔ Vite

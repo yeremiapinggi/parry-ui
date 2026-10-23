@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BellIcon, FolderIcon, LayoutDashboardIcon, SearchIcon, SettingsIcon, TriangleAlertIcon } from "lucide-react";
 
+import { ProductSwitcher, ProductTokens } from "@/components/product-theme";
 import { ThemeModePicker } from "@/components/theme-mode-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -49,6 +50,12 @@ export default function ThemesPage() {
             </p>
           </div>
           <ThemeModePicker />
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-medium">Product preview</p>
+            <p className="text-sm text-muted-foreground">Only the preview changes; the Parry site keeps its own theme.</p>
+            <ProductSwitcher className="w-full" />
+          </div>
+          <ProductTokens />
           <Card className="gap-3 py-4">
             <CardHeader>
               <CardTitle className="text-sm">Install the theme</CardTitle>
@@ -61,7 +68,7 @@ export default function ThemesPage() {
         </aside>
 
         {/* Live preview built from registry components; it follows the site-wide theme. */}
-        <section aria-label="Theme preview" className="overflow-hidden rounded-2xl border bg-background">
+        <section aria-label="Theme preview" className="product-scope overflow-hidden rounded-2xl border bg-background">
           <div className="grid min-h-[520px] md:grid-cols-[200px_1fr]">
             <div className="hidden flex-col gap-1 bg-sidebar p-4 text-sidebar-foreground md:flex">
               <p className="px-2 pb-4 font-heading font-extrabold text-sidebar-accent-foreground">Parry UI</p>

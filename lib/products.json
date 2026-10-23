@@ -1,0 +1,30 @@
+{
+  "cognivo": {
+    "name": "Cognivo",
+    "font": "Plus Jakarta Sans",
+    "brand": "#174946",
+    "light": { "primary": "#174946", "primary-foreground": "#FFFFFF", "primary-hover": "#0E2E2C", "ring": "#174946", "accent": "#E3E9E9", "accent-foreground": "#174946", "chart-2": "#174946" },
+    "dark": { "primary": "#2F9188", "primary-foreground": "#171C24", "primary-hover": "#36A89E", "ring": "#2F9188", "accent": "#203239", "accent-foreground": "#36AAA3", "chart-2": "#2F9188" }
+  },
+  "sociomile": {
+    "name": "Sociomile",
+    "font": "DM Sans",
+    "brand": "#4399D3",
+    "light": { "primary": "#4399D3", "primary-foreground": "#171C24", "primary-hover": "#2F8BC8", "ring": "#4399D3", "accent": "#E8F3FA", "accent-foreground": "#2671A5", "chart-2": "#4399D3" },
+    "dark": { "primary": "#4399D3", "primary-foreground": "#171C24", "primary-hover": "#5CA6D9", "ring": "#4399D3", "accent": "#2B465C", "accent-foreground": "#AAD1EB", "chart-2": "#4399D3" }
+  },
+  "ripple10": {
+    "name": "Ripple10",
+    "font": "IBM Plex Sans",
+    "brand": "#17A2B8",
+    "light": { "primary": "#17A2B8", "primary-foreground": "#171C24", "primary-hover": "#1ABAD3", "ring": "#17A2B8", "accent": "#E3F4F6", "accent-foreground": "#0F7280", "chart-2": "#17A2B8" },
+    "dark": { "primary": "#17A2B8", "primary-foreground": "#171C24", "primary-hover": "#1ABAD3", "ring": "#17A2B8", "accent": "#204856", "accent-foreground": "#63D9EC", "chart-2": "#17A2B8" }
+  },
+  "agentics": {
+    "name": "Agentics",
+    "font": "DM Sans",
+    "brand": "#4F46E5",
+    "light": { "primary": "#4F46E5", "primary-foreground": "#FFFFFF", "primary-hover": "#3127E1", "ring": "#4F46E5", "accent": "#EAE9FC", "accent-foreground": "#4F46E5", "chart-2": "#4F46E5" },
+    "dark": { "primary": "#837AED", "primary-foreground": "#171C24", "primary-hover": "#9C95F1", "ring": "#837AED", "accent": "#2E3161", "accent-foreground": "#B9B6F5", "chart-2": "#837AED" }
+  }
+}

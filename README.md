@@ -81,6 +81,16 @@ pairs (plus `destructive-soft`), and `primary-hover`, `link`, and `placeholder`.
 <Badge className="border-warning/30 bg-warning-soft text-warning">warning</Badge>
 ```
 
+## Product preview themes
+
+The site can preview components in the Cognivo, Sociomile, Ripple10, and Agentics themes (switcher on `/components` and
+`/themes`). Only elements with the `product-scope` class, plus overlays opened from them, change; the Parry shell keeps its own
+theme. Product tokens live in `lib/products.json` (light and dark values per token, plus the font) and are covered by
+`npm run check:contrast`. Brand colors are kept in light mode; where white text failed AA (Sociomile, Ripple10) the
+foreground is dark, and dark-mode primaries are lightened where the brand color disappears on Midnight (Cognivo, Agentics).
+
+These are preview themes for the docs site, not registry items yet.
+
 ## Developing this repo
 
 ```bash
@@ -106,7 +116,7 @@ are color/state classes required by the brand spec:
 |-----------|--------------|
 | `button` | Primary hover uses `--primary-hover`; outline is white (`bg-card`); link uses `--link` |
 | `input`, `textarea`, `select` | White field (`bg-card`, no dark fill), `--placeholder` text, `bg-muted` when disabled |
-| `tabs` | Active tab uses `bg-accent` + `text-primary`; line indicator uses `--ring`; inactive text `muted-foreground` |
+| `tabs` | Active tab uses `bg-accent` + `text-foreground`; line indicator uses `--ring`; inactive text `muted-foreground` |
 | `table` | Header row `bg-muted/50`, row hover `bg-muted` |
 
 When re-adding a component from shadcn, re-apply these changes.

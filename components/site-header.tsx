@@ -61,7 +61,7 @@ export function SiteHeader() {
                 <MenuIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" data-shell>
               {siteNav.map(({ href, label }) => (
                 <DropdownMenuItem key={href} asChild>
                   <Link href={href}>{label}</Link>
