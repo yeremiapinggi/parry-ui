@@ -49,8 +49,9 @@ export default function ThemingPage() {
         <h2 id="semantic" className={h2}>Semantic colors</h2>
         <p>
           On top of the shadcn tokens, the theme adds <code className="font-mono text-sm">success</code>, <code className="font-mono text-sm">warning</code>,{" "}
-          <code className="font-mono text-sm">info</code>, and their <code className="font-mono text-sm">*-soft</code> pairs. Alert and Badge have no dedicated
-          variants for them; use the token utilities:
+          <code className="font-mono text-sm">info</code>, and their <code className="font-mono text-sm">*-soft</code> pairs. Badge has no dedicated
+          variants for them; use the token utilities. Alerts stay neutral like shadcn: <code className="font-mono text-sm">variant=&quot;success&quot;</code> is the
+          default card with a <code className="font-mono text-sm">CircleCheck</code> icon, and only <code className="font-mono text-sm">destructive</code> is colored.
         </p>
         <div className="flex flex-wrap gap-2">
           {semantic.map(({ name, className }) => (
@@ -58,11 +59,11 @@ export default function ThemingPage() {
           ))}
         </div>
         <CodeBlock>{`<Badge className="border-success/30 bg-success-soft text-success">success</Badge>
-<Alert className="border-warning/30 bg-warning-soft text-warning">…</Alert>`}</CodeBlock>
+<Alert variant="success"><CircleCheckIcon /><AlertTitle>Saved</AlertTitle></Alert>`}</CodeBlock>
 
         <h2 id="fonts" className={h2}>Fonts &amp; radius</h2>
         <p>
-          Text uses <strong>DM Sans</strong> and code uses <code className="font-mono text-sm">JetBrains Mono</code>, loaded from the{" "}
+          Text uses <strong>Plus Jakarta Sans</strong> and code uses <code className="font-mono text-sm">JetBrains Mono</code>, loaded from the{" "}
           <code className="font-mono text-sm">@fontsource-variable/*</code> packages so they work in both Next.js and Vite. The base radius is{" "}
           <code className="font-mono text-sm">0.5rem</code>.
         </p>
@@ -90,8 +91,9 @@ npm run registry:build`}</CodeBlock>
         </p>
         <p>
           Product tokens live in <code className="font-mono text-sm">lib/products.json</code> and are checked by{" "}
-          <code className="font-mono text-sm">npm run check:contrast</code>. Sociomile and Ripple10 use dark text on their primary color because white
-          text is below 4.5:1, and Cognivo and Agentics use a lighter primary in dark mode.
+          <code className="font-mono text-sm">npm run check:contrast</code>. Every product uses white text on its primary in both modes, so primaries that
+          were below 4.5:1 with white are a slightly darker shade of the brand color (for example Sociomile <code className="font-mono text-sm">#4399D3</code> →{" "}
+          <code className="font-mono text-sm">#367AA9</code>); focus rings and charts keep the original brand color.
         </p>
       </article>
       <aside className="hidden xl:block">

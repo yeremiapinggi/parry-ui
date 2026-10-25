@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/plus-jakarta-sans";
 @import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
@@ -9,9 +9,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
-  --font-heading: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -29,6 +29,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-soft: var(--destructive-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
@@ -81,9 +82,10 @@
   --secondary-foreground: #111827;
   --muted: #F1F3F6;
   --muted-foreground: #475569; /* Text Secondary; Text Muted #94A3B8 is 2.6:1 on white */
-  --accent: #EAF2FF; /* Accent Soft */
-  --accent-foreground: #1D4ED8;
-  --destructive: #C81E1E; /* Error #DC2626 darkened for text on its 10% tint */
+  --accent: #F1F3F6; /* Mist: neutral highlight for menu/select items, as in shadcn */
+  --accent-foreground: #111827;
+  --destructive: #C81E1E; /* Error #DC2626 darkened: white text on it and red text on its 10% tint both need 4.5:1 */
+  --destructive-foreground: #FFFFFF;
   --destructive-soft: #FEE2E2;
   --success: #15803D;
   --success-soft: #DCFCE7;
@@ -92,7 +94,7 @@
   --info: #1D4ED8;
   --info-soft: #DBEAFE;
   --border: #E2E8F0; /* Border Default */
-  --input: #7F8CA0; /* Border Interactive #D0D7E2 darkened: field/checkbox/switch edges need 3:1 */
+  --input: #E5E5E5; /* shadcn light gray by design choice: below 3:1, so light field/checkbox/switch edges fail WCAG 1.4.11 */
   --ring: #5B8DEF; /* Frost Blue; Focus Ring #93C5FD is 1.8:1, below the 3:1 non-text minimum */
   --chart-1: #93C5FD;
   --chart-2: #5B8DEF;
@@ -126,9 +128,10 @@
   --secondary-foreground: #F7F8FA;
   --muted: #2C3440; /* between Graphite and Slate Ink: must differ from --card or skeletons/tab lists vanish on cards */
   --muted-foreground: #94A3B8; /* Text Muted */
-  --accent: #1E2A40;
-  --accent-foreground: #BFDBFE;
-  --destructive: #FCA5A5;
+  --accent: #313A46; /* Slate Ink: must differ from --popover so highlighted items show */
+  --accent-foreground: #F7F8FA;
+  --destructive: #F87171; /* red text on dark surfaces; buttons draw it at 60% so white text passes */
+  --destructive-foreground: #FFFFFF;
   --destructive-soft: #3B1A1E;
   --success: #4ADE80;
   --success-soft: #14301F;
@@ -159,9 +162,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
+    @apply bg-background font-sans text-foreground;
   }
 }

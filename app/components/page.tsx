@@ -13,7 +13,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
@@ -24,6 +24,8 @@ import { Textarea } from "@/components/ui/textarea";
 export const metadata: Metadata = { title: "Components · Parry UI" };
 
 // Every `name` is a registry item, so it doubles as the anchor id and the `@parry/<name>` install name.
+const timezones = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Singapore", "Asia/Kuala_Lumpur", "Asia/Bangkok", "Asia/Manila", "Asia/Tokyo", "Asia/Seoul", "Australia/Sydney", "Europe/London", "America/New_York"];
+
 const groups: { title: string; items: { name: string; preview: ReactNode }[] }[] = [
   {
     title: "Action",
@@ -74,16 +76,32 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       {
         name: "select",
         preview: (
-          <Select>
-            <SelectTrigger aria-label="Role" className="w-48">
-              <SelectValue placeholder="Select a role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="editor">Editor</SelectItem>
-              <SelectItem value="viewer">Viewer</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-2">
+            <Select defaultValue="banana">
+              <SelectTrigger aria-label="Fruit" className="w-48">
+                <SelectValue placeholder="Select a fruit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Fruits</SelectLabel>
+                  <SelectItem value="apple">Apple</SelectItem>
+                  <SelectItem value="banana">Banana</SelectItem>
+                  <SelectItem value="blueberry">Blueberry</SelectItem>
+                  <SelectItem value="grapes">Grapes</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select>
+              <SelectTrigger aria-label="Timezone" className="w-48">
+                <SelectValue placeholder="Select a timezone" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {timezones.map((tz) => (
+                  <SelectItem key={tz} value={tz}>{tz.replace("_", " ")}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         ),
       },
       {
@@ -113,6 +131,10 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
               <Switch id="sw-2" />
               <Label htmlFor="sw-2">Focus mode</Label>
             </div>
+            <div className="flex items-center gap-2">
+              <Switch id="sw-3" disabled />
+              <Label htmlFor="sw-3">Beta features</Label>
+            </div>
           </div>
         ),
       },
@@ -125,9 +147,10 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
         name: "alert",
         preview: (
           <div className="flex w-full flex-col gap-2">
-            <Alert className="border-success/30 bg-success-soft text-success">
+            <Alert variant="success">
               <CircleCheckIcon />
               <AlertTitle>Saved successfully</AlertTitle>
+              <AlertDescription>Your changes are live for the whole team.</AlertDescription>
             </Alert>
             <Alert variant="destructive">
               <OctagonXIcon />

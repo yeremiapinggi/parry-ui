@@ -19,7 +19,7 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top,var(--accent),var(--background)_70%)]">
+    <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top,var(--info-soft),var(--background)_70%)]">
       <main className="flex flex-col">
         <section className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-10 px-4 pt-16 pb-20 text-center xl:min-h-[780px] lg:pt-24">
           <h1 className="font-heading font-extrabold tracking-tighter text-primary text-[clamp(4.5rem,17vw,11rem)] leading-[0.85]">
@@ -168,7 +168,7 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-3">
             {features.map(({ icon: Icon, title, text, href, cta }) => (
               <div key={title} className="flex flex-col gap-2">
-                <span className="grid size-9 place-items-center rounded-lg bg-accent text-accent-foreground">
+                <span className="grid size-9 place-items-center rounded-lg bg-info-soft text-info">
                   <Icon className="size-4" />
                 </span>
                 <h3 className="font-semibold">{title}</h3>
@@ -182,7 +182,7 @@ export default function Home() {
         </section>
 
         <section className="px-4 pb-24">
-          <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-6 overflow-hidden rounded-3xl bg-[radial-gradient(ellipse_at_center,var(--accent),var(--muted)_75%)] px-6 py-20 text-center">
+          <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-6 overflow-hidden rounded-3xl bg-[radial-gradient(ellipse_at_center,var(--info-soft),var(--muted)_75%)] px-6 py-20 text-center">
             <LayersIcon aria-hidden className="absolute -top-6 -left-6 size-40 -rotate-12 text-primary/10" />
             <BlocksIcon aria-hidden className="absolute -right-8 -bottom-8 size-48 rotate-12 text-primary/10" />
             <h2 className="max-w-xl font-heading text-4xl font-bold tracking-tight text-balance">

@@ -1,6 +1,6 @@
 "use client"
 
-import { CopyIcon, MoreHorizontalIcon, PencilIcon, TrashIcon } from "lucide-react"
+import { CopyIcon, MoreHorizontalIcon, PencilIcon, ShareIcon, TrashIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -21,6 +21,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -65,9 +68,18 @@ export function DropdownMenuDemo() {
         <DropdownMenuItem>
           <CopyIcon /> Duplicate <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
         </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <ShareIcon /> Share
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem>Copy link</DropdownMenuItem>
+            <DropdownMenuItem>Email</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
-          <TrashIcon /> Delete
+          <TrashIcon /> Delete <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
