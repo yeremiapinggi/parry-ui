@@ -123,10 +123,10 @@ export default function ThemesPage() {
                     ))}
                   </CardContent>
                 </Card>
-                <Alert className="border-warning/30 bg-warning-soft text-warning">
+                <Alert>
                   <TriangleAlertIcon />
                   <AlertTitle>Quota almost used up</AlertTitle>
-                  <AlertDescription className="text-current">12% of this month&apos;s quota remains.</AlertDescription>
+                  <AlertDescription>12% of this month&apos;s quota remains.</AlertDescription>
                 </Alert>
               </div>
               <Card className="py-2">

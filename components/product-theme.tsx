@@ -1,8 +1,8 @@
 "use client"
 
 // Product fonts are only needed for previews, so they load here instead of in globals.css (which feeds parry-theme).
+import "@fontsource-variable/dm-sans"
 import "@fontsource-variable/ibm-plex-sans"
-import "@fontsource-variable/plus-jakarta-sans"
 
 import { useSyncExternalStore } from "react"
 
@@ -80,7 +80,7 @@ export function ProductSwitcher({ className }: { className?: string }) {
       </SelectTrigger>
       <SelectContent data-shell>
         <SelectItem value="parry">
-          <span aria-hidden className="size-3 rounded-full bg-[#171C24] ring-1 ring-border" /> Parry · DM Sans
+          <span aria-hidden className="size-3 rounded-full bg-[#171C24] ring-1 ring-border" /> Parry · Plus Jakarta Sans
         </SelectItem>
         {(Object.keys(products) as ProductKey[]).map((id) => (
           <SelectItem key={id} value={id}>

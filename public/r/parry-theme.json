@@ -2,16 +2,16 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "parry-theme",
   "title": "Parry theme",
-  "description": "Midnight + Frost Blue tokens, DM Sans / JetBrains Mono. Generated from app/globals.css by scripts/sync-theme.mjs.",
+  "description": "Midnight + Frost Blue tokens, Plus Jakarta Sans / JetBrains Mono. Generated from app/globals.css by scripts/sync-theme.mjs.",
   "dependencies": [
-    "@fontsource-variable/dm-sans",
+    "@fontsource-variable/plus-jakarta-sans",
     "@fontsource-variable/jetbrains-mono"
   ],
   "cssVars": {
     "theme": {
-      "font-sans": "\"DM Sans Variable\", ui-sans-serif, system-ui, sans-serif",
+      "font-sans": "\"Plus Jakarta Sans Variable\", \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif",
       "font-mono": "\"JetBrains Mono Variable\", ui-monospace, monospace",
-      "font-heading": "\"DM Sans Variable\", ui-sans-serif, system-ui, sans-serif"
+      "font-heading": "\"Plus Jakarta Sans Variable\", \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif"
     },
     "light": {
       "background": "#F7F8FA",
@@ -29,9 +29,10 @@
       "secondary-foreground": "#111827",
       "muted": "#F1F3F6",
       "muted-foreground": "#475569",
-      "accent": "#EAF2FF",
-      "accent-foreground": "#1D4ED8",
+      "accent": "#F1F3F6",
+      "accent-foreground": "#111827",
       "destructive": "#C81E1E",
+      "destructive-foreground": "#FFFFFF",
       "destructive-soft": "#FEE2E2",
       "success": "#15803D",
       "success-soft": "#DCFCE7",
@@ -40,7 +41,7 @@
       "info": "#1D4ED8",
       "info-soft": "#DBEAFE",
       "border": "#E2E8F0",
-      "input": "#7F8CA0",
+      "input": "#E5E5E5",
       "ring": "#5B8DEF",
       "chart-1": "#93C5FD",
       "chart-2": "#5B8DEF",
@@ -73,9 +74,10 @@
       "secondary-foreground": "#F7F8FA",
       "muted": "#2C3440",
       "muted-foreground": "#94A3B8",
-      "accent": "#1E2A40",
-      "accent-foreground": "#BFDBFE",
-      "destructive": "#FCA5A5",
+      "accent": "#313A46",
+      "accent-foreground": "#F7F8FA",
+      "destructive": "#F87171",
+      "destructive-foreground": "#FFFFFF",
       "destructive-soft": "#3B1A1E",
       "success": "#4ADE80",
       "success-soft": "#14301F",
@@ -102,7 +104,7 @@
     }
   },
   "css": {
-    "@import \"@fontsource-variable/dm-sans\"": {},
+    "@import \"@fontsource-variable/plus-jakarta-sans\"": {},
     "@import \"@fontsource-variable/jetbrains-mono\"": {}
   },
   "type": "registry:theme"

@@ -40,17 +40,19 @@ const pairs = (t, dark) => [
   ["muted-foreground", "card", 4.5],
   ["accent-foreground", "accent", 4.5],
   ["destructive", "background", 4.5],
-  // Button variant="destructive": text-destructive on bg-destructive/10 (dark: /20)
-  ["destructive", mix(t.destructive, t.background, dark ? 0.2 : 0.1), 4.5],
-  ["destructive", mix(t.destructive, t.card, dark ? 0.2 : 0.1), 4.5],
+  // Button variant="destructive": destructive-foreground on bg-destructive, hover /90 (dark: /60, hover /50)
+  ...[t.background, t.card].flatMap((bg) =>
+    (dark ? [0.6, 0.5] : [1, 0.9]).map((a) => ["destructive-foreground", mix(t.destructive, bg, a), 4.5])
+  ),
+  // Destructive dropdown item: text-destructive on bg-destructive/10 over the popover
+  ["destructive", mix(t.destructive, t.popover, 0.1), 4.5],
   ["success", "success-soft", 4.5],
   ["warning", "warning-soft", 4.5],
   ["info", "info-soft", 4.5],
   ["destructive", "destructive-soft", 4.5],
-  // Field, checkbox and switch edges are drawn with --input; switch track is bg-input (dark: /80)
-  ["input", "background", 3],
-  ["input", "card", 3],
-  [mix(t.input, t.card, dark ? 0.8 : 1), "card", 3],
+  // Field, checkbox and switch edges are drawn with --input; switch track is bg-input (dark: /80).
+  // Light --input is shadcn's #E5E5E5 by design decision and knowingly below 3:1, so only dark is checked.
+  ...(dark ? [["input", "background", 3], ["input", "card", 3], [mix(t.input, t.card, 0.8), "card", 3]] : []),
   ["ring", "background", 3],
   ["ring", "card", 3],
   ["sidebar-foreground", "sidebar", 4.5],
