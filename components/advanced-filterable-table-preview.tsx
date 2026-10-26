@@ -1,13 +1,12 @@
 "use client"
 
-import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react"
+import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react"
 import {
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  Columns3Icon,
   EllipsisIcon,
   GripVerticalIcon,
   Layers3Icon,
@@ -15,6 +14,7 @@ import {
 import { toast } from "sonner"
 
 import { AdvancedFilterBuilder } from "@/components/advanced-filter-builder"
+import { AdvancedTableViewOptions } from "@/components/advanced-table-view-options"
 import { RecordDetailPanel } from "@/components/record-detail-panel"
 import {
   defaultConfiguration,
@@ -31,23 +31,42 @@ import {
 import { cloneFilterGroup, recordMatchesGroup, sortRecords } from "@/lib/advanced-filter-engine"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const STORAGE_KEY = "parry-ui-advanced-filterable-table-views-v1"
 const pageSizeOptions = [10, 20, 50]
 const groupOptions: { value: GroupByKey | "none"; label: string }[] = [
   { value: "none", label: "No grouping" },
   { value: "status", label: "Status" },
-  { value: "priority", label: "Priority" },
   { value: "channel", label: "Channel" },
+  { value: "priority", label: "Priority" },
   { value: "owner", label: "Owner" },
 ]
+const selectionColumnWidth = 40
+const columnWidths: Record<ColumnKey, number> = {
+  id: 132,
+  name: 184,
+  company: 190,
+  channel: 118,
+  status: 128,
+  priority: 112,
+  owner: 158,
+  createdAt: 146,
+  updatedAt: 146,
+}
+
+function isColumnKey(value: unknown): value is ColumnKey {
+  return typeof value === "string" && tableColumns.some(({ key }) => key === value)
+}
+
 function dateLabel(value: string) {
   return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00.000Z`))
 }
@@ -79,12 +98,35 @@ function safeConfiguration(value: unknown): value is ViewConfiguration {
   if (!value || typeof value !== "object") return false
   const candidate = value as Partial<ViewConfiguration>
   return typeof candidate.search === "string" &&
-    Array.isArray(candidate.visibleColumns) && candidate.visibleColumns.every((column) => tableColumns.some(({ key }) => key === column)) &&
-    !!candidate.sort && (candidate.sort.key === null || tableColumns.some(({ key }) => key === candidate.sort?.key)) &&
+    Array.isArray(candidate.visibleColumns) && candidate.visibleColumns.every(isColumnKey) &&
+    (candidate.columnOrder === undefined || (Array.isArray(candidate.columnOrder) && candidate.columnOrder.every(isColumnKey))) &&
+    (candidate.density === undefined || candidate.density === "compact" || candidate.density === "default" || candidate.density === "comfortable") &&
+    (candidate.stickyFirst === undefined || [0, 1, 2].includes(candidate.stickyFirst)) &&
+    (candidate.stickyLast === undefined || [0, 1, 2].includes(candidate.stickyLast)) &&
+    !!candidate.sort && (candidate.sort.key === null || isColumnKey(candidate.sort.key)) &&
     (candidate.sort.direction === "asc" || candidate.sort.direction === "desc") &&
     !!candidate.filters && typeof candidate.filters === "object" && Array.isArray(candidate.filters.conditions) && Array.isArray(candidate.filters.groups) &&
     (candidate.groupBy === "none" || groupOptions.some(({ value: group }) => group === candidate.groupBy)) &&
     pageSizeOptions.includes(candidate.pageSize ?? 0)
+}
+
+function normalizeConfiguration(configuration: ViewConfiguration): ViewConfiguration {
+  const orderedKeys = [...new Set([
+    ...(configuration.columnOrder ?? []).filter(isColumnKey),
+    ...tableColumns.map(({ key }) => key),
+  ])]
+  const requiredKeys = tableColumns.filter(({ required }) => required).map(({ key }) => key)
+  const visibleKeys = new Set([...requiredKeys, ...configuration.visibleColumns.filter(isColumnKey)])
+  return {
+    ...defaultConfiguration,
+    ...configuration,
+    filters: cloneFilterGroup(configuration.filters),
+    columnOrder: orderedKeys,
+    visibleColumns: orderedKeys.filter((key) => visibleKeys.has(key)),
+    density: configuration.density ?? "default",
+    stickyFirst: configuration.stickyFirst ?? 0,
+    stickyLast: configuration.stickyLast ?? 0,
+  }
 }
 
 function safeStoredViews(value: unknown): SavedView[] {
@@ -94,7 +136,7 @@ function safeStoredViews(value: unknown): SavedView[] {
     const view = item as Partial<SavedView>
     return typeof view.id === "string" && view.id.startsWith("custom-") && typeof view.name === "string" &&
       view.name.trim().length > 0 && view.builtIn === false && safeConfiguration(view.configuration)
-  }).map((view) => ({ ...view, configuration: { ...view.configuration, filters: cloneFilterGroup(view.configuration.filters) } }))
+  }).map((view) => ({ ...view, configuration: normalizeConfiguration(view.configuration) }))
 }
 
 function equalConfiguration(first: ViewConfiguration, second: ViewConfiguration) {
@@ -113,7 +155,7 @@ function equalConfiguration(first: ViewConfiguration, second: ViewConfiguration)
 function DetailModal({ record, open, onClose }: { record: EnterpriseRecord | null; open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose() }}>
-      {record &&         <DialogContent showCloseButton={false} className="left-auto right-0 top-0 flex h-dvh w-[min(24rem,100vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-xl rounded-r-none p-0" aria-describedby="record-details-description">
+      {record && <DialogContent data-parry-theme showCloseButton={false} className="left-auto right-0 top-0 flex h-dvh w-[min(24rem,100vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-xl rounded-r-none p-0" aria-describedby="record-details-description">
         <DialogHeader className="sr-only"><DialogTitle>Record details</DialogTitle><DialogDescription id="record-details-description">Detailed information for {record.name}, record {record.id}.</DialogDescription></DialogHeader>
         <RecordDetailPanel record={record} onClose={onClose} className="h-full" />
       </DialogContent>}
@@ -122,24 +164,26 @@ function DetailModal({ record, open, onClose }: { record: EnterpriseRecord | nul
 }
 
 export function AdvancedFilterableTablePreview() {
-  const [query, setQuery] = useState(defaultConfiguration.search)
-  const [filters, setFilters] = useState<FilterGroup>(() => cloneFilterGroup(defaultConfiguration.filters))
-  const [sort, setSort] = useState(defaultConfiguration.sort)
-  const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>([...defaultConfiguration.visibleColumns])
-  const [groupBy, setGroupBy] = useState<GroupByKey | "none">(defaultConfiguration.groupBy)
-  const [pageSize, setPageSize] = useState(defaultConfiguration.pageSize)
+  const [configurationState, setConfigurationState] = useState<ViewConfiguration>(() => normalizeConfiguration(defaultConfiguration))
   const [page, setPage] = useState(1)
   const [savedViews, setSavedViews] = useState<SavedView[]>(demoSavedViews)
   const [selectedViewId, setSelectedViewId] = useState("all-records")
   const [isRestoring, setIsRestoring] = useState(true)
-  const [viewDialog, setViewDialog] = useState<"create" | "rename" | "delete" | null>(null)
+  const [viewDialog, setViewDialog] = useState<"create" | "rename" | "delete" | "duplicate" | null>(null)
   const [viewName, setViewName] = useState("")
   const [viewError, setViewError] = useState<string | null>(null)
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
+  const [selectedRecordIds, setSelectedRecordIds] = useState<Set<string>>(() => new Set())
   const [isNarrow, setIsNarrow] = useState(false)
   const [detailWidth, setDetailWidth] = useState(340)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set())
+  const [tableViewportWidth, setTableViewportWidth] = useState(0)
+  const [tableScrollLeft, setTableScrollLeft] = useState(0)
   const tableLayoutRef = useRef<HTMLDivElement>(null)
+  const tableViewportRef = useRef<HTMLDivElement>(null)
+
+  const configuration = configurationState
+  const { search: query, filters, sort, visibleColumns, columnOrder, density, stickyFirst, stickyLast, groupBy, pageSize } = configuration
 
   useEffect(() => {
     try {
@@ -154,7 +198,7 @@ export function AdvancedFilterableTablePreview() {
           const selected = [...demoSavedViews, ...customViews].find(({ id }) => id === stored.selectedViewId)
           if (selected) {
             setSelectedViewId(selected.id)
-            setConfiguration(selected.configuration)
+            setConfigurationState(normalizeConfiguration(selected.configuration))
           }
         }
       }
@@ -165,11 +209,26 @@ export function AdvancedFilterableTablePreview() {
   }, [])
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 1023px)")
+    const media = window.matchMedia("(max-width: 767px)")
     const update = () => setIsNarrow(media.matches)
     update()
     media.addEventListener("change", update)
     return () => media.removeEventListener("change", update)
+  }, [])
+
+  useEffect(() => {
+    const element = tableViewportRef.current
+    const scroller = element?.querySelector<HTMLElement>("[data-slot=table-container]")
+    if (!element || !scroller) return
+    const observer = new ResizeObserver(([entry]) => setTableViewportWidth(entry.contentRect.width))
+    const updateScrollPosition = () => setTableScrollLeft(scroller.scrollLeft)
+    observer.observe(element)
+    scroller.addEventListener("scroll", updateScrollPosition, { passive: true })
+    updateScrollPosition()
+    return () => {
+      observer.disconnect()
+      scroller.removeEventListener("scroll", updateScrollPosition)
+    }
   }, [])
 
   useEffect(() => {
@@ -183,15 +242,6 @@ export function AdvancedFilterableTablePreview() {
       // Keep the table usable when browser storage is disabled or full.
     }
   }, [isRestoring, savedViews, selectedViewId])
-
-  const configuration = useMemo<ViewConfiguration>(() => ({
-    search: query,
-    filters,
-    sort,
-    visibleColumns,
-    groupBy,
-    pageSize,
-  }), [filters, groupBy, pageSize, query, sort, visibleColumns])
 
   const selectedView = savedViews.find(({ id }) => id === selectedViewId) ?? demoSavedViews[0]
   const hasUnsavedChanges = !equalConfiguration(configuration, selectedView.configuration)
@@ -208,16 +258,51 @@ export function AdvancedFilterableTablePreview() {
   const pageCount = Math.max(1, Math.ceil(matchingRecords.length / pageSize))
   const currentPage = Math.min(page, pageCount)
   const pageRecords = matchingRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-  const activeColumns = tableColumns.filter(({ key }) => visibleColumns.includes(key))
+  const activeColumns = columnOrder.filter((key) => visibleColumns.includes(key)).map((key) => tableColumns.find((column) => column.key === key)!).filter(Boolean)
   const selectedRecord = selectedRecordId ? matchingRecords.find(({ id }) => id === selectedRecordId) ?? null : null
+  let effectiveStickyFirst = Math.min(stickyFirst, activeColumns.length)
+  let effectiveStickyLast = Math.min(stickyLast, Math.max(0, activeColumns.length - effectiveStickyFirst))
+  const widthOfVisibleColumns = activeColumns.reduce((total, column) => total + columnWidths[column.key], 0)
+  const maxPinnedWidth = Math.max(0, tableViewportWidth - 120)
+  const pinnedWidth = () => selectionColumnWidth +
+    activeColumns.slice(0, effectiveStickyFirst).reduce((total, column) => total + columnWidths[column.key], 0) +
+    activeColumns.slice(activeColumns.length - effectiveStickyLast).reduce((total, column) => total + columnWidths[column.key], 0)
+  while ((effectiveStickyFirst > 0 || effectiveStickyLast > 0) && pinnedWidth() > maxPinnedWidth) {
+    if (effectiveStickyLast > 0) effectiveStickyLast -= 1
+    else effectiveStickyFirst -= 1
+  }
+  const tableWidth = Math.max(940, widthOfVisibleColumns + selectionColumnWidth)
+  const extraWidthPerColumn = activeColumns.length ? (tableWidth - widthOfVisibleColumns - selectionColumnWidth) / activeColumns.length : 0
+  const actualColumnWidth = (index: number) => columnWidths[activeColumns[index]?.key] + extraWidthPerColumn
+  const stickyLastStart = activeColumns.length - effectiveStickyLast
+  const stickyLastWidth = activeColumns.slice(stickyLastStart).reduce((total, _column, index) => total + actualColumnWidth(stickyLastStart + index), 0)
+  const stickyLastNaturalStart = selectionColumnWidth + activeColumns.slice(0, stickyLastStart).reduce((total, _column, index) => total + actualColumnWidth(index), 0)
+  const stickyLastThreshold = stickyLastNaturalStart - (tableViewportWidth - stickyLastWidth)
+  const isStickyLastActive = effectiveStickyLast > 0 && tableScrollLeft + 1 >= stickyLastThreshold
+
+  useEffect(() => {
+    if (selectedRecordId && !matchingRecords.some(({ id }) => id === selectedRecordId)) {
+      // A selected record must not reopen if a later query happens to match it again.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedRecordId(null)
+    }
+  }, [matchingRecords, selectedRecordId])
+
+  function updateConfiguration(patch: Partial<ViewConfiguration>) {
+    setConfigurationState((current) => ({
+      ...current,
+      ...patch,
+      ...(patch.filters ? { filters: cloneFilterGroup(patch.filters) } : {}),
+      ...(patch.sort ? { sort: { ...patch.sort } } : {}),
+      ...(patch.visibleColumns ? { visibleColumns: [...patch.visibleColumns] } : {}),
+      ...(patch.columnOrder ? { columnOrder: [...patch.columnOrder] } : {}),
+    }))
+    if (patch.groupBy !== undefined || patch.search !== undefined || patch.filters !== undefined || patch.sort !== undefined || patch.pageSize !== undefined) setPage(1)
+    if (patch.groupBy !== undefined) setCollapsedGroups(new Set())
+  }
 
   function setConfiguration(next: ViewConfiguration) {
-    setQuery(next.search)
-    setFilters(cloneFilterGroup(next.filters))
-    setSort({ ...next.sort })
-    setVisibleColumns([...next.visibleColumns])
-    setGroupBy(next.groupBy)
-    setPageSize(next.pageSize)
+    setConfigurationState(normalizeConfiguration(next))
     setPage(1)
     setCollapsedGroups(new Set())
   }
@@ -228,26 +313,23 @@ export function AdvancedFilterableTablePreview() {
     setSelectedViewId(view.id)
     setConfiguration(view.configuration)
     setSelectedRecordId(null)
+    setSelectedRecordIds(new Set())
   }
 
   function clearAllFilters() {
-    setFilters({ id: `root-${Date.now()}`, logic: "AND", conditions: [], groups: [] })
-    setPage(1)
+    updateConfiguration({ filters: { id: `root-${Date.now()}`, logic: "AND", conditions: [], groups: [] } })
     setSelectedRecordId(null)
   }
 
   function toggleSort(key: ColumnKey) {
-    setSort((current) => {
-      if (current.key !== key) return { key, direction: "asc" }
-      if (current.direction === "asc") return { key, direction: "desc" }
-      return { key: null, direction: "asc" }
-    })
-    setPage(1)
+    updateConfiguration({ sort: {
+      key: sort.key !== key ? key : sort.direction === "asc" ? key : null,
+      direction: sort.key !== key || sort.direction === "desc" ? "asc" : "desc",
+    } })
   }
 
   function handleSortKey(value: string) {
-    setSort((current) => ({ key: value === "none" ? null : value as ColumnKey, direction: current.key === value ? current.direction : "asc" }))
-    setPage(1)
+    updateConfiguration({ sort: { key: value === "none" ? null : value as ColumnKey, direction: sort.key === value ? sort.direction : "asc" } })
   }
 
   function openSaveAsDialog() {
@@ -256,12 +338,18 @@ export function AdvancedFilterableTablePreview() {
     setViewDialog("create")
   }
 
+  function openDuplicateDialog() {
+    setViewName(`${selectedView.name} copy`)
+    setViewError(null)
+    setViewDialog("duplicate")
+  }
+
   function saveCurrentView() {
     if (selectedView.builtIn) {
       openSaveAsDialog()
       return
     }
-    setSavedViews((current) => current.map((view) => view.id === selectedView.id ? { ...view, configuration } : view))
+    setSavedViews((current) => current.map((view) => view.id === selectedView.id ? { ...view, configuration: normalizeConfiguration(configuration) } : view))
     toast.success(`“${selectedView.name}” updated.`, { position: "bottom-right" })
   }
 
@@ -271,12 +359,12 @@ export function AdvancedFilterableTablePreview() {
       setViewError("Enter a name for this view.")
       return
     }
-    if ((viewDialog === "create" || viewDialog === "rename") && savedViews.some((view) => view.id !== selectedViewId && view.name.toLocaleLowerCase() === normalizedName.toLocaleLowerCase())) {
+    if ((viewDialog === "create" || viewDialog === "duplicate" || viewDialog === "rename") && savedViews.some((view) => view.id !== selectedViewId && view.name.toLocaleLowerCase() === normalizedName.toLocaleLowerCase())) {
       setViewError("A view with that name already exists.")
       return
     }
-    if (viewDialog === "create") {
-      const view: SavedView = { id: `custom-${Date.now()}`, name: normalizedName, builtIn: false, configuration }
+    if (viewDialog === "create" || viewDialog === "duplicate") {
+      const view: SavedView = { id: `custom-${Date.now()}`, name: normalizedName, builtIn: false, configuration: normalizeConfiguration(configuration) }
       setSavedViews((current) => [...current, view])
       setSelectedViewId(view.id)
       setViewDialog(null)
@@ -324,6 +412,24 @@ export function AdvancedFilterableTablePreview() {
     }
   }
 
+  function stickyStyle(index: number, isHeader: boolean): CSSProperties {
+    if (index < effectiveStickyFirst) {
+      return {
+        position: "sticky",
+        left: selectionColumnWidth + activeColumns.slice(0, index).reduce((total, _column, columnIndex) => total + actualColumnWidth(columnIndex), 0),
+        zIndex: isHeader ? 30 : 10,
+      }
+    }
+    if (isStickyLastActive && index >= activeColumns.length - effectiveStickyLast) {
+      return {
+        position: "sticky",
+        right: activeColumns.slice(index + 1).reduce((total, _column, nextIndex) => total + actualColumnWidth(index + 1 + nextIndex), 0),
+        zIndex: isHeader ? 30 : 10,
+      }
+    }
+    return {}
+  }
+
   const groupsOnPage = useMemo(() => {
     if (groupBy === "none") return [{ key: "all", label: "", records: pageRecords, total: matchingRecords.length }]
     const pageGroups = new Map<string, EnterpriseRecord[]>()
@@ -339,6 +445,25 @@ export function AdvancedFilterableTablePreview() {
     return Array.from(pageGroups.entries()).map(([key, records]) => ({ key, label: key, records, total: allCounts.get(key) ?? records.length }))
   }, [groupBy, matchingRecords, pageRecords])
 
+  const densityClasses = density === "compact"
+    ? { head: "h-9 px-3 py-1.5 text-xs", cell: "px-3 py-1.5 text-xs", row: "h-9" }
+    : density === "comfortable"
+      ? { head: "h-14 px-5 py-4 text-sm", cell: "px-5 py-4 text-sm", row: "h-14" }
+      : { head: "h-11 px-4 py-2.5 text-sm", cell: "px-4 py-2.5 text-sm", row: "h-11" }
+  const allPageSelected = pageRecords.length > 0 && pageRecords.every(({ id }) => selectedRecordIds.has(id))
+  const somePageSelected = pageRecords.some(({ id }) => selectedRecordIds.has(id))
+
+  function togglePageSelection(checked: boolean | "indeterminate") {
+    setSelectedRecordIds((current) => {
+      const next = new Set(current)
+      for (const record of pageRecords) {
+        if (checked) next.add(record.id)
+        else next.delete(record.id)
+      }
+      return next
+    })
+  }
+
   return (
     <section aria-label="Advanced Filterable Table preview" aria-busy={isRestoring} data-parry-theme className="font-data flex min-w-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground">
       <header className="flex flex-col gap-1 border-b px-4 py-4 sm:px-5 sm:py-5">
@@ -346,68 +471,56 @@ export function AdvancedFilterableTablePreview() {
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Search, organize, and inspect a fictional enterprise dataset.</p>
       </header>
 
-      <div className="flex flex-col gap-3 border-b px-4 py-3 sm:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-2.5 border-b px-3 py-3 sm:px-4">
+        <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Select value={selectedViewId} onValueChange={selectView}>
-              <SelectTrigger aria-label="Saved views" className="w-full min-w-40 sm:w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {savedViews.filter(({ builtIn }) => builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}
-                </SelectGroup>
-                {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>
-                  {savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}
-                </SelectGroup>}
+              <SelectTrigger aria-label="Saved views" className="h-8 w-48 min-w-40"><SelectValue /></SelectTrigger>
+              <SelectContent data-parry-theme>
+                <SelectGroup>{savedViews.filter(({ builtIn }) => builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}</SelectGroup>
+                {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>{savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}</SelectGroup>}
               </SelectContent>
             </Select>
             {hasUnsavedChanges && <Badge variant="outline" className="border-warning/40 bg-warning-soft text-warning">Unsaved changes</Badge>}
-            {hasUnsavedChanges && <Button variant="outline" size="sm" onClick={openSaveAsDialog}>Save as</Button>}
-            {hasUnsavedChanges && !selectedView.builtIn && <Button size="sm" onClick={saveCurrentView}>Update view</Button>}
+            {hasUnsavedChanges && <Button variant={selectedView.builtIn ? "outline" : "default"} size="sm" className="h-8" onClick={selectedView.builtIn ? openSaveAsDialog : saveCurrentView}>{selectedView.builtIn ? "Save as" : "Save changes"}</Button>}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="ghost" size="sm"><EllipsisIcon data-icon="inline-start" />View actions</Button></DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label="View actions"><EllipsisIcon /></Button></DropdownMenuTrigger></TooltipTrigger>
+                  <TooltipContent data-parry-theme>View actions</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <DropdownMenuContent data-parry-theme align="start" className="w-52">
                 <DropdownMenuGroup>
+                  {!selectedView.builtIn && hasUnsavedChanges && <DropdownMenuItem onSelect={saveCurrentView}>Save changes</DropdownMenuItem>}
                   <DropdownMenuItem onSelect={openSaveAsDialog}>Save as new view</DropdownMenuItem>
+                  {!selectedView.builtIn && <DropdownMenuItem onSelect={openRenameDialog}>Rename view</DropdownMenuItem>}
+                  <DropdownMenuItem onSelect={openDuplicateDialog}>Duplicate view</DropdownMenuItem>
+                  {hasUnsavedChanges && <DropdownMenuItem onSelect={() => { setConfiguration(selectedView.configuration); setSelectedRecordId(null) }}>Reset changes</DropdownMenuItem>}
                   {!selectedView.builtIn && <>
-                    <DropdownMenuItem onSelect={openRenameDialog}>Rename “{selectedView.name}”</DropdownMenuItem>
-                    <DropdownMenuItem variant="destructive" onSelect={() => { setViewError(null); setViewDialog("delete") }}>Delete “{selectedView.name}”</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive" onSelect={() => { setViewError(null); setViewDialog("delete") }}>Delete view</DropdownMenuItem>
                   </>}
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="outline" size="sm"><Columns3Icon data-icon="inline-start" />Columns</Button></DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Visible columns</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {tableColumns.map(({ key, label, required }) => (
-                  <DropdownMenuCheckboxItem key={key} checked={visibleColumns.includes(key)} disabled={required} onSelect={(event) => event.preventDefault()} onCheckedChange={(checked) => {
-                    if (required) return
-                    setVisibleColumns((current) => checked ? [...current, key] : current.filter((column) => column !== key))
-                  }}>{label}{required && <span className="ml-auto text-xs text-muted-foreground">Always shown</span>}</DropdownMenuCheckboxItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => setVisibleColumns([...defaultConfiguration.visibleColumns])}>Reset columns</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Select value={groupBy} onValueChange={(value) => { setGroupBy(value as GroupByKey | "none"); setPage(1); setCollapsedGroups(new Set()) }}>
-              <SelectTrigger aria-label="Group records by" className="w-[9.5rem]"><Layers3Icon aria-hidden="true" className="size-4 text-muted-foreground" /><SelectValue /></SelectTrigger>
-              <SelectContent><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+          <div className="flex min-w-0 flex-wrap items-center gap-2 lg:justify-end">
+            <AdvancedTableViewOptions configuration={configuration} onChange={updateConfiguration} />
+            <Select value={groupBy} onValueChange={(value) => updateConfiguration({ groupBy: value as GroupByKey | "none" })}>
+              <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem]"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue /></SelectTrigger>
+              <SelectContent data-parry-theme><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
             </Select>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="outline" size="sm"><ArrowUpDownIcon data-icon="inline-start" />Sort{sort.key ? `: ${tableColumns.find(({ key }) => key === sort.key)?.label ?? ""}` : ""}</Button></DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                <DropdownMenuRadioGroup value={sort.key ?? "none"} onValueChange={handleSortKey}>
-                  <DropdownMenuRadioItem value="none">No sorting</DropdownMenuRadioItem>
-                  {tableColumns.map(({ key, label }) => <DropdownMenuRadioItem key={key} value={key}>{label}</DropdownMenuRadioItem>)}
-                </DropdownMenuRadioGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem disabled={!sort.key} onSelect={() => { setSort((current) => ({ ...current, direction: current.direction === "asc" ? "desc" : "asc" })); setPage(1) }}>
-                  Change to {sort.direction === "asc" ? "descending" : "ascending"}
-                </DropdownMenuItem>
+              <DropdownMenuTrigger asChild><Button variant="outline" size="sm" className="h-8"><ArrowUpDownIcon data-icon="inline-start" />Sort{sort.key ? `: ${tableColumns.find(({ key }) => key === sort.key)?.label ?? ""}` : ""}</Button></DropdownMenuTrigger>
+              <DropdownMenuContent data-parry-theme align="end" className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                  {tableColumns.map(({ key, label }) => <DropdownMenuItem key={key} onSelect={() => handleSortKey(key)}>{label}{sort.key === key && <span className="ml-auto text-xs text-muted-foreground">{sort.direction === "asc" ? "Ascending" : "Descending"}</span>}</DropdownMenuItem>)}
+                  <DropdownMenuItem onSelect={() => handleSortKey("none")}>No sorting</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem disabled={!sort.key} onSelect={() => updateConfiguration({ sort: { ...sort, direction: sort.direction === "asc" ? "desc" : "asc" } })}>Change to {sort.direction === "asc" ? "descending" : "ascending"}</DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -415,70 +528,91 @@ export function AdvancedFilterableTablePreview() {
         <AdvancedFilterBuilder
           appliedFilters={filters}
           search={query}
-          onSearchChange={(value) => { setQuery(value); setPage(1); setSelectedRecordId(null) }}
-          onApply={(next) => { setFilters(cloneFilterGroup(next)); setPage(1); setSelectedRecordId(null) }}
-          onClear={() => { setQuery(""); clearAllFilters() }}
+          onSearchChange={(value) => { updateConfiguration({ search: value }); setSelectedRecordId(null) }}
+          onApply={(next) => { updateConfiguration({ filters: next }); setSelectedRecordId(null) }}
+          onClear={() => { updateConfiguration({ search: "" }); clearAllFilters() }}
         />
       </div>
 
       <div ref={tableLayoutRef} className="flex min-w-0 items-stretch">
-        <div className="min-w-0 flex-1">
+        <div ref={tableViewportRef} onScrollCapture={(event) => {
+          const target = event.target as HTMLElement
+          if (target.dataset.slot === "table-container") setTableScrollLeft(target.scrollLeft)
+        }} className="min-w-0 flex-1">
           <div className="flex min-h-9 items-center justify-between gap-3 border-b bg-muted/20 px-4 py-2 sm:px-5">
             <p className="text-xs font-medium tabular-nums text-muted-foreground" aria-live="polite">{isRestoring ? "Restoring records…" : `${matchingRecords.length} ${matchingRecords.length === 1 ? "record" : "records"}`}</p>
             <span className="text-xs text-muted-foreground">{pageSize} per page</span>
           </div>
-          <div className="overflow-x-auto">
-            <Table className="min-w-[940px]">
-              <TableHeader>
-                <TableRow className="bg-muted/40 hover:bg-muted/40">
-                  {activeColumns.map(({ key, label }) => {
-                    const sortable = true
-                    const activeSort = sort.key === key
-                    return <TableHead key={key} aria-sort={activeSort ? (sort.direction === "asc" ? "ascending" : "descending") : "none"}>
-                      <button type="button" onClick={() => toggleSort(key)} className="inline-flex min-h-8 items-center gap-1.5 rounded-sm font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                        {label}{sortable && (activeSort ? sort.direction === "asc" ? <ArrowUpIcon aria-hidden="true" className="size-3.5 text-primary" /> : <ArrowDownIcon aria-hidden="true" className="size-3.5 text-primary" /> : <ArrowUpDownIcon aria-hidden="true" className="size-3.5 text-muted-foreground/70" />)}
-                      </button>
-                    </TableHead>
-                  })}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isRestoring ? Array.from({ length: 6 }).map((_, rowIndex) => <TableRow key={`loading-${rowIndex}`} aria-label="Loading records">{activeColumns.map((column) => <TableCell key={column.key}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>) : matchingRecords.length === 0 ? (
-                  <TableRow><TableCell colSpan={activeColumns.length} className="h-48 text-center">
-                    <div className="mx-auto flex max-w-sm flex-col items-center gap-2">
-                      <p className="font-medium">No records match this query</p>
-                      <p className="text-sm leading-relaxed text-muted-foreground">Try a different search term or remove one of the active filters.</p>
-                      <Button variant="outline" size="sm" onClick={() => { setQuery(""); clearAllFilters() }}>Clear search and filters</Button>
-                    </div>
-                  </TableCell></TableRow>
-                ) : groupsOnPage.map((group) => <Fragment key={group.key}>
-                  {groupBy !== "none" && <TableRow key={`group-${group.key}`} className="bg-muted/40 hover:bg-muted/40">
-                    <TableCell colSpan={activeColumns.length}>
-                      <button type="button" className="flex w-full items-center gap-2 text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-expanded={!collapsedGroups.has(group.key)} onClick={() => setCollapsedGroups((current) => {
-                        const next = new Set(current)
-                        if (next.has(group.key)) next.delete(group.key)
-                        else next.add(group.key)
-                        return next
-                      })}>
-                        <ChevronRightIcon aria-hidden="true" className={`size-4 transition-transform ${collapsedGroups.has(group.key) ? "" : "rotate-90"}`} />
-                        <span>{group.label}</span><Badge variant="secondary" className="ml-1">{group.total}</Badge>
-                      </button>
-                    </TableCell>
-                  </TableRow>}
-                  {!collapsedGroups.has(group.key) && group.records.map((record) => <TableRow key={record.id} tabIndex={0} aria-selected={selectedRecordId === record.id} onClick={() => setSelectedRecordId(record.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedRecordId(record.id) } }} className={`cursor-pointer ${selectedRecordId === record.id ? "bg-accent" : ""}`}>
-                    {activeColumns.map(({ key }) => <TableCell key={key} className={key === "name" ? "font-medium" : ""}>{displayCell(record, key)}</TableCell>)}
-                  </TableRow>)}
-                </Fragment>)}
-              </TableBody>
-            </Table>
-          </div>
+          <Table className="min-w-[940px] table-fixed" style={{ width: tableWidth }}>
+            <TableHeader>
+              <TableRow className="bg-muted/40 hover:bg-muted/40">
+                <TableHead className={`${densityClasses.head} sticky left-0 z-40 w-10 bg-muted`} style={{ position: "sticky", left: 0, width: selectionColumnWidth }}>
+                  <Checkbox aria-label="Select all records on this page" checked={allPageSelected ? true : somePageSelected ? "indeterminate" : false} onCheckedChange={togglePageSelection} />
+                </TableHead>
+                {activeColumns.map(({ key, label }, index) => {
+                  const activeSort = sort.key === key
+                  return <TableHead key={key} aria-sort={activeSort ? (sort.direction === "asc" ? "ascending" : "descending") : "none"} className={`${densityClasses.head} ${index < effectiveStickyFirst || (isStickyLastActive && index >= activeColumns.length - effectiveStickyLast) ? "bg-muted" : ""}`} style={{ ...stickyStyle(index, true), width: actualColumnWidth(index), minWidth: columnWidths[key] }}>
+                    <button type="button" onClick={() => toggleSort(key)} className="inline-flex min-h-8 items-center gap-1.5 rounded-sm text-left font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      {label}{activeSort ? sort.direction === "asc" ? <ArrowUpIcon aria-hidden="true" className="size-3.5 text-primary" /> : <ArrowDownIcon aria-hidden="true" className="size-3.5 text-primary" /> : <ArrowUpDownIcon aria-hidden="true" className="size-3.5 text-muted-foreground/70" />}
+                    </button>
+                  </TableHead>
+                })}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isRestoring ? Array.from({ length: 6 }).map((_, rowIndex) => <TableRow key={`loading-${rowIndex}`} aria-label="Loading records">
+                <TableCell className={`${densityClasses.cell} sticky left-0 z-20 bg-background`} style={{ position: "sticky", left: 0, width: selectionColumnWidth }} />
+                {activeColumns.map((column, index) => <TableCell key={column.key} className={`${densityClasses.cell} ${index < effectiveStickyFirst || (isStickyLastActive && index >= activeColumns.length - effectiveStickyLast) ? "bg-background" : ""}`} style={{ ...stickyStyle(index, false), width: actualColumnWidth(index), minWidth: columnWidths[column.key] }}><Skeleton className="h-4 w-20" /></TableCell>)}
+              </TableRow>) : matchingRecords.length === 0 ? (
+                <TableRow><TableCell colSpan={activeColumns.length + 1} className="h-48 text-center">
+                  <div className="mx-auto flex max-w-sm flex-col items-center gap-2">
+                    <p className="font-medium">No records match this query</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">Try a different search term or remove one of the active filters.</p>
+                    <Button variant="outline" size="sm" onClick={() => { updateConfiguration({ search: "" }); clearAllFilters() }}>Clear search and filters</Button>
+                  </div>
+                </TableCell></TableRow>
+              ) : groupsOnPage.map((group) => <Fragment key={group.key}>
+                {groupBy !== "none" && <TableRow key={`group-${group.key}`} className="bg-muted/40 hover:bg-muted/40">
+                  <TableCell className={`${densityClasses.cell} sticky left-0 z-20 bg-muted/40`} style={{ position: "sticky", left: 0, width: selectionColumnWidth }} />
+                  <TableCell colSpan={activeColumns.length} className={densityClasses.cell}>
+                    <button type="button" className="flex w-full items-center gap-2 text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-expanded={!collapsedGroups.has(group.key)} onClick={() => setCollapsedGroups((current) => {
+                      const next = new Set(current)
+                      if (next.has(group.key)) next.delete(group.key)
+                      else next.add(group.key)
+                      return next
+                    })}>
+                      <ChevronRightIcon aria-hidden="true" className={`size-4 transition-transform ${collapsedGroups.has(group.key) ? "" : "rotate-90"}`} />
+                      <span>{group.label}</span><Badge variant="secondary" className="ml-1">{group.total}</Badge>
+                    </button>
+                  </TableCell>
+                </TableRow>}
+                {!collapsedGroups.has(group.key) && group.records.map((record) => <TableRow key={record.id} tabIndex={0} aria-selected={selectedRecordId === record.id} onClick={(event) => {
+                  if ((event.target as HTMLElement).closest("button, input, [role=checkbox]")) return
+                  setSelectedRecordId(record.id)
+                }} onKeyDown={(event) => {
+                  if ((event.target as HTMLElement).closest("button, input, [role=checkbox]")) return
+                  if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedRecordId(record.id) }
+                }} className={`cursor-pointer ${selectedRecordId === record.id ? "bg-accent" : ""}`}>
+                  <TableCell className={`${densityClasses.cell} sticky left-0 z-20 bg-background`} style={{ position: "sticky", left: 0, width: selectionColumnWidth }}>
+                    <Checkbox aria-label={`Select ${record.name}`} checked={selectedRecordIds.has(record.id)} onCheckedChange={(checked) => setSelectedRecordIds((current) => {
+                      const next = new Set(current)
+                      if (checked) next.add(record.id)
+                      else next.delete(record.id)
+                      return next
+                    })} />
+                  </TableCell>
+                  {activeColumns.map(({ key }, index) => <TableCell key={key} className={`${densityClasses.cell} ${key === "name" ? "font-medium" : ""} ${index < effectiveStickyFirst || (isStickyLastActive && index >= activeColumns.length - effectiveStickyLast) ? selectedRecordId === record.id ? "bg-accent" : "bg-background" : ""}`} style={{ ...stickyStyle(index, false), width: actualColumnWidth(index), minWidth: columnWidths[key] }}>{displayCell(record, key)}</TableCell>)}
+                </TableRow>)}
+              </Fragment>)}
+            </TableBody>
+          </Table>
           <footer className="flex flex-col gap-3 border-t px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <p className="text-xs tabular-nums text-muted-foreground">{matchingRecords.length === 0 ? "0 records" : `Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, matchingRecords.length)} of ${matchingRecords.length} records`}</p>
             <div className="flex flex-wrap items-center gap-2">
               <Label htmlFor="record-page-size" className="text-xs text-muted-foreground">Rows</Label>
-              <Select value={String(pageSize)} onValueChange={(value) => { setPageSize(Number(value)); setPage(1) }}>
+              <Select value={String(pageSize)} onValueChange={(value) => updateConfiguration({ pageSize: Number(value) })}>
                 <SelectTrigger id="record-page-size" className="h-7 w-[4.5rem]"><SelectValue /></SelectTrigger>
-                <SelectContent><SelectGroup>{pageSizeOptions.map((size) => <SelectItem key={size} value={String(size)}>{size}</SelectItem>)}</SelectGroup></SelectContent>
+                <SelectContent data-parry-theme><SelectGroup>{pageSizeOptions.map((size) => <SelectItem key={size} value={String(size)}>{size}</SelectItem>)}</SelectGroup></SelectContent>
               </Select>
               <span className="min-w-16 text-center text-xs tabular-nums text-muted-foreground">Page {currentPage} of {pageCount}</span>
               <Button variant="outline" size="icon-sm" aria-label="Previous page" disabled={currentPage <= 1} onClick={() => setPage((current) => Math.max(1, current - 1))}><ChevronLeftIcon /></Button>
@@ -501,7 +635,7 @@ export function AdvancedFilterableTablePreview() {
             onKeyDown={handleResizeKey}
             className="group flex w-3 shrink-0 cursor-col-resize touch-none items-center justify-center border-l border-r bg-muted/30 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
           ><GripVerticalIcon aria-hidden="true" className="size-4 text-muted-foreground group-hover:text-foreground" /></div>
-          <RecordDetailPanel record={selectedRecord} onClose={() => setSelectedRecordId(null)} className="max-h-[34rem] shrink-0 border-l" style={{ width: detailWidth }} />
+          <RecordDetailPanel record={selectedRecord} onClose={() => setSelectedRecordId(null)} className="min-h-0 shrink-0 border-l" style={{ width: detailWidth }} />
         </>}
       </div>
       <DetailModal record={selectedRecord} open={isNarrow && Boolean(selectedRecord)} onClose={() => setSelectedRecordId(null)} />
@@ -510,10 +644,10 @@ export function AdvancedFilterableTablePreview() {
       </div>
 
       <Dialog open={viewDialog !== null} onOpenChange={(open) => { if (!open) { setViewDialog(null); setViewError(null) } }}>
-        {viewDialog && <DialogContent aria-describedby="saved-view-dialog-description" className="font-data sm:max-w-md">
+        {viewDialog && <DialogContent data-parry-theme aria-describedby="saved-view-dialog-description" className="font-data sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{viewDialog === "create" ? "Create saved view" : viewDialog === "rename" ? "Rename saved view" : "Delete saved view?"}</DialogTitle>
-            <DialogDescription id="saved-view-dialog-description">{viewDialog === "delete" ? `“${selectedView.name}” will be removed from this browser. Built-in views cannot be deleted.` : "Save the current search, filters, sort, columns, grouping, and page size together."}</DialogDescription>
+            <DialogTitle>{viewDialog === "create" ? "Save as new view" : viewDialog === "duplicate" ? "Duplicate saved view" : viewDialog === "rename" ? "Rename saved view" : "Delete saved view?"}</DialogTitle>
+            <DialogDescription id="saved-view-dialog-description">{viewDialog === "delete" ? `“${selectedView.name}” will be removed from this browser. Built-in views cannot be deleted.` : "Save search, filters, sorting, column order and visibility, density, sticky columns, grouping, and page size together."}</DialogDescription>
           </DialogHeader>
           {viewDialog !== "delete" && <div className="flex flex-col gap-2 py-2">
             <Label htmlFor="saved-view-name">View name</Label>
@@ -523,7 +657,7 @@ export function AdvancedFilterableTablePreview() {
           {viewDialog === "delete" && <p className="text-sm text-destructive">This action cannot be undone.</p>}
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewDialog(null)}>Cancel</Button>
-            <Button variant={viewDialog === "delete" ? "destructive" : "default"} onClick={confirmViewDialog}>{viewDialog === "create" ? "Save view" : viewDialog === "rename" ? "Rename view" : "Delete view"}</Button>
+            <Button variant={viewDialog === "delete" ? "destructive" : "default"} onClick={confirmViewDialog}>{viewDialog === "create" ? "Save view" : viewDialog === "duplicate" ? "Duplicate view" : viewDialog === "rename" ? "Rename view" : "Delete view"}</Button>
           </DialogFooter>
         </DialogContent>}
       </Dialog>

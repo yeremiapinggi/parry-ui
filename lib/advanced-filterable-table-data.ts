@@ -40,11 +40,18 @@ export type SortConfiguration = {
   direction: "asc" | "desc"
 }
 
+export type TableDensity = "compact" | "default" | "comfortable"
+export type StickyColumnCount = 0 | 1 | 2
+
 export type ViewConfiguration = {
   search: string
   filters: FilterGroup
   sort: SortConfiguration
   visibleColumns: ColumnKey[]
+  columnOrder: ColumnKey[]
+  density: TableDensity
+  stickyFirst: StickyColumnCount
+  stickyLast: StickyColumnCount
   groupBy: GroupByKey | "none"
   pageSize: number
 }
@@ -157,6 +164,10 @@ export const defaultConfiguration: ViewConfiguration = {
   filters: { id: "root-default", logic: "AND", conditions: [], groups: [] },
   sort: { key: "createdAt", direction: "desc" },
   visibleColumns: [...defaultVisibleColumns],
+  columnOrder: tableColumns.map(({ key }) => key),
+  density: "default",
+  stickyFirst: 0,
+  stickyLast: 0,
   groupBy: "none",
   pageSize: 10,
 }
