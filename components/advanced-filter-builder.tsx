@@ -154,7 +154,7 @@ export function AdvancedFilterBuilder({
     const choices = fieldKind === "enum" ? enumOptions(condition.field) : []
 
     return <div className="flex max-h-[min(34rem,calc(100dvh-8rem))] flex-col gap-3 overflow-y-auto p-1">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-col gap-2">
         <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-muted-foreground">
           Field
           <Select value={condition.field} onValueChange={(value) => editCondition((current) => ({
@@ -165,8 +165,8 @@ export function AdvancedFilterBuilder({
             secondValue: "",
             values: [],
           }))}>
-            <SelectTrigger aria-label="Filter field" className="h-8 text-sm text-foreground"><SelectValue /></SelectTrigger>
-            <SelectContent data-parry-theme><SelectGroup>{filterFields.map(({ key, label }) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+            <SelectTrigger aria-label="Filter field" className="h-8 w-full text-sm text-foreground"><SelectValue /></SelectTrigger>
+            <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{filterFields.map(({ key, label }) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectGroup></SelectContent>
           </Select>
         </label>
         <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-muted-foreground">
@@ -178,8 +178,8 @@ export function AdvancedFilterBuilder({
             secondValue: "",
             values: [],
           }))}>
-            <SelectTrigger aria-label="Filter operator" className="h-8 text-sm text-foreground"><SelectValue /></SelectTrigger>
-            <SelectContent data-parry-theme><SelectGroup>{operatorsForField(condition.field).map((operator) => <SelectItem key={operator} value={operator}>{operatorLabels[operator]}</SelectItem>)}</SelectGroup></SelectContent>
+            <SelectTrigger aria-label="Filter operator" className="h-8 w-full text-sm text-foreground"><SelectValue /></SelectTrigger>
+            <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{operatorsForField(condition.field).map((operator) => <SelectItem key={operator} value={operator}>{operatorLabels[operator]}</SelectItem>)}</SelectGroup></SelectContent>
           </Select>
         </label>
       </div>
@@ -198,8 +198,8 @@ export function AdvancedFilterBuilder({
       </fieldset> : fieldKind === "enum" ? <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
         Value
         <Select value={condition.value} onValueChange={(value) => editCondition((current) => ({ ...current, value }))}>
-          <SelectTrigger aria-label="Filter value" className="h-8 text-sm text-foreground"><SelectValue placeholder="Choose a value" /></SelectTrigger>
-          <SelectContent data-parry-theme><SelectGroup>{choices.map((choice) => <SelectItem key={choice} value={choice}>{choice}</SelectItem>)}</SelectGroup></SelectContent>
+          <SelectTrigger aria-label="Filter value" className="h-8 w-full text-sm text-foreground"><SelectValue placeholder="Choose a value" /></SelectTrigger>
+          <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{choices.map((choice) => <SelectItem key={choice} value={choice}>{choice}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
       </label> : condition.operator === "between" ? <div className="grid grid-cols-2 gap-2">
         <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-muted-foreground">From
@@ -266,7 +266,7 @@ export function AdvancedFilterBuilder({
   function renderLogic(group: FilterGroup, label: string) {
     return <Select value={group.logic} onValueChange={(value) => changeLogic(group.id, value as FilterLogic)}>
       <SelectTrigger aria-label={`${label} match logic`} className="h-7 w-[7.25rem] shrink-0 px-2 text-xs"><SelectValue /></SelectTrigger>
-      <SelectContent data-parry-theme><SelectGroup><SelectItem value="AND">Match all</SelectItem><SelectItem value="OR">Match any</SelectItem></SelectGroup></SelectContent>
+      <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup><SelectItem value="AND">Match all</SelectItem><SelectItem value="OR">Match any</SelectItem></SelectGroup></SelectContent>
     </Select>
   }
 
