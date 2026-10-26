@@ -1,10 +1,12 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
+import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -36,6 +38,13 @@ const templates: Template[] = [
     description: "A configurable table for finding, filtering, and maintaining business records.",
     category: "Table",
     reference: "Parry UI · Data management",
+  },
+  {
+    slug: "settings-panels",
+    name: "Settings Panels",
+    description: "A section-based settings workspace for managing complex application configurations.",
+    category: "Settings",
+    reference: "Parry UI · Workspace settings",
   },
 ]
 
@@ -122,7 +131,9 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              <TemplateThumbnail />
+              {template.slug === "settings-panels" ? (
+                <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
+              ) : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -165,7 +176,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              <DataManagementListPreview showControls />
+              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
