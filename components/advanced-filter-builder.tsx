@@ -197,7 +197,7 @@ export function AdvancedFilterBuilder({
         </div>
       </fieldset> : fieldKind === "enum" ? <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
         Value
-        <Select value={condition.value || undefined} onValueChange={(value) => editCondition((current) => ({ ...current, value }))}>
+        <Select value={condition.value} onValueChange={(value) => editCondition((current) => ({ ...current, value }))}>
           <SelectTrigger aria-label="Filter value" className="h-8 text-sm text-foreground"><SelectValue placeholder="Choose a value" /></SelectTrigger>
           <SelectContent data-parry-theme><SelectGroup>{choices.map((choice) => <SelectItem key={choice} value={choice}>{choice}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>

@@ -303,6 +303,9 @@ export function AdvancedFilterableTablePreview() {
 
   function setConfiguration(next: ViewConfiguration) {
     setConfigurationState(normalizeConfiguration(next))
+    const scroller = tableViewportRef.current?.querySelector<HTMLElement>("[data-slot=table-container]")
+    if (scroller) scroller.scrollLeft = 0
+    setTableScrollLeft(0)
     setPage(1)
     setCollapsedGroups(new Set())
   }
@@ -575,7 +578,7 @@ export function AdvancedFilterableTablePreview() {
                 {groupBy !== "none" && <TableRow key={`group-${group.key}`} className="bg-muted/40 hover:bg-muted/40">
                   <TableCell className={`${densityClasses.cell} sticky left-0 z-20 bg-muted/40`} style={{ position: "sticky", left: 0, width: selectionColumnWidth }} />
                   <TableCell colSpan={activeColumns.length} className={densityClasses.cell}>
-                    <button type="button" className="flex w-full items-center gap-2 text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-expanded={!collapsedGroups.has(group.key)} onClick={() => setCollapsedGroups((current) => {
+                    <button type="button" className="sticky z-10 inline-flex w-fit max-w-full items-center gap-2 bg-muted text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" style={{ position: "sticky", left: selectionColumnWidth }} aria-expanded={!collapsedGroups.has(group.key)} onClick={() => setCollapsedGroups((current) => {
                       const next = new Set(current)
                       if (next.has(group.key)) next.delete(group.key)
                       else next.add(group.key)
