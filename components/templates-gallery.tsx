@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
+import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { Badge } from "@/components/ui/badge"
@@ -46,6 +47,13 @@ const templates: Template[] = [
     category: "Settings",
     reference: "Parry UI · Workspace settings",
   },
+  {
+    slug: "advanced-filterable-table",
+    name: "Advanced Filterable Table",
+    description: "Explore complex datasets with advanced filtering, saved views, column customization, grouping, and record inspection.",
+    category: "Table",
+    reference: "Parry UI · Data exploration",
+  },
 ]
 
 const availableCategories = Array.from(new Set(templates.map(({ category }) => category)))
@@ -55,6 +63,39 @@ const thumbnailRows = [
   { name: "Rafael Putra", email: "rafael.putra@horizon.id", company: "Horizon Group", status: "Active" },
   { name: "Mei Tan", email: "mei.tan@meridian.co", company: "Meridian Works", status: "Invited" },
 ]
+
+function AdvancedFilterableTableThumbnail() {
+  const rows = [
+    { id: "REC-2437", name: "Lucia Romano", company: "Saffron Digital", status: "Open", priority: "Urgent" },
+    { id: "REC-2430", name: "Chloe Dubois", company: "Ironwood Design", status: "In review", priority: "Urgent" },
+  ]
+  return (
+    <div aria-hidden="true" className="font-data flex h-full min-h-0 flex-col overflow-hidden bg-card text-card-foreground">
+      <div className="flex items-start justify-between gap-3 border-b px-4 py-3">
+        <div className="flex flex-col gap-1"><span className="font-heading text-sm font-semibold">Records Explorer</span><span className="text-[11px] text-muted-foreground">36 matching records</span></div>
+        <span className="rounded-md bg-secondary px-2 py-1 text-[10px] text-secondary-foreground">Priority Queue</span>
+      </div>
+      <div className="flex items-center gap-2 border-b px-4 py-2">
+        <span className="flex h-7 min-w-0 flex-1 items-center gap-1.5 rounded-md border px-2 text-[10px] text-muted-foreground"><SearchIcon className="size-3" />Search records</span>
+        <span className="rounded-md border px-2 py-1 text-[10px]">Filters · 2</span>
+        <span className="hidden rounded-md border px-2 py-1 text-[10px] text-muted-foreground md:inline">Columns</span>
+        <span className="hidden rounded-md border px-2 py-1 text-[10px] text-muted-foreground md:inline">Group by</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5 border-b px-4 py-2">
+        <span className="rounded border bg-background px-2 py-1 text-[9px]">Priority is any of Urgent, High</span>
+        <span className="rounded border bg-background px-2 py-1 text-[9px]">Status is Open</span>
+      </div>
+      <div className="flex min-h-0 flex-1">
+        <div className="min-w-0 flex-1 overflow-hidden px-2 pt-1">
+          <div className="grid grid-cols-[minmax(58px,.8fr)_minmax(80px,1.2fr)_minmax(80px,1fr)_60px] gap-2 border-b px-2 py-2 text-[9px] font-medium text-muted-foreground"><span>Record ID</span><span>Name</span><span>Company</span><span>Priority</span></div>
+          {rows.map((row) => <div key={row.id} className="grid grid-cols-[minmax(58px,.8fr)_minmax(80px,1.2fr)_minmax(80px,1fr)_60px] items-center gap-2 border-b px-2 py-2.5 text-[9px] last:border-0"><span className="truncate font-mono text-muted-foreground">{row.id}</span><span className="truncate font-medium">{row.name}</span><span className="truncate">{row.company}</span><span className="truncate rounded bg-warning-soft px-1 py-0.5 text-center text-warning">{row.priority}</span></div>)}
+        </div>
+        <div className="hidden w-[28%] min-w-24 flex-col gap-2 border-l bg-muted/20 p-3 sm:flex"><span className="font-medium text-[10px]">{rows[0].name}</span><span className="font-mono text-[9px] text-muted-foreground">{rows[0].id}</span><span className="text-[9px]">{rows[0].company}</span><span className="mt-auto text-[8px] text-muted-foreground">Record details</span></div>
+      </div>
+      <div className="flex items-center justify-between border-t px-4 py-2 text-[9px] text-muted-foreground"><span>Showing 1–10 of 36</span><span>Rows 10&nbsp;&nbsp; ‹ &nbsp; ›</span></div>
+    </div>
+  )
+}
 
 function TemplateThumbnail() {
   return (
@@ -133,7 +174,7 @@ export function TemplatesGallery() {
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
               {template.slug === "settings-panels" ? (
                 <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
-              ) : <TemplateThumbnail />}
+              ) : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -176,7 +217,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
