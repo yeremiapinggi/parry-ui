@@ -97,9 +97,9 @@ const sortColumns: { key: SortKey; label: string }[] = [
 ]
 const conditionOptions: { value: Condition; label: string }[] = [
   { value: "normal", label: "Normal" },
-  { value: "few", label: "Data sedikit" },
-  { value: "empty", label: "Data Kosong" },
-  { value: "loading", label: "Placeholder loading" },
+  { value: "few", label: "Few records" },
+  { value: "empty", label: "Empty" },
+  { value: "loading", label: "Loading" },
 ]
 
 function statusClass(status: RecordStatus) {
@@ -305,7 +305,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                   <SelectTrigger id="preview-condition" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent data-parry-theme>
                     <SelectGroup>
                       {conditionOptions.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
                     </SelectGroup>
@@ -328,7 +328,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
           </details>
         )}
 
-        <section aria-label="Live data management list preview" className="product-scope min-w-0 overflow-hidden rounded-xl border bg-card">
+        <section aria-label="Live data management list preview" className="min-w-0 overflow-hidden rounded-xl border bg-card">
           <div className="flex flex-col gap-5 p-4 sm:p-6">
             <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex flex-col gap-1">
@@ -358,7 +358,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                   {features.filters && (
                     <Select value={statusFilter} onValueChange={changeStatus}>
                       <SelectTrigger aria-label="Filter by status" className="w-full sm:w-36"><SelectValue placeholder="All statuses" /></SelectTrigger>
-                      <SelectContent>
+                      <SelectContent data-parry-theme>
                         <SelectGroup>
                           <SelectItem value="all">All statuses</SelectItem>
                           <SelectItem value="Active">Active</SelectItem>
@@ -385,7 +385,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                   <Label htmlFor="department-filter" className="text-sm">Department</Label>
                   <Select value={departmentFilter} onValueChange={changeDepartment}>
                     <SelectTrigger id="department-filter" className="w-full sm:w-48"><SelectValue /></SelectTrigger>
-                    <SelectContent>
+                    <SelectContent data-parry-theme>
                       <SelectGroup>
                         <SelectItem value="all">All departments</SelectItem>
                         {departments.map((department) => <SelectItem key={department} value={department}>{department}</SelectItem>)}
@@ -462,7 +462,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${record.name}`}><MoreHorizontalIcon /></Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="end" data-parry-theme>
                               <DropdownMenuGroup>
                                 <DropdownMenuItem onSelect={() => openEditDialog(record)}>Edit record</DropdownMenuItem>
                               </DropdownMenuGroup>
@@ -486,7 +486,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                     <Label htmlFor="page-size" className="text-sm font-normal text-muted-foreground">Rows</Label>
                     <Select value={pageSize} onValueChange={(value) => { setPageSize(value); setPage(1); setSelectedIds(new Set()) }}>
                       <SelectTrigger id="page-size" className="w-20"><SelectValue /></SelectTrigger>
-                      <SelectContent>
+                      <SelectContent data-parry-theme>
                         <SelectGroup>
                           <SelectItem value="5">5</SelectItem>
                           <SelectItem value="10">10</SelectItem>
@@ -512,7 +512,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
       </div>
 
       <Dialog open={formOpen} onOpenChange={setFormOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent data-parry-theme className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editingRecord ? "Edit record" : "Add record"}</DialogTitle>
             <DialogDescription>{editingRecord ? "Update the details for this directory record." : "Add a person to the team directory."}</DialogDescription>
@@ -535,7 +535,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                 <Label htmlFor="record-department">Department</Label>
                 <Select value={formValues.department} onValueChange={(value) => setFormValues((current) => ({ ...current, department: value }))}>
                   <SelectTrigger id="record-department" className="w-full"><SelectValue placeholder="Select department" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent data-parry-theme>
                     <SelectGroup>{departments.map((department) => <SelectItem key={department} value={department}>{department}</SelectItem>)}</SelectGroup>
                   </SelectContent>
                 </Select>
@@ -544,7 +544,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                 <Label htmlFor="record-status">Status</Label>
                 <Select value={formValues.status} onValueChange={(value) => setFormValues((current) => ({ ...current, status: value as RecordStatus }))}>
                   <SelectTrigger id="record-status" className="w-full"><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent data-parry-theme>
                     <SelectGroup>
                       <SelectItem value="Active">Active</SelectItem>
                       <SelectItem value="Invited">Invited</SelectItem>
@@ -563,7 +563,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
       </Dialog>
 
       <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}>
-        <DialogContent>
+        <DialogContent data-parry-theme>
           <DialogHeader>
             <DialogTitle>Delete this record?</DialogTitle>
             <DialogDescription>{deleteTarget ? `${deleteTarget.name} will be removed from this local demo.` : "This record will be removed from the local demo."}</DialogDescription>

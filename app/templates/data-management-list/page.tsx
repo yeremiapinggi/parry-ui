@@ -125,9 +125,9 @@ export default function DataManagementListPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             {[
               ["Normal", "A populated directory with search, filtering, selection, and pagination available."],
-              ["Data sedikit", "A small collection that demonstrates a table with only a few records."],
-              ["Data Kosong", "A new collection with contextual copy and a direct Add Record action."],
-              ["Placeholder loading", "Toolbar placeholders and skeleton rows preserve the table layout while data is loading."],
+              ["Few records", "A small collection that demonstrates a table with only a few records."],
+              ["Empty", "A new collection with contextual copy and a direct Add Record action."],
+              ["Loading", "Toolbar placeholders and skeleton rows preserve the table layout while data is loading."],
             ].map(([title, text]) => (
               <Card key={title} className="gap-2 py-4">
                 <CardHeader className="pb-0"><CardTitle className="text-base">{title}</CardTitle></CardHeader>

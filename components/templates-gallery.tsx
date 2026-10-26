@@ -49,7 +49,7 @@ const thumbnailRows = [
 
 function TemplateThumbnail() {
   return (
-    <div aria-hidden="true" className="product-scope flex h-full min-h-0 flex-col overflow-hidden bg-card text-card-foreground">
+    <div aria-hidden="true" className="flex h-full min-h-0 flex-col overflow-hidden bg-card text-card-foreground">
       <div className="flex items-center justify-between gap-3 border-b px-4 py-3 sm:px-5">
         <div className="flex min-w-0 flex-col gap-1">
           <span className="truncate font-heading text-sm font-semibold tracking-tight sm:text-base">Team directory</span>
@@ -156,6 +156,7 @@ export function TemplatesGallery() {
       </main>
       {activeTemplate && (
           <DialogContent
+            data-parry-theme
             aria-describedby="template-preview-description"
             className="flex h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden p-0 sm:h-[90dvh] sm:w-[90vw] sm:max-w-[90vw] xl:w-[88vw] xl:max-w-[88vw]"
           >
