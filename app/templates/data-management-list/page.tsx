@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 
 export const metadata: Metadata = {
   title: "Data Management List · Templates · Parry UI",
-  description: "An interactive, configurable data management list template for Parry UI.",
+  description: "A reusable record management template for creating, organizing, updating, and deleting structured business data.",
 }
 
 const toc = [
@@ -17,6 +17,7 @@ const toc = [
   { id: "live-preview", label: "Live Preview" },
   { id: "anatomy", label: "Anatomy" },
   { id: "features-variants", label: "Features & Variants" },
+  { id: "when-to-use", label: "When to Use" },
   { id: "states", label: "States" },
   { id: "usage-guidelines", label: "Usage Guidelines" },
   { id: "components-used", label: "Components Used" },
@@ -26,7 +27,7 @@ const sectionHeading = "scroll-mt-24 font-heading text-2xl font-semibold trackin
 
 const anatomy = [
   { title: "Page Header", text: "Names the collection, briefly describes its purpose, and anchors the primary Add Record action." },
-  { title: "Toolbar", text: "Keeps keyword search and the most useful filters together immediately above the table. Advanced filters stay opt-in." },
+  { title: "Toolbar", text: "Keeps keyword search and simple attribute filters together immediately above the table." },
   { title: "Data Table", text: "Uses stable column alignment, clear row spacing, readable secondary identity details, and explicit sortable headers." },
   { title: "Row Selection & Actions", text: "Selection is optional. Row-level actions stay in a compact menu, while bulk actions appear only when selection is present." },
   { title: "Pagination", text: "Keeps the visible range, total matching records, page size, and previous/next navigation together." },
@@ -62,17 +63,20 @@ export default function DataManagementListPage() {
           <Badge variant="secondary">Page template</Badge>
           <h1 className="font-heading text-4xl font-bold tracking-tight text-balance">Data Management List</h1>
           <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
-            A practical, reusable foundation for managing records in enterprise SaaS products. Explore its structure here, then open the catalog preview to try optional features and states.
+            A reusable record management template for creating, organizing, updating, and deleting structured business data.
           </p>
         </header>
 
         <section id="overview" className="flex scroll-mt-24 flex-col gap-3" aria-labelledby="overview-heading">
           <h2 id="overview-heading" className={sectionHeading}>Overview</h2>
           <p className="leading-relaxed text-muted-foreground">
-            Use this template when people need to browse, find, compare, and maintain a structured collection such as users, customers, vendors, projects, or inventory. It keeps the data table as the main work surface and avoids dashboard metrics that do not support the task.
+            Data Management List is designed for routine record management where users need to search, create, update, organize, and delete structured data efficiently.
           </p>
           <p className="leading-relaxed text-muted-foreground">
-            The preview uses generic directory records and Parry&apos;s default semantic tokens. Its structure is intentionally product-neutral and can later accept the Cognivo, Sociomile, Ripple10, or Agentics theme and data configuration without separate template implementations.
+            Common use cases include contact management, customer records, user management, agent lists, and knowledge management. The preview keeps the data table as the main work surface and uses the existing Team Directory demo data.
+          </p>
+          <p className="leading-relaxed text-muted-foreground">
+            Its structure is product-neutral and can later accept different themes and data configurations without separate template implementations.
           </p>
         </section>
 
@@ -98,14 +102,14 @@ export default function DataManagementListPage() {
 
         <section id="features-variants" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="features-heading">
           <h2 id="features-heading" className={sectionHeading}>Features &amp; Variants</h2>
-          <p className="leading-relaxed text-muted-foreground">The collection header, data table, row feedback, and clear primary action form the core. Search, filters, row selection, bulk actions, row menus, pagination, and advanced filters are optional and can be enabled independently.</p>
+          <p className="leading-relaxed text-muted-foreground">The collection header, data table, row feedback, and clear primary action form the core. Search, basic filters, row selection, bulk actions, row menus, and pagination support routine record management and can be enabled as needed.</p>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Core structure</CardTitle>
               <CardDescription>Always present in the template</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {["Page title and description", "Add Record action", "Configurable table columns", "Loading and empty feedback"].map((feature) => <Badge key={feature} variant="secondary">{feature}</Badge>)}
+              {["Page title and description", "Add Record action", "Stable sortable columns", "Loading and empty feedback"].map((feature) => <Badge key={feature} variant="secondary">{feature}</Badge>)}
             </CardContent>
           </Card>
           <Card>
@@ -114,9 +118,43 @@ export default function DataManagementListPage() {
               <CardDescription>Choose optional features that fit the workflow</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {["Search", "Status filters", "Row selection", "Bulk actions", "Edit and delete menus", "Pagination", "Department filter"].map((feature) => <Badge key={feature} variant="outline">{feature}</Badge>)}
+              {["Search", "Status and department filters", "Row selection", "Bulk actions", "Edit and delete menus", "Pagination"].map((feature) => <Badge key={feature} variant="outline">{feature}</Badge>)}
             </CardContent>
           </Card>
+        </section>
+
+        <section id="when-to-use" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="when-to-use-heading">
+          <h2 id="when-to-use-heading" className={sectionHeading}>When to Use</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Use Data Management List when</CardTitle>
+                <CardDescription>Routine record maintenance is the primary workflow.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="flex list-disc flex-col gap-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                  <li>Creating and maintaining records is the primary task.</li>
+                  <li>Users need standard search, filters, sorting, and pagination.</li>
+                  <li>CRUD operations and bulk record actions are common.</li>
+                  <li>Table columns are relatively stable.</li>
+                </ul>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Consider Advanced Filterable Table</CardTitle>
+                <CardDescription>This is a future template for more involved data exploration.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="flex list-disc flex-col gap-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                  <li>Users need complex multi-condition filtering.</li>
+                  <li>Users frequently inspect large datasets.</li>
+                  <li>Saved Views are important.</li>
+                  <li>Users need grouping, advanced column controls, or detail inspection panels.</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
         </section>
 
         <section id="states" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="states-heading">

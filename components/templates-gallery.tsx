@@ -35,7 +35,7 @@ const templates: Template[] = [
   {
     slug: "data-management-list",
     name: "Data Management List",
-    description: "A configurable table for finding, filtering, and maintaining business records.",
+    description: "A reusable record management template for creating, organizing, updating, and deleting structured business data.",
     category: "Table",
     reference: "Parry UI · Data management",
   },

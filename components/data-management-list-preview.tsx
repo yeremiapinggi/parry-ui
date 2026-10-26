@@ -9,7 +9,6 @@ import {
   ChevronRightIcon,
   CirclePlusIcon,
   ChevronDownIcon,
-  FilterIcon,
   MoreHorizontalIcon,
   SearchIcon,
   XIcon,
@@ -46,7 +45,7 @@ type DemoRecord = {
   created: string
 }
 type Condition = "normal" | "few" | "empty" | "loading"
-type FeatureKey = "search" | "filters" | "rowSelection" | "bulkActions" | "rowActions" | "pagination" | "advancedFilters"
+type FeatureKey = "search" | "filters" | "rowSelection" | "bulkActions" | "rowActions" | "pagination"
 type SortKey = "name" | "company" | "department" | "status" | "created"
 type FeatureConfig = Record<FeatureKey, boolean>
 type FormValues = Pick<DemoRecord, "name" | "email" | "company" | "department" | "status">
@@ -73,7 +72,6 @@ const featureOptions: { key: FeatureKey; label: string; description: string }[] 
   { key: "bulkActions", label: "Bulk actions", description: "Show actions for selected rows" },
   { key: "rowActions", label: "Row actions", description: "Edit or remove a record" },
   { key: "pagination", label: "Pagination", description: "Navigate and adjust page size" },
-  { key: "advancedFilters", label: "Advanced filters", description: "Add a department filter" },
 ]
 
 const defaultFeatures: FeatureConfig = {
@@ -83,7 +81,6 @@ const defaultFeatures: FeatureConfig = {
   bulkActions: true,
   rowActions: true,
   pagination: true,
-  advancedFilters: true,
 }
 
 const formDefaults: FormValues = { name: "", email: "", company: "", department: "", status: "Active" }
@@ -123,7 +120,6 @@ export function DataManagementListPreview({ showControls = true }: { showControl
   const [query, setQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [departmentFilter, setDepartmentFilter] = useState("all")
-  const [advancedOpen, setAdvancedOpen] = useState(false)
   const [sortKey, setSortKey] = useState<SortKey>("created")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [page, setPage] = useState(1)
@@ -142,14 +138,14 @@ export function DataManagementListPreview({ showControls = true }: { showControl
         const matchesQuery = !features.search || !normalizedQuery ||
           [record.name, record.email, record.company, record.department].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))
         const matchesStatus = !features.filters || statusFilter === "all" || record.status === statusFilter
-        const matchesDepartment = !features.advancedFilters || departmentFilter === "all" || record.department === departmentFilter
+        const matchesDepartment = !features.filters || departmentFilter === "all" || record.department === departmentFilter
         return matchesQuery && matchesStatus && matchesDepartment
       })
       .sort((first, second) => {
         const result = String(getColumnValue(first, sortKey)).localeCompare(String(getColumnValue(second, sortKey)), undefined, { numeric: true })
         return sortDirection === "asc" ? result : -result
       })
-  }, [condition, departmentFilter, features.advancedFilters, features.filters, features.search, query, records, sortDirection, sortKey, statusFilter])
+  }, [condition, departmentFilter, features.filters, features.search, query, records, sortDirection, sortKey, statusFilter])
 
   const parsedPageSize = Number(pageSize)
   const pageCount = Math.max(1, Math.ceil(filteredRecords.length / parsedPageSize))
@@ -175,10 +171,9 @@ export function DataManagementListPreview({ showControls = true }: { showControl
   function updateFeature(key: FeatureKey, enabled: boolean) {
     setFeatures((current) => ({ ...current, [key]: enabled }))
     if (!enabled && key === "search") setQuery("")
-    if (!enabled && key === "filters") setStatusFilter("all")
-    if (!enabled && key === "advancedFilters") {
+    if (!enabled && key === "filters") {
+      setStatusFilter("all")
       setDepartmentFilter("all")
-      setAdvancedOpen(false)
     }
     if (!enabled && key === "pagination") setPage(1)
     if (!enabled && key === "rowSelection") setSelectedIds(new Set())
@@ -208,7 +203,6 @@ export function DataManagementListPreview({ showControls = true }: { showControl
     setQuery("")
     setStatusFilter("all")
     setDepartmentFilter("all")
-    setAdvancedOpen(false)
     resetPageAndSelection()
   }
 
@@ -368,10 +362,16 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                       </SelectContent>
                     </Select>
                   )}
-                  {features.advancedFilters && (
-                    <Button type="button" variant={advancedOpen ? "secondary" : "outline"} onClick={() => setAdvancedOpen((open) => !open)} aria-pressed={advancedOpen}>
-                      <FilterIcon data-icon="inline-start" /> Advanced filters
-                    </Button>
+                  {features.filters && (
+                    <Select value={departmentFilter} onValueChange={changeDepartment}>
+                      <SelectTrigger aria-label="Filter by department" className="w-full sm:w-44"><SelectValue placeholder="All departments" /></SelectTrigger>
+                      <SelectContent data-parry-theme>
+                        <SelectGroup>
+                          <SelectItem value="all">All departments</SelectItem>
+                          {departments.map((department) => <SelectItem key={department} value={department}>{department}</SelectItem>)}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   )}
                   {hasFilters && (
                     <Button type="button" variant="ghost" onClick={resetFilters} className="justify-start sm:ml-auto sm:justify-center">
@@ -380,20 +380,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
                   )}
                 </div>
               )}
-              {features.advancedFilters && advancedOpen && condition !== "loading" && (
-                <div className="flex flex-col gap-2 rounded-lg border bg-muted/40 p-3 sm:flex-row sm:items-center">
-                  <Label htmlFor="department-filter" className="text-sm">Department</Label>
-                  <Select value={departmentFilter} onValueChange={changeDepartment}>
-                    <SelectTrigger id="department-filter" className="w-full sm:w-48"><SelectValue /></SelectTrigger>
-                    <SelectContent data-parry-theme>
-                      <SelectGroup>
-                        <SelectItem value="all">All departments</SelectItem>
-                        {departments.map((department) => <SelectItem key={department} value={department}>{department}</SelectItem>)}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+
             </div>
 
             {features.bulkActions && features.rowSelection && selectedIds.size > 0 && condition !== "loading" && (
