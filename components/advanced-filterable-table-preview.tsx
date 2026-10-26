@@ -608,7 +608,7 @@ export function AdvancedFilterableTablePreview() {
               </Tooltip>
             </TooltipProvider>
             <Select value={groupBy} onValueChange={(value) => updateConfiguration({ groupBy: value as GroupByKey | "none" })}>
-              <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem] justify-start"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue className="min-w-0 flex-1 text-left" /></SelectTrigger>
+              <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem] justify-between"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue className="min-w-0 flex-1 text-left" /></SelectTrigger>
               <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
             </Select>
             <DropdownMenu>
