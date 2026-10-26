@@ -62,7 +62,7 @@ export default function DataManagementListPage() {
           <Badge variant="secondary">Page template</Badge>
           <h1 className="font-heading text-4xl font-bold tracking-tight text-balance">Data Management List</h1>
           <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
-            A practical, reusable foundation for managing records in enterprise SaaS products. Configure the preview below to explore common options and states.
+            A practical, reusable foundation for managing records in enterprise SaaS products. Explore its structure here, then open the catalog preview to try optional features and states.
           </p>
         </header>
 
@@ -79,9 +79,9 @@ export default function DataManagementListPage() {
         <section id="live-preview" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="preview-heading">
           <div className="flex flex-col gap-1">
             <h2 id="preview-heading" className={sectionHeading}>Live Preview</h2>
-            <p className="text-sm leading-relaxed text-muted-foreground">Try searching, filtering, sorting, selecting rows, changing page size, and editing the demo records. All changes stay in local React state.</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">Try searching, filtering, sorting, selecting rows, changing page size, and managing the demo records. The preview focuses on the table itself; optional template controls are available from the catalog preview.</p>
           </div>
-          <DataManagementListPreview />
+          <DataManagementListPreview showControls={false} />
         </section>
 
         <section id="anatomy" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="anatomy-heading">
@@ -111,7 +111,7 @@ export default function DataManagementListPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Optional functionality</CardTitle>
-              <CardDescription>Use Template Controls to try each option</CardDescription>
+              <CardDescription>Choose optional features that fit the workflow</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
               {["Search", "Status filters", "Row selection", "Bulk actions", "Edit and delete menus", "Pagination", "Department filter"].map((feature) => <Badge key={feature} variant="outline">{feature}</Badge>)}
@@ -121,7 +121,7 @@ export default function DataManagementListPage() {
 
         <section id="states" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="states-heading">
           <h2 id="states-heading" className={sectionHeading}>States</h2>
-          <p className="leading-relaxed text-muted-foreground">Use the Condition control beside the preview to inspect each state. Switching conditions updates the toolbar and table together.</p>
+          <p className="leading-relaxed text-muted-foreground">Open the template preview from the catalog to switch between these states. Each condition updates the toolbar and table together.</p>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
               ["Normal", "A populated directory with search, filtering, selection, and pagination available."],

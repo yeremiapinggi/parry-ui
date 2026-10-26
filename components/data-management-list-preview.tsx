@@ -8,6 +8,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CirclePlusIcon,
+  ChevronDownIcon,
   FilterIcon,
   MoreHorizontalIcon,
   SearchIcon,
@@ -17,7 +18,6 @@ import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -116,7 +116,7 @@ function getColumnValue(record: DemoRecord, key: SortKey) {
   return key === "created" ? record.created : record[key]
 }
 
-export function DataManagementListPreview() {
+export function DataManagementListPreview({ showControls = true }: { showControls?: boolean }) {
   const [records, setRecords] = useState(initialRecords)
   const [condition, setCondition] = useState<Condition>("normal")
   const [features, setFeatures] = useState<FeatureConfig>(defaultFeatures)
@@ -288,40 +288,45 @@ export function DataManagementListPreview() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <Card className="h-fit">
-          <CardHeader className="gap-1 pb-3">
-            <CardTitle className="text-base">Template Controls</CardTitle>
-            <CardDescription>Adjust the preview without changing the template.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="preview-condition">Condition</Label>
-              <Select value={condition} onValueChange={(value) => changeCondition(value as Condition)}>
-                <SelectTrigger id="preview-condition" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {conditionOptions.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-3 border-t pt-4">
-              <p className="text-sm font-medium">Optional features</p>
-              {featureOptions.map(({ key, label, description }) => (
-                <div key={key} className="flex items-center justify-between gap-3">
-                  <div className="flex min-w-0 flex-col gap-0.5">
-                    <Label htmlFor={`feature-${key}`} className="text-sm">{label}</Label>
-                    <span className="text-xs leading-relaxed text-muted-foreground">{description}</span>
+      <div className="flex flex-col gap-4">
+        {showControls && (
+          <details className="group rounded-xl border bg-card">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-xl p-4 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+              <span className="flex flex-col gap-1">
+                <span className="font-heading text-base font-semibold">Preview settings</span>
+                <span className="text-sm text-muted-foreground">Conditions and optional features</span>
+              </span>
+              <ChevronDownIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="grid gap-4 border-t p-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="preview-condition">Condition</Label>
+                <Select value={condition} onValueChange={(value) => changeCondition(value as Condition)}>
+                  <SelectTrigger id="preview-condition" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {conditionOptions.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-medium">Optional features</p>
+                {featureOptions.map(({ key, label, description }) => (
+                  <div key={key} className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 flex-col gap-0.5">
+                      <Label htmlFor={`feature-${key}`} className="text-sm">{label}</Label>
+                      <span className="text-xs leading-relaxed text-muted-foreground">{description}</span>
+                    </div>
+                    <Switch id={`feature-${key}`} checked={features[key]} onCheckedChange={(checked) => updateFeature(key, checked)} aria-label={`Toggle ${label}`} />
                   </div>
-                  <Switch id={`feature-${key}`} checked={features[key]} onCheckedChange={(checked) => updateFeature(key, checked)} aria-label={`Toggle ${label}`} />
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </details>
+        )}
 
         <section aria-label="Live data management list preview" className="product-scope min-w-0 overflow-hidden rounded-xl border bg-card">
           <div className="flex flex-col gap-5 p-4 sm:p-6">
@@ -400,7 +405,7 @@ export function DataManagementListPreview() {
             )}
 
             <div className="min-w-0 overflow-hidden rounded-lg border">
-              <Table>
+              <Table className="min-w-[860px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     {features.rowSelection && (
