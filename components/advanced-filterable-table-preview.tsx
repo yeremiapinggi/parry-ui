@@ -570,7 +570,8 @@ export function AdvancedFilterableTablePreview() {
                 {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>{savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}</SelectGroup>}
               </SelectContent>
             </Select>
-            {hasUnsavedChanges && <Badge variant="outline" className="border-warning/40 bg-warning-soft text-warning">Unsaved changes</Badge>}
+            <StatusQuickFilter selectedStatuses={quickFilters.statuses} onChange={(statuses) => updateConfiguration({ quickFilters: { ...quickFilters, statuses } })} />
+            <PriorityQuickFilter selectedPriority={quickFilters.priority} onChange={(priority) => updateConfiguration({ quickFilters: { ...quickFilters, priority } })} />
             <DropdownMenu>
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
@@ -580,6 +581,7 @@ export function AdvancedFilterableTablePreview() {
               </TooltipProvider>
               <DropdownMenuContent data-parry-theme align="start" className="w-52">
                 <DropdownMenuGroup>
+                  {!selectedView.builtIn && hasUnsavedChanges && <DropdownMenuItem onSelect={saveCurrentView}>Save changes</DropdownMenuItem>}
                   {!selectedView.builtIn && <DropdownMenuItem onSelect={openRenameDialog}>Rename view</DropdownMenuItem>}
                   <DropdownMenuItem onSelect={openDuplicateDialog}>Duplicate view</DropdownMenuItem>
                   {hasUnsavedChanges && <DropdownMenuItem onSelect={() => { setConfiguration(selectedView.configuration); setSelectedRecordId(null) }}>Reset changes</DropdownMenuItem>}
@@ -594,19 +596,6 @@ export function AdvancedFilterableTablePreview() {
 
           <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5">
             <AdvancedTableViewOptions configuration={configuration} onChange={updateConfiguration} />
-            <StatusQuickFilter selectedStatuses={quickFilters.statuses} onChange={(statuses) => updateConfiguration({ quickFilters: { ...quickFilters, statuses } })} />
-            <PriorityQuickFilter selectedPriority={quickFilters.priority} onChange={(priority) => updateConfiguration({ quickFilters: { ...quickFilters, priority } })} />
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button type="button" variant={advancedConditionCount > 0 ? "secondary" : "outline"} size="icon-sm" className="relative" aria-label={advancedConditionCount > 0 ? `Advanced filter, ${advancedConditionCount} active conditions` : "Advanced filter"} aria-expanded={isAdvancedExpanded} aria-controls={isAdvancedExpanded ? "advanced-filter-builder" : undefined} onClick={() => setIsAdvancedExpanded((expanded) => !expanded)}>
-                    <FilterIcon />
-                    {advancedConditionCount > 0 && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 rounded-full bg-primary" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent data-parry-theme>Advanced filter</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
             <Select value={groupBy} onValueChange={(value) => updateConfiguration({ groupBy: value as GroupByKey | "none" })}>
               <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem] justify-between"><span className="flex min-w-0 items-center gap-2"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue className="min-w-0 text-left" /></span></SelectTrigger>
               <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
@@ -623,8 +612,18 @@ export function AdvancedFilterableTablePreview() {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            {hasUnsavedChanges && !selectedView.builtIn && <Button type="button" size="sm" className="h-8" onClick={saveCurrentView}>Save changes</Button>}
-            <Button type="button" variant={selectedView.builtIn && hasUnsavedChanges ? "default" : "outline"} size="sm" className="h-8" onClick={openSaveAsDialog}>Save as</Button>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button type="button" variant={advancedConditionCount > 0 ? "secondary" : "outline"} size="icon-sm" className="relative" aria-label={advancedConditionCount > 0 ? `Advanced filter, ${advancedConditionCount} active conditions` : "Advanced filter"} aria-expanded={isAdvancedExpanded} aria-controls={isAdvancedExpanded ? "advanced-filter-builder" : undefined} onClick={() => setIsAdvancedExpanded((expanded) => !expanded)}>
+                    <FilterIcon />
+                    {advancedConditionCount > 0 && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 rounded-full bg-primary" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent data-parry-theme>Advanced filter</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <Button type="button" variant={hasUnsavedChanges ? "default" : "outline"} size="sm" className="h-8" disabled={!hasUnsavedChanges} onClick={openSaveAsDialog}>Save as</Button>
           </div>
         </div>
         <AdvancedFilterBuilder
