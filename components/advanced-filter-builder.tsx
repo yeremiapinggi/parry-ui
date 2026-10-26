@@ -279,7 +279,7 @@ export function AdvancedFilterBuilder({
         <FilterIcon data-icon="inline-start" />Filters{conditionCount(appliedFilters) > 0 && <Badge variant="secondary" className="ml-1 px-1.5 py-0">{conditionCount(appliedFilters)}</Badge>}
       </Button>
       <Dialog open={open} onOpenChange={(nextOpen) => { setOpen(nextOpen); if (nextOpen) setDraft(cloneFilterGroup(appliedFilters)) }}>
-        <DialogContent className="font-data max-h-[min(90dvh,52rem)] w-[min(46rem,calc(100vw-2rem))] max-w-none overflow-y-auto" aria-describedby="advanced-filter-description">
+        <DialogContent className="font-data max-h-[min(90dvh,52rem)] w-[min(46rem,calc(100vw-2rem))] max-w-none sm:max-w-[min(46rem,calc(100vw-2rem))] overflow-y-auto" aria-describedby="advanced-filter-description">
           <DialogHeader>
             <DialogTitle>Advanced Filter Builder</DialogTitle>
             <DialogDescription id="advanced-filter-description">Combine text, status, priority, owner, and date conditions. A single nested group supports a second level of logic.</DialogDescription>
