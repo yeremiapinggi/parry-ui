@@ -34,10 +34,10 @@ const densityOptions: { value: TableDensity; label: string; description: string 
 
 const groupingOptions: { value: GroupByKey | "none"; label: string }[] = [
   { value: "none", label: "None" },
-  { value: "status", label: "Status" },
-  { value: "channel", label: "Channel" },
-  { value: "priority", label: "Priority" },
   { value: "owner", label: "Owner" },
+  { value: "status", label: "Status" },
+  { value: "priority", label: "Priority" },
+  { value: "channel", label: "Channel" },
 ]
 
 function ColumnOptions({ configuration, onChange, onReset }: {
@@ -152,8 +152,8 @@ export function AdvancedTableViewOptions({ configuration, onChange }: {
               <div><h3 className="text-sm font-semibold">Group records</h3><p className="text-xs text-muted-foreground">Group the filtered results and expand or collapse each section.</p></div>
               <label className="flex flex-col gap-1.5 text-sm font-medium">Group by
                 <Select value={configuration.groupBy} onValueChange={(value) => onChange({ groupBy: value as GroupByKey | "none" })}>
-                  <SelectTrigger aria-label="Group records by"><SelectValue /></SelectTrigger>
-                  <SelectContent data-parry-theme><SelectGroup>{groupingOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+                <SelectTrigger aria-label="Group records by" className="w-full justify-start"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue className="min-w-0 flex-1 text-left" /></SelectTrigger>
+                <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{groupingOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
                 </Select>
               </label>
               <p className="text-xs leading-relaxed text-muted-foreground">Group counts reflect all matching records, not only the current page.</p>

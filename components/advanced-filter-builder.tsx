@@ -64,12 +64,14 @@ type Composer = {
 
 export function AdvancedFilterBuilder({
   appliedFilters,
+  expanded,
   search,
   onSearchChange,
   onApply,
   onClear,
 }: {
   appliedFilters: FilterGroup
+  expanded: boolean
   search: string
   onSearchChange: (value: string) => void
   onApply: (filters: FilterGroup) => void
@@ -78,9 +80,7 @@ export function AdvancedFilterBuilder({
   const [composer, setComposer] = useState<Composer | null>(null)
   const valueInputRef = useRef<HTMLInputElement>(null)
   const flattened = flattenConditions(appliedFilters)
-  const activeTerms = appliedFilters.conditions.length + appliedFilters.groups.filter((group) => group.conditions.length > 0).length
   const hasFilters = flattened.length > 0 || appliedFilters.groups.length > 0
-  const hasQuery = hasFilters || Boolean(search.trim())
   const shouldFocusValueInput = Boolean(composer && fieldType(composer.condition.field) !== "enum" && composer.condition.operator !== "is_any_of")
 
   useEffect(() => {
@@ -266,32 +266,34 @@ export function AdvancedFilterBuilder({
   function renderLogic(group: FilterGroup, label: string) {
     return <Select value={group.logic} onValueChange={(value) => changeLogic(group.id, value as FilterLogic)}>
       <SelectTrigger aria-label={`${label} match logic`} className="h-7 w-[7.25rem] shrink-0 px-2 text-xs"><SelectValue /></SelectTrigger>
-      <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup><SelectItem value="AND">Match all</SelectItem><SelectItem value="OR">Match any</SelectItem></SelectGroup></SelectContent>
+      <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup><SelectItem value="AND">Match All</SelectItem><SelectItem value="OR">Match Any</SelectItem></SelectGroup></SelectContent>
     </Select>
   }
 
-  return <div className="flex min-w-0 flex-col gap-2.5 rounded-lg border bg-background p-2.5 sm:flex-row sm:items-start sm:p-3">
+  return <div className="flex min-w-0 flex-col gap-2">
     <div className="relative min-w-0 sm:w-56 sm:shrink-0">
       <SearchIcon aria-hidden="true" className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
       <Input aria-label="Search records" placeholder="Search records…" value={search} onChange={(event) => onSearchChange(event.target.value)} className="h-8 border-transparent bg-muted/40 pl-9 shadow-none focus-visible:border-ring sm:w-full" />
     </div>
-    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2" aria-label="Filter query">
-      {activeTerms > 1 && renderLogic(appliedFilters, "Query")}
-      {appliedFilters.conditions.map((condition) => renderConditionChip(condition, appliedFilters.id))}
-      {appliedFilters.groups.map((group) => <div key={group.id} className="flex min-w-0 max-w-full flex-wrap items-center gap-1.5 rounded-md border border-dashed border-info/30 bg-info-soft/30 px-2 py-1.5">
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground"><Layers3Icon aria-hidden="true" className="size-3.5" />Group</span>
-        {group.conditions.length > 1 && renderLogic(group, "Group")}
-        {group.conditions.map((condition) => renderConditionChip(condition, group.id))}
-        {renderAddCondition(group.id, "Add")}
-        <Button type="button" variant="ghost" size="icon-xs" className="size-7 shrink-0" aria-label="Remove condition group" onClick={() => removeGroup(group.id)}><XIcon /></Button>
-      </div>)}
-      {renderAddCondition(appliedFilters.id)}
-      <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs" onClick={addGroup}>
-        <Layers3Icon data-icon="inline-start" />Add group
-      </Button>
-    </div>
-    {hasQuery && <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 self-end px-2 text-xs sm:self-start" onClick={onClear}>
-      <FilterXIcon data-icon="inline-start" />Clear all
-    </Button>}
+    {expanded && <div id="advanced-filter-builder" className="flex min-w-0 flex-col gap-2.5 rounded-lg border bg-background p-2.5 sm:p-3">
+      <div className="flex min-w-0 flex-wrap items-center gap-2" aria-label="Advanced filter query">
+        {renderLogic(appliedFilters, "Query")}
+        {appliedFilters.conditions.map((condition) => renderConditionChip(condition, appliedFilters.id))}
+        {appliedFilters.groups.map((group) => <div key={group.id} className="flex min-w-0 max-w-full flex-wrap items-center gap-1.5 rounded-md border border-dashed border-info/30 bg-info-soft/30 px-2 py-1.5">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground"><Layers3Icon aria-hidden="true" className="size-3.5" />Group</span>
+          {group.conditions.length > 1 && renderLogic(group, "Group")}
+          {group.conditions.map((condition) => renderConditionChip(condition, group.id))}
+          {renderAddCondition(group.id, "Add")}
+          <Button type="button" variant="ghost" size="icon-xs" className="size-7 shrink-0" aria-label="Remove condition group" onClick={() => removeGroup(group.id)}><XIcon /></Button>
+        </div>)}
+        {renderAddCondition(appliedFilters.id)}
+        <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs" onClick={addGroup}>
+          <Layers3Icon data-icon="inline-start" />Add group
+        </Button>
+        {hasFilters && <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs text-muted-foreground" onClick={onClear}>
+          <FilterXIcon data-icon="inline-start" />Clear advanced filters
+        </Button>}
+      </div>
+    </div>}
   </div>
 }

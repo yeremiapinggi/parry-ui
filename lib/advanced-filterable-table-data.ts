@@ -43,8 +43,14 @@ export type SortConfiguration = {
 export type TableDensity = "compact" | "default" | "comfortable"
 export type StickyColumnCount = 0 | 1 | 2
 
+export type QuickFilterConfiguration = {
+  statuses: RecordStatus[]
+  priority: RecordPriority | null
+}
+
 export type ViewConfiguration = {
   search: string
+  quickFilters: QuickFilterConfiguration
   filters: FilterGroup
   sort: SortConfiguration
   visibleColumns: ColumnKey[]
@@ -161,6 +167,7 @@ function savedFilter(id: string, field: FilterField, operator: FilterOperator, v
 
 export const defaultConfiguration: ViewConfiguration = {
   search: "",
+  quickFilters: { statuses: [], priority: null },
   filters: { id: "root-default", logic: "AND", conditions: [], groups: [] },
   sort: { key: "createdAt", direction: "desc" },
   visibleColumns: [...defaultVisibleColumns],

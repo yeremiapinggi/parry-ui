@@ -5,9 +5,12 @@ import {
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
+  CheckIcon,
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   EllipsisIcon,
+  FilterIcon,
   GripVerticalIcon,
   Layers3Icon,
 } from "lucide-react"
@@ -20,15 +23,19 @@ import {
   defaultConfiguration,
   demoRecords,
   demoSavedViews,
+  recordPriorities,
+  recordStatuses,
   tableColumns,
   type ColumnKey,
   type EnterpriseRecord,
   type FilterGroup,
   type GroupByKey,
+  type RecordPriority,
+  type RecordStatus,
   type SavedView,
   type ViewConfiguration,
 } from "@/lib/advanced-filterable-table-data"
-import { cloneFilterGroup, recordMatchesGroup, sortRecords } from "@/lib/advanced-filter-engine"
+import { cloneFilterGroup, flattenConditions, recordMatchesGroup, sortRecords } from "@/lib/advanced-filter-engine"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -36,6 +43,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -44,11 +52,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const STORAGE_KEY = "parry-ui-advanced-filterable-table-views-v1"
 const pageSizeOptions = [10, 20, 50]
 const groupOptions: { value: GroupByKey | "none"; label: string }[] = [
-  { value: "none", label: "No grouping" },
-  { value: "status", label: "Status" },
-  { value: "channel", label: "Channel" },
-  { value: "priority", label: "Priority" },
+  { value: "none", label: "None" },
   { value: "owner", label: "Owner" },
+  { value: "status", label: "Status" },
+  { value: "priority", label: "Priority" },
+  { value: "channel", label: "Channel" },
 ]
 const selectionColumnWidth = 40
 const columnWidths: Record<ColumnKey, number> = {
@@ -85,6 +93,74 @@ function priorityTone(priority: EnterpriseRecord["priority"]) {
   return "border-info/30 bg-info-soft text-info"
 }
 
+function StatusQuickFilter({ selectedStatuses, onChange }: {
+  selectedStatuses: RecordStatus[]
+  onChange: (statuses: RecordStatus[]) => void
+}) {
+  function toggleStatus(status: RecordStatus, checked: boolean | "indeterminate") {
+    const nextStatuses = new Set(selectedStatuses)
+    if (checked) nextStatuses.add(status)
+    else nextStatuses.delete(status)
+    onChange(recordStatuses.filter((option) => nextStatuses.has(option)))
+  }
+
+  return <Popover>
+    <PopoverTrigger asChild>
+      <Button type="button" variant={selectedStatuses.length ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5 px-2.5" aria-label={selectedStatuses.length ? `Filter by status, ${selectedStatuses.length} selected` : "Filter by status"}>
+        Status
+        {selectedStatuses.length > 0 && <Badge variant="outline" className="h-5 min-w-5 px-1 text-[10px]">{selectedStatuses.length}</Badge>}
+        <ChevronDownIcon data-icon="inline-end" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
+      <div className="flex items-center justify-between gap-2 px-2 py-1">
+        <span className="text-xs font-semibold">Status</span>
+        <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={selectedStatuses.length === 0} onClick={() => onChange([])}>Clear</Button>
+      </div>
+      <fieldset className="flex flex-col gap-0.5" aria-label="Filter by status">
+        {recordStatuses.map((status) => <label key={status} className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-muted">
+          <Checkbox checked={selectedStatuses.includes(status)} onCheckedChange={(checked) => toggleStatus(status, checked)} />
+          <span className="text-left">{status}</span>
+        </label>)}
+      </fieldset>
+    </PopoverContent>
+  </Popover>
+}
+
+function PriorityQuickFilter({ selectedPriority, onChange }: {
+  selectedPriority: RecordPriority | null
+  onChange: (priority: RecordPriority | null) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const options: { value: RecordPriority | null; label: string }[] = [
+    { value: null, label: "All priorities" },
+    ...recordPriorities.map((priority) => ({ value: priority, label: priority })),
+  ]
+
+  function selectPriority(priority: RecordPriority | null) {
+    onChange(priority === selectedPriority ? null : priority)
+    setOpen(false)
+  }
+
+  return <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild>
+      <Button type="button" variant={selectedPriority ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5 px-2.5" aria-label={selectedPriority ? `Filter by priority: ${selectedPriority}` : "Filter by priority"}>
+        Priority
+        {selectedPriority && <Badge variant="outline" className="h-5 px-1.5 text-[10px]">{selectedPriority}</Badge>}
+        <ChevronDownIcon data-icon="inline-end" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
+      <div className="flex flex-col gap-0.5" role="group" aria-label="Priority options">
+        {options.map(({ value, label }) => <Button key={value ?? "all"} type="button" variant="ghost" size="sm" className="h-8 w-full justify-between px-2 text-left font-normal" aria-pressed={selectedPriority === value} onClick={() => selectPriority(value)}>
+          <span className="text-left">{label}</span>
+          {selectedPriority === value && <CheckIcon aria-hidden="true" />}
+        </Button>)}
+      </div>
+    </PopoverContent>
+  </Popover>
+}
+
 function displayCell(record: EnterpriseRecord, key: ColumnKey) {
   const value = record[key]
   if (key === "status") return <Badge variant="outline" className={statusTone(record.status)}>{record.status}</Badge>
@@ -106,6 +182,7 @@ function safeConfiguration(value: unknown): value is ViewConfiguration {
     !!candidate.sort && (candidate.sort.key === null || isColumnKey(candidate.sort.key)) &&
     (candidate.sort.direction === "asc" || candidate.sort.direction === "desc") &&
     !!candidate.filters && typeof candidate.filters === "object" && Array.isArray(candidate.filters.conditions) && Array.isArray(candidate.filters.groups) &&
+    (candidate.quickFilters === undefined || (!!candidate.quickFilters && Array.isArray(candidate.quickFilters.statuses) && candidate.quickFilters.statuses.every((status) => recordStatuses.includes(status)) && (candidate.quickFilters.priority === null || recordPriorities.includes(candidate.quickFilters.priority)))) &&
     (candidate.groupBy === "none" || groupOptions.some(({ value: group }) => group === candidate.groupBy)) &&
     pageSizeOptions.includes(candidate.pageSize ?? 0)
 }
@@ -120,6 +197,10 @@ function normalizeConfiguration(configuration: ViewConfiguration): ViewConfigura
   return {
     ...defaultConfiguration,
     ...configuration,
+    quickFilters: {
+      statuses: recordStatuses.filter((status) => configuration.quickFilters?.statuses?.includes(status)),
+      priority: configuration.quickFilters?.priority && recordPriorities.includes(configuration.quickFilters.priority) ? configuration.quickFilters.priority : null,
+    },
     filters: cloneFilterGroup(configuration.filters),
     columnOrder: orderedKeys,
     visibleColumns: orderedKeys.filter((key) => visibleKeys.has(key)),
@@ -172,6 +253,7 @@ export function AdvancedFilterableTablePreview() {
   const [viewDialog, setViewDialog] = useState<"create" | "rename" | "delete" | "duplicate" | null>(null)
   const [viewName, setViewName] = useState("")
   const [viewError, setViewError] = useState<string | null>(null)
+  const [isAdvancedExpanded, setIsAdvancedExpanded] = useState(false)
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
   const [selectedRecordIds, setSelectedRecordIds] = useState<Set<string>>(() => new Set())
   const [isNarrow, setIsNarrow] = useState(false)
@@ -183,7 +265,7 @@ export function AdvancedFilterableTablePreview() {
   const tableViewportRef = useRef<HTMLDivElement>(null)
 
   const configuration = configurationState
-  const { search: query, filters, sort, visibleColumns, columnOrder, density, stickyFirst, stickyLast, groupBy, pageSize } = configuration
+  const { search: query, quickFilters, filters, sort, visibleColumns, columnOrder, density, stickyFirst, stickyLast, groupBy, pageSize } = configuration
 
   useEffect(() => {
     try {
@@ -245,15 +327,18 @@ export function AdvancedFilterableTablePreview() {
 
   const selectedView = savedViews.find(({ id }) => id === selectedViewId) ?? demoSavedViews[0]
   const hasUnsavedChanges = !equalConfiguration(configuration, selectedView.configuration)
+  const advancedConditionCount = flattenConditions(filters).length
 
   const matchingRecords = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase()
     const filtered = demoRecords.filter((record) => {
       const matchesSearch = !normalizedQuery || Object.values(record).some((value) => String(value).toLocaleLowerCase().includes(normalizedQuery))
-      return matchesSearch && recordMatchesGroup(record, filters)
+      const matchesQuickStatuses = quickFilters.statuses.length === 0 || quickFilters.statuses.includes(record.status)
+      const matchesQuickPriority = quickFilters.priority === null || record.priority === quickFilters.priority
+      return matchesSearch && matchesQuickStatuses && matchesQuickPriority && recordMatchesGroup(record, filters)
     })
     return sortRecords(filtered, sort)
-  }, [filters, query, sort])
+  }, [filters, query, quickFilters, sort])
 
   const pageCount = Math.max(1, Math.ceil(matchingRecords.length / pageSize))
   const currentPage = Math.min(page, pageCount)
@@ -293,11 +378,12 @@ export function AdvancedFilterableTablePreview() {
       ...current,
       ...patch,
       ...(patch.filters ? { filters: cloneFilterGroup(patch.filters) } : {}),
+      ...(patch.quickFilters ? { quickFilters: { statuses: [...patch.quickFilters.statuses], priority: patch.quickFilters.priority } } : {}),
       ...(patch.sort ? { sort: { ...patch.sort } } : {}),
       ...(patch.visibleColumns ? { visibleColumns: [...patch.visibleColumns] } : {}),
       ...(patch.columnOrder ? { columnOrder: [...patch.columnOrder] } : {}),
     }))
-    if (patch.groupBy !== undefined || patch.search !== undefined || patch.filters !== undefined || patch.sort !== undefined || patch.pageSize !== undefined) setPage(1)
+    if (patch.groupBy !== undefined || patch.search !== undefined || patch.filters !== undefined || patch.quickFilters !== undefined || patch.sort !== undefined || patch.pageSize !== undefined) setPage(1)
     if (patch.groupBy !== undefined) setCollapsedGroups(new Set())
   }
 
@@ -319,7 +405,7 @@ export function AdvancedFilterableTablePreview() {
     setSelectedRecordIds(new Set())
   }
 
-  function clearAllFilters() {
+  function clearAdvancedFilters() {
     updateConfiguration({ filters: { id: `root-${Date.now()}`, logic: "AND", conditions: [], groups: [] } })
     setSelectedRecordId(null)
   }
@@ -475,17 +561,16 @@ export function AdvancedFilterableTablePreview() {
       </header>
 
       <div className="flex flex-col gap-2.5 border-b px-3 py-3 sm:px-4">
-        <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Select value={selectedViewId} onValueChange={selectView}>
-              <SelectTrigger aria-label="Saved views" className="h-8 w-48 min-w-40"><SelectValue /></SelectTrigger>
-              <SelectContent data-parry-theme>
+              <SelectTrigger aria-label="Saved views" className="h-8 w-44 min-w-40"><SelectValue /></SelectTrigger>
+              <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]">
                 <SelectGroup>{savedViews.filter(({ builtIn }) => builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}</SelectGroup>
                 {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>{savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}</SelectGroup>}
               </SelectContent>
             </Select>
             {hasUnsavedChanges && <Badge variant="outline" className="border-warning/40 bg-warning-soft text-warning">Unsaved changes</Badge>}
-            {hasUnsavedChanges && <Button variant={selectedView.builtIn ? "outline" : "default"} size="sm" className="h-8" onClick={selectedView.builtIn ? openSaveAsDialog : saveCurrentView}>{selectedView.builtIn ? "Save as" : "Save changes"}</Button>}
             <DropdownMenu>
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
@@ -495,8 +580,6 @@ export function AdvancedFilterableTablePreview() {
               </TooltipProvider>
               <DropdownMenuContent data-parry-theme align="start" className="w-52">
                 <DropdownMenuGroup>
-                  {!selectedView.builtIn && hasUnsavedChanges && <DropdownMenuItem onSelect={saveCurrentView}>Save changes</DropdownMenuItem>}
-                  <DropdownMenuItem onSelect={openSaveAsDialog}>Save as new view</DropdownMenuItem>
                   {!selectedView.builtIn && <DropdownMenuItem onSelect={openRenameDialog}>Rename view</DropdownMenuItem>}
                   <DropdownMenuItem onSelect={openDuplicateDialog}>Duplicate view</DropdownMenuItem>
                   {hasUnsavedChanges && <DropdownMenuItem onSelect={() => { setConfiguration(selectedView.configuration); setSelectedRecordId(null) }}>Reset changes</DropdownMenuItem>}
@@ -508,14 +591,28 @@ export function AdvancedFilterableTablePreview() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="flex min-w-0 flex-wrap items-center gap-2 lg:justify-end">
+
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5">
             <AdvancedTableViewOptions configuration={configuration} onChange={updateConfiguration} />
+            <StatusQuickFilter selectedStatuses={quickFilters.statuses} onChange={(statuses) => updateConfiguration({ quickFilters: { ...quickFilters, statuses } })} />
+            <PriorityQuickFilter selectedPriority={quickFilters.priority} onChange={(priority) => updateConfiguration({ quickFilters: { ...quickFilters, priority } })} />
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button type="button" variant={advancedConditionCount > 0 ? "secondary" : "outline"} size="icon-sm" className="relative" aria-label={advancedConditionCount > 0 ? `Advanced filter, ${advancedConditionCount} active conditions` : "Advanced filter"} aria-expanded={isAdvancedExpanded} aria-controls={isAdvancedExpanded ? "advanced-filter-builder" : undefined} onClick={() => setIsAdvancedExpanded((expanded) => !expanded)}>
+                    <FilterIcon />
+                    {advancedConditionCount > 0 && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 rounded-full bg-primary" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent data-parry-theme>Advanced filter</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <Select value={groupBy} onValueChange={(value) => updateConfiguration({ groupBy: value as GroupByKey | "none" })}>
-              <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem]"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue /></SelectTrigger>
-              <SelectContent data-parry-theme><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+              <SelectTrigger aria-label="Group records by" className="h-8 w-[9.5rem] justify-start"><Layers3Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" /><SelectValue className="min-w-0 flex-1 text-left" /></SelectTrigger>
+              <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
             </Select>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="outline" size="sm" className="h-8"><ArrowUpDownIcon data-icon="inline-start" />Sort{sort.key ? `: ${tableColumns.find(({ key }) => key === sort.key)?.label ?? ""}` : ""}</Button></DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild><Button type="button" variant="outline" size="sm" className="h-8"><ArrowUpDownIcon data-icon="inline-start" />Sort{sort.key ? `: ${tableColumns.find(({ key }) => key === sort.key)?.label ?? ""}` : ""}</Button></DropdownMenuTrigger>
               <DropdownMenuContent data-parry-theme align="end" className="w-56">
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>Sort by</DropdownMenuLabel>
@@ -526,14 +623,17 @@ export function AdvancedFilterableTablePreview() {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+            {hasUnsavedChanges && !selectedView.builtIn && <Button type="button" size="sm" className="h-8" onClick={saveCurrentView}>Save changes</Button>}
+            <Button type="button" variant={selectedView.builtIn && hasUnsavedChanges ? "default" : "outline"} size="sm" className="h-8" onClick={openSaveAsDialog}>Save as</Button>
           </div>
         </div>
         <AdvancedFilterBuilder
           appliedFilters={filters}
+          expanded={isAdvancedExpanded}
           search={query}
           onSearchChange={(value) => { updateConfiguration({ search: value }); setSelectedRecordId(null) }}
           onApply={(next) => { updateConfiguration({ filters: next }); setSelectedRecordId(null) }}
-          onClear={() => { updateConfiguration({ search: "" }); clearAllFilters() }}
+          onClear={clearAdvancedFilters}
         />
       </div>
 
@@ -571,7 +671,7 @@ export function AdvancedFilterableTablePreview() {
                   <div className="mx-auto flex max-w-sm flex-col items-center gap-2">
                     <p className="font-medium">No records match this query</p>
                     <p className="text-sm leading-relaxed text-muted-foreground">Try a different search term or remove one of the active filters.</p>
-                    <Button variant="outline" size="sm" onClick={() => { updateConfiguration({ search: "" }); clearAllFilters() }}>Clear search and filters</Button>
+                    <Button variant="outline" size="sm" onClick={() => { updateConfiguration({ search: "", quickFilters: { statuses: [], priority: null } }); clearAdvancedFilters() }}>Clear search and filters</Button>
                   </div>
                 </TableCell></TableRow>
               ) : groupsOnPage.map((group) => <Fragment key={group.key}>
@@ -650,7 +750,7 @@ export function AdvancedFilterableTablePreview() {
         {viewDialog && <DialogContent data-parry-theme aria-describedby="saved-view-dialog-description" className="font-data sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{viewDialog === "create" ? "Save as new view" : viewDialog === "duplicate" ? "Duplicate saved view" : viewDialog === "rename" ? "Rename saved view" : "Delete saved view?"}</DialogTitle>
-            <DialogDescription id="saved-view-dialog-description">{viewDialog === "delete" ? `“${selectedView.name}” will be removed from this browser. Built-in views cannot be deleted.` : "Save search, filters, sorting, column order and visibility, density, sticky columns, grouping, and page size together."}</DialogDescription>
+            <DialogDescription id="saved-view-dialog-description">{viewDialog === "delete" ? `“${selectedView.name}” will be removed from this browser. Built-in views cannot be deleted.` : "Save search, status and priority filters, advanced filters, sorting, columns, density, sticky columns, grouping, and page size together."}</DialogDescription>
           </DialogHeader>
           {viewDialog !== "delete" && <div className="flex flex-col gap-2 py-2">
             <Label htmlFor="saved-view-name">View name</Label>
