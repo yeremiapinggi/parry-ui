@@ -8,6 +8,7 @@ import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-reac
 import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
+import { SettingsFormPreview } from "@/components/settings-form-preview"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -44,6 +45,13 @@ const templates: Template[] = [
     slug: "settings-panels",
     name: "Settings Panels",
     description: "A section-based settings workspace for managing complex application configurations.",
+    category: "Settings",
+    reference: "Parry UI · Workspace settings",
+  },
+  {
+    slug: "settings-form",
+    name: "Settings Form",
+    description: "A single-page settings form for managing preferences and configuration.",
     category: "Settings",
     reference: "Parry UI · Workspace settings",
   },
@@ -93,6 +101,33 @@ function AdvancedFilterableTableThumbnail() {
         <div className="hidden w-[28%] min-w-24 flex-col gap-2 border-l bg-muted/20 p-3 sm:flex"><span className="font-medium text-[10px]">{rows[0].name}</span><span className="font-mono text-[9px] text-muted-foreground">{rows[0].id}</span><span className="text-[9px]">{rows[0].company}</span><span className="mt-auto text-[8px] text-muted-foreground">Record details</span></div>
       </div>
       <div className="flex items-center justify-between border-t px-4 py-2 text-[9px] text-muted-foreground"><span>Showing 1–10 of 36</span><span>Rows 10&nbsp;&nbsp; ‹ &nbsp; ›</span></div>
+    </div>
+  )
+}
+
+function SettingsFormThumbnail() {
+  return (
+    <div aria-hidden="true" className="flex h-full min-h-0 flex-col overflow-hidden bg-background px-5 py-4 text-foreground sm:px-7 sm:py-5">
+      <div className="mb-3 flex flex-col gap-1 border-b pb-3">
+        <span className="font-heading text-sm font-semibold sm:text-base">General Settings</span>
+        <span className="text-[10px] text-muted-foreground sm:text-xs">Manage workspace information and preferences.</span>
+      </div>
+      <div className="flex min-h-0 flex-col gap-3 overflow-hidden">
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-semibold sm:text-xs">Workspace Information</span>
+          <div className="flex flex-col gap-1"><span className="text-[8px] text-muted-foreground sm:text-[10px]">Workspace Name</span><span className="flex h-6 items-center rounded-md border bg-card px-2 text-[9px] sm:h-7 sm:text-[10px]">Northstar Operations</span></div>
+          <div className="flex flex-col gap-1"><span className="text-[8px] text-muted-foreground sm:text-[10px]">Workspace Description</span><span className="flex h-8 items-start rounded-md border bg-card px-2 py-1 text-[8px] text-muted-foreground sm:text-[10px]">A shared workspace for coordinating regional operations.</span></div>
+        </div>
+        <div className="flex flex-col gap-2 border-t pt-3">
+          <span className="text-[10px] font-semibold sm:text-xs">Notifications</span>
+          <div className="flex items-center justify-between gap-3"><span className="text-[9px] sm:text-[10px]">Enable Email Notifications</span><span className="flex h-3 w-6 items-center justify-end rounded-full bg-primary px-0.5"><span className="size-2 rounded-full bg-primary-foreground" /></span></div>
+          <div className="flex items-center gap-2"><span className="size-2.5 rounded-[3px] bg-primary" /><span className="text-[8px] text-muted-foreground sm:text-[10px]">Daily summary · Security alerts</span></div>
+        </div>
+      </div>
+      <div className="mt-auto flex justify-end gap-1.5 border-t pt-2">
+        <span className="rounded border px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]">Cancel</span>
+        <span className="rounded bg-primary px-2 py-1 text-[8px] text-primary-foreground sm:text-[9px]">Save Changes</span>
+      </div>
     </div>
   )
 }
@@ -174,7 +209,7 @@ export function TemplatesGallery() {
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
               {template.slug === "settings-panels" ? (
                 <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
-              ) : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
+              ) : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -217,7 +252,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
