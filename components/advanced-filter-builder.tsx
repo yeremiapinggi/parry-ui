@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { CalendarDaysIcon, CirclePlusIcon, FilterIcon, Trash2Icon, XIcon } from "lucide-react"
+import { useEffect, useRef, useState, type KeyboardEvent } from "react"
+import { CheckIcon, CirclePlusIcon, FilterXIcon, SearchIcon, XIcon } from "lucide-react"
 
 import {
   filterFields,
@@ -19,16 +19,17 @@ import {
   createEmptyCondition,
   createEmptyGroup,
   fieldType,
+  flattenConditions,
   operatorLabels,
   operatorsForField,
-  validateFilterGroup,
+  removeConditionFromGroup,
+  removeGroupFromGroup,
   updateConditionInGroup,
+  validateCondition,
 } from "@/lib/advanced-filter-engine"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function enumOptions(field: FilterField) {
@@ -38,280 +39,283 @@ function enumOptions(field: FilterField) {
   return recordOwners
 }
 
-function newCondition(field: FilterField = "status"): FilterCondition {
-  const condition = createEmptyCondition()
-  return { ...condition, field, operator: operatorsForField(field)[0], value: "", values: [] }
+function conditionText(condition: FilterCondition) {
+  const field = filterFields.find(({ key }) => key === condition.field)?.label ?? condition.field
+  const value = condition.operator === "is_any_of"
+    ? (condition.values ?? []).join(", ")
+    : condition.operator === "between"
+      ? `${condition.value} – ${condition.secondValue ?? ""}`
+      : condition.value
+  return `${field} ${operatorLabels[condition.operator]} ${value}`
 }
 
-function updateAt(group: FilterGroup, groupId: string, conditionId: string, update: (condition: FilterCondition) => FilterCondition): FilterGroup {
-  if (group.id === groupId) return updateConditionInGroup(group, conditionId, update)
-  return { ...group, groups: group.groups.map((nested) => updateAt(nested, groupId, conditionId, update)) }
-}
-
-function addCondition(group: FilterGroup, groupId: string): FilterGroup {
-  if (group.id === groupId) return { ...group, conditions: [...group.conditions, newCondition()] }
-  return { ...group, groups: group.groups.map((nested) => addCondition(nested, groupId)) }
-}
-
-function updateLogic(group: FilterGroup, groupId: string, logic: FilterLogic): FilterGroup {
+function setGroupLogic(group: FilterGroup, groupId: string, logic: FilterLogic): FilterGroup {
   if (group.id === groupId) return { ...group, logic }
-  return { ...group, groups: group.groups.map((nested) => updateLogic(nested, groupId, logic)) }
+  return { ...group, groups: group.groups.map((nested) => setGroupLogic(nested, groupId, logic)) }
 }
 
-function removeCondition(group: FilterGroup, groupId: string, conditionId: string): FilterGroup {
-  if (group.id === groupId) return { ...group, conditions: group.conditions.filter((condition) => condition.id !== conditionId) }
-  return { ...group, groups: group.groups.map((nested) => removeCondition(nested, groupId, conditionId)) }
-}
-
-function ConditionRow({
-  condition,
-  groupId,
-  error,
-  onChange,
-  onRemove,
-}: {
-  condition: FilterCondition
+type Composer = {
+  id: string
   groupId: string
+  condition: FilterCondition
+  stage: "field" | "operator" | "value"
+  isNew: boolean
   error: string | null
-  onChange: (groupId: string, conditionId: string, update: (condition: FilterCondition) => FilterCondition) => void
-  onRemove: (groupId: string, conditionId: string) => void
-}) {
-  const kind = fieldType(condition.field)
-  const operators = operatorsForField(condition.field)
-  const fieldLabel = filterFields.find(({ key }) => key === condition.field)?.label ?? "Field"
-  const options = kind === "enum" ? enumOptions(condition.field) : []
-
-  function updateField(field: FilterField) {
-    onChange(groupId, condition.id, (current) => ({ ...current, field, operator: operatorsForField(field)[0], value: "", secondValue: "", values: [] }))
-  }
-
-  function renderValue() {
-    if (kind === "enum" && condition.operator === "is_any_of") {
-      return (
-        <select
-          aria-label={`${fieldLabel} values`}
-          multiple
-          size={3}
-          value={condition.values ?? []}
-          onChange={(event) => onChange(groupId, condition.id, (current) => ({ ...current, values: Array.from(event.target.selectedOptions, (option) => option.value) }))}
-          className="min-h-20 w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          {options.map((option) => <option key={option} value={option}>{option}</option>)}
-        </select>
-      )
-    }
-    if (kind === "enum") {
-      return (
-        <Select value={condition.value} onValueChange={(value) => onChange(groupId, condition.id, (current) => ({ ...current, value }))}>
-          <SelectTrigger aria-label={`${fieldLabel} value`} className="w-full"><SelectValue placeholder={`Choose ${fieldLabel.toLocaleLowerCase()}`} /></SelectTrigger>
-          <SelectContent><SelectGroup>{options.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectGroup></SelectContent>
-        </Select>
-      )
-    }
-    if (kind === "date" && condition.operator === "between") {
-      return (
-        <div className="grid grid-cols-2 gap-2">
-          <Input aria-label="Start date" type="date" value={condition.value} onChange={(event) => onChange(groupId, condition.id, (current) => ({ ...current, value: event.target.value }))} />
-          <Input aria-label="End date" type="date" value={condition.secondValue ?? ""} onChange={(event) => onChange(groupId, condition.id, (current) => ({ ...current, secondValue: event.target.value }))} />
-        </div>
-      )
-    }
-    return (
-      <Input
-        aria-label={`${fieldLabel} value`}
-        type={kind === "date" ? "date" : "text"}
-        placeholder={kind === "date" ? "Choose date" : `Enter ${fieldLabel.toLocaleLowerCase()}`}
-        value={condition.value}
-        onChange={(event) => onChange(groupId, condition.id, (current) => ({ ...current, value: event.target.value }))}
-      />
-    )
-  }
-
-  return (
-    <div className="grid min-w-0 gap-2 rounded-lg border bg-background p-3 md:grid-cols-[minmax(8rem,1fr)_minmax(9rem,1fr)_minmax(10rem,1.4fr)_auto] md:items-start">
-      <div className="flex flex-col gap-1.5">
-        <Label className="text-xs text-muted-foreground">Field</Label>
-        <Select value={condition.field} onValueChange={(value) => updateField(value as FilterField)}>
-          <SelectTrigger aria-label="Filter field" className="w-full"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{filterFields.map(({ key, label }) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectGroup></SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <Label className="text-xs text-muted-foreground">Operator</Label>
-        <Select value={condition.operator} onValueChange={(value) => onChange(groupId, condition.id, (current) => ({ ...current, operator: value as FilterCondition["operator"], value: "", secondValue: "", values: [] }))}>
-          <SelectTrigger aria-label="Filter operator" className="w-full"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{operators.map((operator) => <SelectItem key={operator} value={operator}>{operatorLabels[operator]}</SelectItem>)}</SelectGroup></SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <Label className="text-xs text-muted-foreground">Value</Label>
-        {renderValue()}
-        {kind === "enum" && condition.operator === "is_any_of" && <p className="text-xs text-muted-foreground">Use Ctrl or Command to select multiple values.</p>}
-        {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
-      </div>
-      <Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${fieldLabel} condition`} onClick={() => onRemove(groupId, condition.id)} className="md:mt-5">
-        <XIcon />
-      </Button>
-    </div>
-  )
-}
-
-function FilterGroupEditor({
-  group,
-  root,
-  error,
-  onChange,
-  onAddCondition,
-  onRemoveCondition,
-  onLogicChange,
-  onRemoveGroup,
-  onAddGroup,
-}: {
-  group: FilterGroup
-  root: boolean
-  error: string | null
-  onChange: (groupId: string, conditionId: string, update: (condition: FilterCondition) => FilterCondition) => void
-  onAddCondition: (groupId: string) => void
-  onRemoveCondition: (groupId: string, conditionId: string) => void
-  onLogicChange: (groupId: string, logic: FilterLogic) => void
-  onRemoveGroup?: (groupId: string) => void
-  onAddGroup?: () => void
-}) {
-  return (
-    <section aria-label={root ? "Main filter group" : "Nested filter group"} className={root ? "flex flex-col gap-3" : "flex flex-col gap-3 rounded-lg border border-dashed p-3 sm:p-4"}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Badge variant={root ? "secondary" : "outline"}>{root ? "Main group" : "Nested group"}</Badge>
-          <span className="text-xs text-muted-foreground">Match</span>
-          <Select value={group.logic} onValueChange={(value) => onLogicChange(group.id, value as FilterLogic)}>
-            <SelectTrigger aria-label={`${root ? "Main" : "Nested"} condition logic`} className="h-7 w-24"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectGroup><SelectItem value="AND">all (AND)</SelectItem><SelectItem value="OR">any (OR)</SelectItem></SelectGroup></SelectContent>
-          </Select>
-        </div>
-        {!root && <Button type="button" variant="ghost" size="icon-sm" aria-label="Remove nested group" onClick={() => onRemoveGroup?.(group.id)}><Trash2Icon /></Button>}
-      </div>
-      {group.conditions.length === 0 && group.groups.length === 0 ? <p className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">Add a condition to this group or remove it.</p> : null}
-      <div className="flex flex-col gap-2">
-        {group.conditions.map((condition) => (
-          <ConditionRow
-            key={condition.id}
-            condition={condition}
-            groupId={group.id}
-            error={error && !condition.value.trim() && !(condition.values?.length) ? error : null}
-            onChange={onChange}
-            onRemove={onRemoveCondition}
-          />
-        ))}
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => onAddCondition(group.id)}><CirclePlusIcon data-icon="inline-start" />Add condition</Button>
-        {root && group.groups.length === 0 && <Button type="button" variant="ghost" size="sm" onClick={() => onAddGroup?.()}><CirclePlusIcon data-icon="inline-start" />Add nested group</Button>}
-      </div>
-      {group.groups.map((nested) => <FilterGroupEditor key={nested.id} group={nested} root={false} error={error} onChange={onChange} onAddCondition={onAddCondition} onRemoveCondition={onRemoveCondition} onLogicChange={onLogicChange} onRemoveGroup={onRemoveGroup} />)}
-    </section>
-  )
 }
 
 export function AdvancedFilterBuilder({
   appliedFilters,
-  openRequest,
+  search,
+  onSearchChange,
   onApply,
   onClear,
 }: {
   appliedFilters: FilterGroup
-  openRequest: { groupId: string; conditionId: string; nonce: number } | null
+  search: string
+  onSearchChange: (value: string) => void
   onApply: (filters: FilterGroup) => void
   onClear: () => void
 }) {
-  const [open, setOpen] = useState(false)
-  const [draft, setDraft] = useState<FilterGroup>(() => cloneFilterGroup(appliedFilters))
-  const [error, setError] = useState<string | null>(null)
-  const handledRequest = useRef<number | null>(null)
-
-  function readyGroup(group: FilterGroup) {
-    const copy = cloneFilterGroup(group)
-    if (copy.conditions.length === 0 && copy.groups.length === 0) copy.conditions = [newCondition()]
-    return copy
-  }
-
-  function openBuilder() {
-    setDraft(readyGroup(appliedFilters))
-    setError(null)
-    setOpen(true)
-  }
+  const [composer, setComposer] = useState<Composer | null>(null)
+  const composerSequence = useRef(0)
+  const valueInputRef = useRef<HTMLInputElement>(null)
+  const conditions = flattenConditions(appliedFilters)
+  const hasFilters = conditions.length > 0 || appliedFilters.groups.length > 0
 
   useEffect(() => {
-    if (!openRequest || handledRequest.current === openRequest.nonce) return
-    handledRequest.current = openRequest.nonce
-    setDraft(readyGroup(appliedFilters))
-    setError(null)
-    setOpen(true)
-  }, [appliedFilters, openRequest])
+    if (composer?.stage === "value" && fieldType(composer.condition.field) !== "enum") {
+      valueInputRef.current?.focus()
+    }
+  }, [composer?.id, composer?.stage, composer?.condition.field])
 
-  function handleApply() {
-    const validationError = validateFilterGroup(draft)
-    if (validationError) {
-      setError(validationError)
+  function openComposer(groupId: string, condition?: FilterCondition) {
+    const draft = condition ? { ...condition, values: condition.values ? [...condition.values] : undefined } : createEmptyCondition()
+    setComposer({
+      id: condition?.id ?? `new-${draft.id}-${++composerSequence.current}`,
+      groupId,
+      condition: draft,
+      stage: "field",
+      isNew: !condition,
+      error: null,
+    })
+  }
+
+  function changeComposer(update: (condition: FilterCondition) => FilterCondition) {
+    setComposer((current) => current ? { ...current, condition: update(current.condition), error: null } : current)
+  }
+
+  function finishComposer() {
+    if (!composer) return
+    const error = validateCondition(composer.condition)
+    if (error) {
+      setComposer((current) => current ? { ...current, error } : current)
       return
     }
-    onApply(draft)
-    setOpen(false)
-    setError(null)
+
+    const next = cloneFilterGroup(appliedFilters)
+    if (composer.isNew) {
+      const appendToGroup = (group: FilterGroup): FilterGroup => group.id === composer.groupId
+        ? { ...group, conditions: [...group.conditions, composer.condition] }
+        : { ...group, groups: group.groups.map(appendToGroup) }
+      onApply(appendToGroup(next))
+    } else {
+      onApply(updateConditionInGroup(next, composer.condition.id, () => composer.condition))
+    }
+    setComposer(null)
   }
 
-  function handleClear() {
-    onClear()
-    setDraft({ id: "root-clear", logic: "AND", conditions: [], groups: [] })
-    setError(null)
+  function updateLogic(groupId: string, logic: FilterLogic) {
+    onApply(setGroupLogic(cloneFilterGroup(appliedFilters), groupId, logic))
   }
 
-  function addNestedGroup() {
-    if (draft.groups.length > 0) return
-    const root = { ...draft, conditions: [...draft.conditions], groups: [createEmptyGroup()] }
-    setDraft(root)
+  function removeCondition(conditionId: string) {
+    onApply(removeConditionFromGroup(cloneFilterGroup(appliedFilters), conditionId))
+    if (composer?.condition.id === conditionId) setComposer(null)
   }
 
-  const conditionCount = (group: FilterGroup): number => group.conditions.length + group.groups.reduce((total, nested) => total + conditionCount(nested), 0)
+  function removeGroup(groupId: string) {
+    onApply(removeGroupFromGroup(cloneFilterGroup(appliedFilters), groupId))
+    if (composer?.groupId === groupId) setComposer(null)
+  }
 
-  return (
-    <>
-      <Button variant="outline" size="sm" onClick={openBuilder} aria-haspopup="dialog">
-        <FilterIcon data-icon="inline-start" />Filters{conditionCount(appliedFilters) > 0 && <Badge variant="secondary" className="ml-1 px-1.5 py-0">{conditionCount(appliedFilters)}</Badge>}
-      </Button>
-      <Dialog open={open} onOpenChange={(nextOpen) => { setOpen(nextOpen); if (nextOpen) setDraft(cloneFilterGroup(appliedFilters)) }}>
-        <DialogContent className="font-data max-h-[min(90dvh,52rem)] w-[min(46rem,calc(100vw-2rem))] max-w-none sm:max-w-[min(46rem,calc(100vw-2rem))] overflow-y-auto" aria-describedby="advanced-filter-description">
-          <DialogHeader>
-            <DialogTitle>Advanced Filter Builder</DialogTitle>
-            <DialogDescription id="advanced-filter-description">Combine text, status, priority, owner, and date conditions. A single nested group supports a second level of logic.</DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4 py-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><CalendarDaysIcon aria-hidden="true" className="size-4" />Conditions apply to the current demo records.</div>
-            <FilterGroupEditor
-              group={draft}
-              root
-              error={error}
-              onChange={(groupId, conditionId, update) => setDraft((current) => updateAt(current, groupId, conditionId, update))}
-              onAddCondition={(groupId) => setDraft((current) => addCondition(current, groupId))}
-              onRemoveCondition={(groupId, conditionId) => setDraft((current) => removeCondition(current, groupId, conditionId))}
-              onLogicChange={(groupId, logic) => setDraft((current) => updateLogic(current, groupId, logic))}
-              onRemoveGroup={(groupId) => setDraft((current) => ({ ...current, groups: current.groups.filter((nested) => nested.id !== groupId) }))}
-              onAddGroup={addNestedGroup}
-            />
-            {error && <p role="alert" className="rounded-md bg-destructive-soft px-3 py-2 text-sm text-destructive">{error}</p>}
-          </div>
-          <DialogFooter className="flex-col-reverse sm:flex-row sm:items-center sm:justify-between">
-            <Button type="button" variant="ghost" onClick={handleClear}>Clear filters</Button>
-            <div className="flex flex-col-reverse gap-2 sm:flex-row">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="button" onClick={handleApply}>Apply filters</Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      {conditionCount(appliedFilters) > 0 && (
-        <div className="sr-only" aria-live="polite">{conditionCount(appliedFilters)} advanced filter conditions applied</div>
-      )}
-    </>
-  )
+  function addGroup() {
+    if (appliedFilters.groups.length > 0) return
+    const group = createEmptyGroup()
+    group.conditions = []
+    onApply({ ...cloneFilterGroup(appliedFilters), groups: [...appliedFilters.groups, group] })
+    openComposer(group.id)
+  }
+
+  function handleEnter(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter" && !event.nativeEvent.isComposing && event.keyCode !== 229) {
+      event.preventDefault()
+      finishComposer()
+    }
+  }
+
+  function renderComposerContent() {
+    if (!composer) return null
+    const { condition, stage } = composer
+    const field = filterFields.find(({ key }) => key === condition.field)
+    const kind = fieldType(condition.field)
+    const options = kind === "enum" ? enumOptions(condition.field) : []
+
+    if (stage === "field") {
+      return <>
+        <DropdownMenuLabel>Choose a field</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {filterFields.map(({ key, label, type }) => <DropdownMenuItem key={key} onSelect={(event) => {
+          event.preventDefault()
+          setComposer((current) => current ? {
+            ...current,
+            condition: { ...current.condition, field: key, operator: operatorsForField(key)[0], value: "", secondValue: "", values: [] },
+            stage: "operator",
+            error: null,
+          } : current)
+        }}>
+          <span className="min-w-0 flex-1">{label}</span><span className="text-xs text-muted-foreground">{type}</span>
+        </DropdownMenuItem>)}
+      </>
+    }
+
+    if (stage === "operator") {
+      return <>
+        <DropdownMenuLabel>{field?.label ?? "Field"} · Choose an operator</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {operatorsForField(condition.field).map((operator) => <DropdownMenuItem key={operator} onSelect={(event) => {
+          event.preventDefault()
+          const nextCondition = { ...condition, operator, value: "", secondValue: "", values: [] }
+          if (kind === "enum" && operator !== "is_any_of") {
+            setComposer((current) => current ? { ...current, condition: nextCondition, stage: "value", error: null } : current)
+          } else {
+            setComposer((current) => current ? { ...current, condition: nextCondition, stage: "value", error: null } : current)
+          }
+        }}>{operatorLabels[operator]}</DropdownMenuItem>)}
+      </>
+    }
+
+    if (kind === "enum" && condition.operator === "is_any_of") {
+      return <>
+        <DropdownMenuLabel>Choose {field?.label.toLocaleLowerCase()} values</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {options.map((option) => <DropdownMenuCheckboxItem
+          key={option}
+          checked={condition.values?.includes(option) ?? false}
+          onSelect={(event) => event.preventDefault()}
+          onCheckedChange={(checked) => changeComposer((current) => ({
+            ...current,
+            values: checked ? [...(current.values ?? []), option] : (current.values ?? []).filter((value) => value !== option),
+          }))}
+        >{option}</DropdownMenuCheckboxItem>)}
+        <DropdownMenuSeparator />
+        {composer.error && <p role="alert" className="px-2 py-1 text-xs text-destructive">{composer.error}</p>}
+        <Button type="button" size="sm" className="w-full" disabled={!condition.values?.length} onClick={finishComposer}>Apply values</Button>
+      </>
+    }
+
+    return <div className="flex w-72 max-w-[calc(100vw-2rem)] flex-col gap-2 p-2">
+      <DropdownMenuLabel className="px-0">{field?.label} {operatorLabels[condition.operator]}</DropdownMenuLabel>
+      {condition.operator === "between" ? <div className="flex flex-col gap-2">
+        <Input ref={valueInputRef} aria-label="Start date" type="text" placeholder="Start · YYYY-MM-DD" value={condition.value} onChange={(event) => changeComposer((current) => ({ ...current, value: event.target.value }))} />
+        <Input aria-label="End date" type="text" placeholder="End · YYYY-MM-DD" value={condition.secondValue ?? ""} onChange={(event) => changeComposer((current) => ({ ...current, secondValue: event.target.value }))} />
+      </div> : kind === "enum" ? <div className="flex max-h-56 flex-col gap-1 overflow-y-auto">
+        {options.map((option) => <DropdownMenuItem key={option} onSelect={(event) => {
+          event.preventDefault()
+          const nextCondition = { ...condition, value: option }
+          setComposer((current) => current ? { ...current, condition: nextCondition } : current)
+          const next = cloneFilterGroup(appliedFilters)
+          const updateGroup = (group: FilterGroup): FilterGroup => group.id === composer.groupId
+            ? { ...group, conditions: composer.isNew ? [...group.conditions, nextCondition] : group.conditions.map((item) => item.id === nextCondition.id ? nextCondition : item) }
+            : { ...group, groups: group.groups.map(updateGroup) }
+          onApply(updateGroup(next))
+          setComposer(null)
+        }}>{option}</DropdownMenuItem>)}
+      </div> : <Input
+        ref={valueInputRef}
+        aria-label={`${field?.label ?? "Filter"} value`}
+        type="text"
+        placeholder={kind === "date" ? "YYYY-MM-DD" : `Enter ${field?.label.toLocaleLowerCase() ?? "value"}`}
+        value={condition.value}
+        onChange={(event) => changeComposer((current) => ({ ...current, value: event.target.value }))}
+        onKeyDown={handleEnter}
+      />}
+      {composer.error && <p role="alert" className="text-xs text-destructive">{composer.error}</p>}
+      {kind !== "enum" && <Button type="button" size="sm" className="w-full" onClick={finishComposer}>
+        <CheckIcon data-icon="inline-start" />Apply condition
+      </Button>}
+    </div>
+  }
+
+  function renderConditionToken(condition: FilterCondition, groupId: string) {
+    const isOpen = composer?.id === condition.id
+    return <span key={condition.id} className="inline-flex max-w-full items-center overflow-hidden rounded-md border border-border bg-background text-xs shadow-sm">
+      <DropdownMenu modal={false} open={isOpen} onOpenChange={(open) => {
+        if (open) openComposer(groupId, condition)
+        else if (isOpen) setComposer(null)
+      }}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-7 max-w-[min(100%,20rem)] truncate rounded-none px-2 text-xs font-medium hover:bg-accent" aria-label={`Edit filter: ${conditionText(condition)}`}>
+            {conditionText(condition)}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" side="bottom" collisionPadding={12} className="w-64 max-w-[calc(100vw-2rem)]">
+          {renderComposerContent()}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button type="button" variant="ghost" size="icon-xs" className="h-7 rounded-none border-l" aria-label={`Remove filter: ${conditionText(condition)}`} onClick={() => removeCondition(condition.id)}><XIcon /></Button>
+    </span>
+  }
+
+  function renderAddCondition(groupId: string, label = "Add condition") {
+    const id = composer?.groupId === groupId && composer.isNew ? composer.id : `add-${groupId}`
+    const isOpen = composer?.id === id
+    return <DropdownMenu key={id} modal={false} open={isOpen} onOpenChange={(open) => {
+      if (open) openComposer(groupId)
+      else if (isOpen) setComposer(null)
+    }}>
+      <DropdownMenuTrigger asChild>
+        <Button type="button" variant="outline" size="sm" className="h-7 shrink-0 px-2 text-xs">
+          <CirclePlusIcon data-icon="inline-start" />{label}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" side="bottom" collisionPadding={12} className="w-64 max-w-[calc(100vw-2rem)]">
+        {renderComposerContent()}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  }
+
+  function renderGroup(group: FilterGroup, isRoot: boolean) {
+    const groupConditions = group.conditions.map((condition) => renderConditionToken(condition, group.id))
+    return <div key={group.id} className={isRoot ? "flex min-w-0 flex-wrap items-center gap-2" : "flex min-w-0 flex-wrap items-center gap-2 rounded-md border border-dashed bg-muted/20 px-2 py-1.5"}>
+      {!isRoot && <span aria-hidden="true" className="font-mono text-sm text-muted-foreground">(</span>}
+      <Select value={group.logic} onValueChange={(value) => updateLogic(group.id, value as FilterLogic)}>
+        <SelectTrigger aria-label={`${isRoot ? "Query" : "Group"} match logic`} className="h-7 w-24 shrink-0 px-2 text-xs"><SelectValue /></SelectTrigger>
+        <SelectContent><SelectGroup><SelectItem value="AND">Match all</SelectItem><SelectItem value="OR">Match any</SelectItem></SelectGroup></SelectContent>
+      </Select>
+      {groupConditions}
+      {renderAddCondition(group.id)}
+      {!isRoot && <>
+        <span aria-hidden="true" className="font-mono text-sm text-muted-foreground">)</span>
+        <Button type="button" variant="ghost" size="icon-xs" className="size-7" aria-label="Remove condition group" onClick={() => removeGroup(group.id)}><XIcon /></Button>
+      </>}
+    </div>
+  }
+
+  return <div className="flex min-w-0 flex-col gap-2 rounded-lg border bg-background p-2.5 sm:flex-row sm:items-start sm:p-3">
+    <div className="relative min-w-0 shrink-0 sm:w-56">
+      <SearchIcon aria-hidden="true" className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Input aria-label="Search records" placeholder="Search records…" value={search} onChange={(event) => onSearchChange(event.target.value)} className="h-8 border-transparent bg-muted/40 pl-9 shadow-none focus-visible:border-ring sm:w-full" />
+    </div>
+    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2" aria-label="Filter query">
+      {renderGroup(appliedFilters, true)}
+      {appliedFilters.groups.map((group) => <div key={group.id} className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs font-medium text-muted-foreground">{appliedFilters.logic}</span>
+        {renderGroup(group, false)}
+      </div>)}
+      {!appliedFilters.groups.length && <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={addGroup}>Add group</Button>}
+    </div>
+    {(hasFilters || search.trim()) && <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs" onClick={onClear}>
+      <FilterXIcon data-icon="inline-start" />Clear all
+    </Button>}
+  </div>
 }
-

@@ -11,9 +11,6 @@ import {
   EllipsisIcon,
   GripVerticalIcon,
   Layers3Icon,
-  SaveIcon,
-  SearchIcon,
-  XIcon,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -23,21 +20,19 @@ import {
   defaultConfiguration,
   demoRecords,
   demoSavedViews,
-  filterFields,
   tableColumns,
   type ColumnKey,
   type EnterpriseRecord,
-  type FilterCondition,
   type FilterGroup,
   type GroupByKey,
   type SavedView,
   type ViewConfiguration,
 } from "@/lib/advanced-filterable-table-data"
-import { cloneFilterGroup, flattenConditions, recordMatchesGroup, removeConditionFromGroup, sortRecords } from "@/lib/advanced-filter-engine"
+import { cloneFilterGroup, recordMatchesGroup, sortRecords } from "@/lib/advanced-filter-engine"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -53,20 +48,6 @@ const groupOptions: { value: GroupByKey | "none"; label: string }[] = [
   { value: "channel", label: "Channel" },
   { value: "owner", label: "Owner" },
 ]
-const fieldLabelByKey = Object.fromEntries(filterFields.map(({ key, label }) => [key, label])) as Record<string, string>
-const operatorText: Record<FilterCondition["operator"], string> = {
-  contains: "contains",
-  not_contains: "does not contain",
-  equals: "equals",
-  not_equals: "does not equal",
-  is: "is",
-  is_not: "is not",
-  is_any_of: "is any of",
-  before: "before",
-  after: "after",
-  between: "between",
-}
-
 function dateLabel(value: string) {
   return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00.000Z`))
 }
@@ -116,16 +97,6 @@ function safeStoredViews(value: unknown): SavedView[] {
   }).map((view) => ({ ...view, configuration: { ...view.configuration, filters: cloneFilterGroup(view.configuration.filters) } }))
 }
 
-function formatCondition(condition: FilterCondition) {
-  const field = fieldLabelByKey[condition.field] ?? condition.field
-  const value = condition.operator === "is_any_of" ? (condition.values ?? []).join(", ") : condition.operator === "between" ? `${condition.value} – ${condition.secondValue ?? ""}` : condition.value
-  return `${field} ${operatorText[condition.operator]} ${value}`
-}
-
-function countConditions(group: FilterGroup): number {
-  return group.conditions.length + group.groups.reduce((total, nested) => total + countConditions(nested), 0)
-}
-
 function equalConfiguration(first: ViewConfiguration, second: ViewConfiguration) {
   const normalizeFilters = (group: FilterGroup): unknown => ({
     logic: group.logic,
@@ -142,7 +113,7 @@ function equalConfiguration(first: ViewConfiguration, second: ViewConfiguration)
 function DetailModal({ record, open, onClose }: { record: EnterpriseRecord | null; open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose() }}>
-      {record && <DialogContent showCloseButton={false} className="left-1/2 top-1/2 flex h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col gap-0 overflow-hidden p-0" aria-describedby="record-details-description">
+      {record &&         <DialogContent showCloseButton={false} className="left-auto right-0 top-0 flex h-dvh w-[min(24rem,100vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-xl rounded-r-none p-0" aria-describedby="record-details-description">
         <DialogHeader className="sr-only"><DialogTitle>Record details</DialogTitle><DialogDescription id="record-details-description">Detailed information for {record.name}, record {record.id}.</DialogDescription></DialogHeader>
         <RecordDetailPanel record={record} onClose={onClose} className="h-full" />
       </DialogContent>}
@@ -168,7 +139,6 @@ export function AdvancedFilterableTablePreview() {
   const [isNarrow, setIsNarrow] = useState(false)
   const [detailWidth, setDetailWidth] = useState(340)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set())
-  const [filterOpenRequest, setFilterOpenRequest] = useState<{ groupId: string; conditionId: string; nonce: number } | null>(null)
   const tableLayoutRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -240,8 +210,6 @@ export function AdvancedFilterableTablePreview() {
   const pageRecords = matchingRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   const activeColumns = tableColumns.filter(({ key }) => visibleColumns.includes(key))
   const selectedRecord = selectedRecordId ? matchingRecords.find(({ id }) => id === selectedRecordId) ?? null : null
-  const activeConditions = flattenConditions(filters)
-  const allConditionsCount = countConditions(filters)
 
   function setConfiguration(next: ViewConfiguration) {
     setQuery(next.search)
@@ -282,11 +250,15 @@ export function AdvancedFilterableTablePreview() {
     setPage(1)
   }
 
+  function openSaveAsDialog() {
+    setViewName("")
+    setViewError(null)
+    setViewDialog("create")
+  }
+
   function saveCurrentView() {
     if (selectedView.builtIn) {
-      setViewName("")
-      setViewError(null)
-      setViewDialog("create")
+      openSaveAsDialog()
       return
     }
     setSavedViews((current) => current.map((view) => view.id === selectedView.id ? { ...view, configuration } : view))
@@ -369,55 +341,40 @@ export function AdvancedFilterableTablePreview() {
 
   return (
     <section aria-label="Advanced Filterable Table preview" aria-busy={isRestoring} data-parry-theme className="font-data flex min-w-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <header className="flex flex-col gap-3 border-b px-4 py-4 sm:px-5 sm:py-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="flex min-w-0 flex-col gap-1">
-            <h2 className="font-data text-xl font-semibold tracking-tight">Records Explorer</h2>
-            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Search, organize, and inspect a fictional enterprise dataset.</p>
-          </div>
-          <Badge variant="secondary" className="shrink-0 tabular-nums">{isRestoring ? "Restoring views…" : `${matchingRecords.length} matching records`}</Badge>
-        </div>
-        <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-            <div className="relative min-w-[min(100%,14rem)] flex-1 xl:max-w-sm">
-              <SearchIcon aria-hidden="true" className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input aria-label="Search records" placeholder="Search records…" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); setSelectedRecordId(null) }} className="pl-9" />
-            </div>
-            <AdvancedFilterBuilder
-              appliedFilters={filters}
-              openRequest={filterOpenRequest}
-              onApply={(next) => { setFilters(cloneFilterGroup(next)); setPage(1); setSelectedRecordId(null) }}
-              onClear={clearAllFilters}
-            />
-            <div className="flex min-w-0 flex-1 basis-full items-center gap-1 sm:basis-auto sm:flex-none">
-              <Select value={selectedViewId} onValueChange={selectView}>
-                <SelectTrigger aria-label="Saved views" className="w-full min-w-40 sm:w-48"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="all-records">All Records</SelectItem>
-                    <SelectItem value="priority-queue">Priority Queue</SelectItem>
-                    <SelectItem value="review-by-owner">Review by Owner</SelectItem>
-                  </SelectGroup>
-                  {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>
-                    {savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}
-                  </SelectGroup>}
-                </SelectContent>
-              </Select>
-              <Button variant={hasUnsavedChanges ? "default" : "outline"} size="icon-sm" aria-label={selectedView.builtIn ? "Save as a new view" : "Save current view"} title={selectedView.builtIn ? "Save as a new view" : "Save current view"} onClick={saveCurrentView}><SaveIcon /></Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm" aria-label="Saved view actions"><EllipsisIcon /></Button></DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem onSelect={() => { setViewName(""); setViewError(null); setViewDialog("create") }}>Create saved view</DropdownMenuItem>
-                    {!selectedView.builtIn && <>
-                      <DropdownMenuItem onSelect={openRenameDialog}>Rename “{selectedView.name}”</DropdownMenuItem>
-                      <DropdownMenuItem variant="destructive" onSelect={() => { setViewError(null); setViewDialog("delete") }}>Delete “{selectedView.name}”</DropdownMenuItem>
-                    </>}
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+      <header className="flex flex-col gap-1 border-b px-4 py-4 sm:px-5 sm:py-5">
+        <h2 className="font-data text-xl font-semibold tracking-tight">Records Explorer</h2>
+        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Search, organize, and inspect a fictional enterprise dataset.</p>
+      </header>
+
+      <div className="flex flex-col gap-3 border-b px-4 py-3 sm:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <Select value={selectedViewId} onValueChange={selectView}>
+              <SelectTrigger aria-label="Saved views" className="w-full min-w-40 sm:w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {savedViews.filter(({ builtIn }) => builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}
+                </SelectGroup>
+                {savedViews.some(({ builtIn }) => !builtIn) && <SelectGroup>
+                  {savedViews.filter(({ builtIn }) => !builtIn).map((view) => <SelectItem key={view.id} value={view.id}>{view.name}</SelectItem>)}
+                </SelectGroup>}
+              </SelectContent>
+            </Select>
             {hasUnsavedChanges && <Badge variant="outline" className="border-warning/40 bg-warning-soft text-warning">Unsaved changes</Badge>}
+            {hasUnsavedChanges && <Button variant="outline" size="sm" onClick={openSaveAsDialog}>Save as</Button>}
+            {hasUnsavedChanges && !selectedView.builtIn && <Button size="sm" onClick={saveCurrentView}>Update view</Button>}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><Button variant="ghost" size="sm"><EllipsisIcon data-icon="inline-start" />View actions</Button></DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onSelect={openSaveAsDialog}>Save as new view</DropdownMenuItem>
+                  {!selectedView.builtIn && <>
+                    <DropdownMenuItem onSelect={openRenameDialog}>Rename “{selectedView.name}”</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive" onSelect={() => { setViewError(null); setViewDialog("delete") }}>Delete “{selectedView.name}”</DropdownMenuItem>
+                  </>}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <DropdownMenu>
@@ -432,43 +389,44 @@ export function AdvancedFilterableTablePreview() {
                   }}>{label}{required && <span className="ml-auto text-xs text-muted-foreground">Always shown</span>}</DropdownMenuCheckboxItem>
                 ))}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => setVisibleColumns([...defaultConfiguration.visibleColumns])}>Reset to default columns</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setVisibleColumns([...defaultConfiguration.visibleColumns])}>Reset columns</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Select value={groupBy} onValueChange={(value) => { setGroupBy(value as GroupByKey | "none"); setPage(1) }}>
+            <Select value={groupBy} onValueChange={(value) => { setGroupBy(value as GroupByKey | "none"); setPage(1); setCollapsedGroups(new Set()) }}>
               <SelectTrigger aria-label="Group records by" className="w-[9.5rem]"><Layers3Icon aria-hidden="true" className="size-4 text-muted-foreground" /><SelectValue /></SelectTrigger>
               <SelectContent><SelectGroup>{groupOptions.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectGroup></SelectContent>
             </Select>
-            <Select value={sort.key ?? "none"} onValueChange={handleSortKey}>
-              <SelectTrigger aria-label="Sort records by" className="w-[9.5rem]"><ArrowUpDownIcon aria-hidden="true" className="size-4 text-muted-foreground" /><SelectValue /></SelectTrigger>
-              <SelectContent><SelectGroup><SelectItem value="none">Sort: none</SelectItem>{tableColumns.map(({ key, label }) => <SelectItem key={key} value={key}>Sort: {label}</SelectItem>)}</SelectGroup></SelectContent>
-            </Select>
-            <Button variant="outline" size="icon-sm" aria-label={`Sort ${sort.direction === "asc" ? "ascending" : "descending"}`} title={`Sort ${sort.direction === "asc" ? "ascending" : "descending"}`} disabled={!sort.key} onClick={() => { setSort((current) => ({ ...current, direction: current.direction === "asc" ? "desc" : "asc" })); setPage(1) }}>
-              {sort.direction === "asc" ? <ArrowUpIcon /> : <ArrowDownIcon />}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><Button variant="outline" size="sm"><ArrowUpDownIcon data-icon="inline-start" />Sort{sort.key ? `: ${tableColumns.find(({ key }) => key === sort.key)?.label ?? ""}` : ""}</Button></DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={sort.key ?? "none"} onValueChange={handleSortKey}>
+                  <DropdownMenuRadioItem value="none">No sorting</DropdownMenuRadioItem>
+                  {tableColumns.map(({ key, label }) => <DropdownMenuRadioItem key={key} value={key}>{label}</DropdownMenuRadioItem>)}
+                </DropdownMenuRadioGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem disabled={!sort.key} onSelect={() => { setSort((current) => ({ ...current, direction: current.direction === "asc" ? "desc" : "asc" })); setPage(1) }}>
+                  Change to {sort.direction === "asc" ? "descending" : "ascending"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-      </header>
-
-      <div className="flex min-h-10 flex-wrap items-center justify-between gap-2 border-b bg-muted/30 px-4 py-2 sm:px-5">
-        <div className="flex min-w-0 flex-wrap items-center gap-2" aria-label="Active filters">
-          {allConditionsCount === 0 ? <span className="text-xs text-muted-foreground">No advanced filters applied</span> : <>
-            <span className="text-xs font-medium text-muted-foreground">Filters</span>
-            {activeConditions.map(({ condition, groupId, logic }, index) => (
-              <span key={condition.id} className="inline-flex max-w-full items-center overflow-hidden rounded-md border bg-background text-xs">
-                <button type="button" className="truncate px-2 py-1.5 text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" title="Edit this filter in the builder" onClick={() => setFilterOpenRequest({ groupId, conditionId: condition.id, nonce: Date.now() + index })}>
-                  {index > 0 && <span className="mr-1 text-muted-foreground">{logic}</span>}{formatCondition(condition)}
-                </button>
-                <Button variant="ghost" size="icon-xs" className="rounded-none border-l" aria-label={`Remove filter: ${formatCondition(condition)}`} onClick={() => { setFilters((current) => removeConditionFromGroup(current, condition.id)); setPage(1); setSelectedRecordId(null) }}><XIcon /></Button>
-              </span>
-            ))}
-          </>}
-        </div>
-        {(query.trim() || allConditionsCount > 0) && <Button variant="ghost" size="sm" onClick={() => { setQuery(""); clearAllFilters() }}>Clear all</Button>}
+        <AdvancedFilterBuilder
+          appliedFilters={filters}
+          search={query}
+          onSearchChange={(value) => { setQuery(value); setPage(1); setSelectedRecordId(null) }}
+          onApply={(next) => { setFilters(cloneFilterGroup(next)); setPage(1); setSelectedRecordId(null) }}
+          onClear={() => { setQuery(""); clearAllFilters() }}
+        />
       </div>
 
       <div ref={tableLayoutRef} className="flex min-w-0 items-stretch">
         <div className="min-w-0 flex-1">
+          <div className="flex min-h-9 items-center justify-between gap-3 border-b bg-muted/20 px-4 py-2 sm:px-5">
+            <p className="text-xs font-medium tabular-nums text-muted-foreground" aria-live="polite">{isRestoring ? "Restoring records…" : `${matchingRecords.length} ${matchingRecords.length === 1 ? "record" : "records"}`}</p>
+            <span className="text-xs text-muted-foreground">{pageSize} per page</span>
+          </div>
           <div className="overflow-x-auto">
             <Table className="min-w-[940px]">
               <TableHeader>
@@ -514,8 +472,8 @@ export function AdvancedFilterableTablePreview() {
               </TableBody>
             </Table>
           </div>
-          {matchingRecords.length > 0 && <footer className="flex flex-col gap-3 border-t px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <p className="text-xs tabular-nums text-muted-foreground">Showing {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, matchingRecords.length)} of {matchingRecords.length} records</p>
+          <footer className="flex flex-col gap-3 border-t px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <p className="text-xs tabular-nums text-muted-foreground">{matchingRecords.length === 0 ? "0 records" : `Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, matchingRecords.length)} of ${matchingRecords.length} records`}</p>
             <div className="flex flex-wrap items-center gap-2">
               <Label htmlFor="record-page-size" className="text-xs text-muted-foreground">Rows</Label>
               <Select value={String(pageSize)} onValueChange={(value) => { setPageSize(Number(value)); setPage(1) }}>
@@ -526,7 +484,7 @@ export function AdvancedFilterableTablePreview() {
               <Button variant="outline" size="icon-sm" aria-label="Previous page" disabled={currentPage <= 1} onClick={() => setPage((current) => Math.max(1, current - 1))}><ChevronLeftIcon /></Button>
               <Button variant="outline" size="icon-sm" aria-label="Next page" disabled={currentPage >= pageCount} onClick={() => setPage((current) => Math.min(pageCount, current + 1))}><ChevronRightIcon /></Button>
             </div>
-          </footer>}
+          </footer>
         </div>
         {selectedRecord && !isNarrow && <>
           <div
