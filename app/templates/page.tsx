@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "Browse reusable page templates for enterprise SaaS applications.",
 }
 
+export const instant = false
+
 export default function TemplatesPage() {
   return <TemplatesGallery />
 }
