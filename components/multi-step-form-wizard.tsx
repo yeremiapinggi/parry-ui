@@ -478,7 +478,7 @@ export function MultiStepFormWizard({ onDirtyChange }: { onDirtyChange?: (isDirt
             if (currentStep === 3) createDemoIntegration()
             else continueToNextStep()
           }}
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-6 pb-24"
         >
           <div className="flex flex-col gap-1 border-b pb-4">
             <h3 className="font-heading text-lg font-semibold">{steps[currentStep].title}</h3>
