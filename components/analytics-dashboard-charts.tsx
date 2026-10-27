@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
 import {
+  Area,
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  ComposedChart,
   Label,
   Line,
-  LineChart,
   Pie,
   PieChart,
   XAxis,
@@ -42,15 +43,14 @@ function compactNumber(value: number) {
   return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value)
 }
 
-function trendFormatter(value: number | string | readonly (number | string)[] | undefined, name: string | number | undefined, item: { payload?: unknown }) {
-  const point = item.payload as TrendPoint | undefined
-  const range = name === "previousActivity" ? point?.previousRange : point?.currentRange
+function trendFormatter(value: number | string | readonly (number | string)[] | undefined, name: string | number | undefined) {
   const amount = typeof value === "number" ? value.toLocaleString("en-US") : String(value ?? 0)
+  const seriesLabel = name === "previousActivity" ? "Previous period" : "Activity"
 
   return (
-    <div className="flex w-full flex-col gap-1">
-      <span className="text-muted-foreground">{range}</span>
-      <span className="font-mono font-medium tabular-nums">{amount} events</span>
+    <div className="flex w-full items-center justify-between gap-6">
+      <span className="text-muted-foreground">{seriesLabel}</span>
+      <span className="font-mono font-semibold tabular-nums text-foreground">{amount} events</span>
     </div>
   )
 }
@@ -65,6 +65,7 @@ export function ActivityTrendChart({
   compact?: boolean
 }) {
   const [visibleSeries, setVisibleSeries] = useState({ activity: true, previousActivity: true })
+  const fillId = `activityArea-${useId().replace(/:/g, "")}`
   const interval = Math.max(0, Math.ceil(data.length / (compact ? 4 : 6)) - 1)
 
   function toggleSeries(key: "activity" | "previousActivity") {
@@ -72,22 +73,26 @@ export function ActivityTrendChart({
   }
 
   return (
-    <Card className={compact ? "gap-0 py-0" : "gap-0 py-0"}>
-      <CardHeader className={compact ? "gap-1 px-3 py-2" : "gap-2 px-5 py-4"}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
+    <Card className="gap-0 border-border/80 py-0 shadow-sm">
+      <CardHeader className={compact ? "gap-1 px-3 py-2" : "gap-3 px-5 pt-5 pb-3"}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-col gap-1">
             <CardTitle className={compact ? "text-xs" : "text-base"}>Activity Trend</CardTitle>
-            {!compact && <CardDescription>Daily activity across the selected date range.</CardDescription>}
+            {!compact && (
+              <CardDescription>
+                {compare ? "Daily activity compared with the previous period." : "Daily activity across the selected date range."}
+              </CardDescription>
+            )}
           </div>
           {!compact && (
-            <div className="flex flex-wrap items-center gap-1" aria-label="Toggle chart series visibility">
+            <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Toggle chart series visibility">
               <button
                 type="button"
                 aria-pressed={visibleSeries.activity}
                 onClick={() => toggleSeries("activity")}
-                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:text-foreground"
+                className="inline-flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:text-foreground"
               >
-                <span aria-hidden="true" className="size-2 rounded-full bg-[var(--chart-2)]" />
+                <span aria-hidden="true" className="w-5 border-t-2 border-solid" style={{ borderColor: "var(--chart-2)" }} />
                 Activity
               </button>
               {compare && (
@@ -95,9 +100,9 @@ export function ActivityTrendChart({
                   type="button"
                   aria-pressed={visibleSeries.previousActivity}
                   onClick={() => toggleSeries("previousActivity")}
-                  className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:text-foreground"
+                  className="inline-flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:text-foreground"
                 >
-                  <span aria-hidden="true" className="size-2 rounded-full bg-[var(--chart-5)]" />
+                  <span aria-hidden="true" className="w-5 border-t-2 border-dashed" style={{ borderColor: "var(--chart-5)" }} />
                   Previous period
                 </button>
               )}
@@ -105,62 +110,72 @@ export function ActivityTrendChart({
           )}
         </div>
       </CardHeader>
-      <CardContent className={compact ? "px-2 pb-2" : "px-4 pb-4 sm:px-5"}>
+      <CardContent className={compact ? "px-2 pb-2" : "px-4 pb-5 sm:px-5"}>
         <ChartContainer
           config={trendConfig}
-          aria-label="Line chart showing daily activity and optional previous-period activity"
-          className={compact ? "h-28 min-h-28 w-full aspect-auto" : "h-72 min-h-72 w-full aspect-auto sm:h-80 sm:min-h-80"}
+          aria-label="Area and line chart comparing daily activity with the previous period"
+          className={compact ? "h-28 min-h-28 w-full aspect-auto" : "h-80 min-h-80 w-full aspect-auto sm:h-96 sm:min-h-96"}
         >
-          <LineChart data={data} accessibilityLayer={!compact} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <ComposedChart data={data} accessibilityLayer={!compact} margin={{ top: 16, right: 14, left: 4, bottom: 4 }}>
+            <defs>
+              <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--color-activity)" stopOpacity={0.24} />
+                <stop offset="100%" stopColor="var(--color-activity)" stopOpacity={0.015} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="4 6" strokeOpacity={0.7} />
             <XAxis
               dataKey="label"
+              tick={{ fill: "var(--muted-foreground)", fontSize: compact ? 9 : 11 }}
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              tickMargin={12}
               interval={interval}
-              minTickGap={compact ? 16 : 24}
+              minTickGap={compact ? 16 : 28}
             />
             <YAxis
-              width={compact ? 36 : 48}
+              width={compact ? 36 : 56}
+              tick={{ fill: "var(--muted-foreground)", fontSize: compact ? 9 : 11 }}
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              tickMargin={10}
               tickFormatter={compactNumber}
             />
             <ChartTooltip
               cursor={{ stroke: "var(--border)", strokeDasharray: "4 4" }}
               content={
                 <ChartTooltipContent
+                  indicator="line"
                   labelFormatter={(_label, payload) => payload?.[0]?.payload?.currentRange ?? "Activity"}
                   formatter={trendFormatter}
                 />
               }
             />
-            <Line
-              type="monotone"
+            <Area
+              type="natural"
               dataKey="activity"
               stroke="var(--color-activity)"
-              strokeWidth={compact ? 2 : 2.5}
+              strokeWidth={compact ? 2 : 2.75}
+              fill={`url(#${fillId})`}
               dot={false}
-              activeDot={{ r: compact ? 2 : 4 }}
+              activeDot={{ r: compact ? 2 : 4, strokeWidth: 2, stroke: "var(--background)" }}
               hide={!visibleSeries.activity}
               isAnimationActive={false}
             />
             {compare && (
               <Line
-                type="monotone"
+                type="natural"
                 dataKey="previousActivity"
                 stroke="var(--color-previousActivity)"
                 strokeWidth={2}
-                strokeDasharray="5 4"
+                strokeDasharray="6 5"
                 dot={false}
-                activeDot={{ r: 3 }}
+                activeDot={{ r: 3, strokeWidth: 2, stroke: "var(--background)" }}
                 hide={!visibleSeries.previousActivity}
                 isAnimationActive={false}
               />
             )}
-          </LineChart>
+          </ComposedChart>
         </ChartContainer>
       </CardContent>
     </Card>

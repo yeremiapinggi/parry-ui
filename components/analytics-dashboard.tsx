@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { ArrowDownIcon, ArrowUpIcon, InfoIcon, RotateCcwIcon } from "lucide-react"
+import { ActivityIcon, ArrowDownIcon, ArrowUpIcon, CircleCheckIcon, InfoIcon, RotateCcwIcon, TimerIcon, UsersRoundIcon, type LucideIcon } from "lucide-react"
 
 import {
   ANALYTICS_END_DATE,
@@ -28,10 +28,10 @@ export type AnalyticsDemoState = "default" | "loading" | "empty"
 type DatePreset = "7" | "30" | "90" | "custom"
 
 const metricHelp = {
-  activity: "Total tracked events across the selected period. Higher volume is directional, so interpret it alongside completion and response outcomes.",
-  uniqueUsers: "Distinct fictional user IDs seen at least once during the selected period. Users are deduplicated across days; reach is directional rather than an outcome by itself.",
-  completionRate: "Completed events divided by all tracked events in the selected period. A higher rate means more activity reached a successful outcome.",
-  averageResponse: "Activity-weighted average response time across channels in the selected period. Lower values represent faster service.",
+  activity: "Total tracked events across this range. Higher volume is directional, so interpret it alongside completion and response outcomes.",
+  uniqueUsers: "Distinct fictional user IDs seen at least once in this range. Users are deduplicated across days; reach is directional rather than an outcome by itself.",
+  completionRate: "Completed events divided by all tracked events in this range. A higher rate means more activity reached a successful outcome.",
+  averageResponse: "Activity-weighted average response time across channels in this range. Lower values represent faster service.",
 } as const
 
 function formatCompact(value: number) {
@@ -49,6 +49,8 @@ function MetricCard({
   label,
   value,
   help,
+  caption,
+  icon: Icon,
   comparison,
   compareEnabled = false,
   outcomeDirection = "neutral",
@@ -57,6 +59,8 @@ function MetricCard({
   label: string
   value: string
   help: string
+  caption: string
+  icon: LucideIcon
   comparison?: { value: string; delta: number } | null
   compareEnabled?: boolean
   outcomeDirection?: "higher" | "lower" | "neutral"
@@ -68,17 +72,24 @@ function MetricCard({
   const isWorsening = comparison
     ? outcomeDirection === "higher" ? comparison.delta < 0 : outcomeDirection === "lower" && comparison.delta > 0
     : false
-  const DirectionIcon = comparison ? comparison.delta > 0 ? ArrowUpIcon : comparison.delta < 0 ? ArrowDownIcon : null : null
+  const trendTone = isImproving ? "text-success" : isWorsening ? "text-destructive" : "text-muted-foreground"
+  const trendBackground = isImproving ? "bg-success-soft" : isWorsening ? "bg-destructive-soft" : "bg-muted"
+  const DirectionIcon = comparison?.delta === 0 ? null : comparison ? comparison.delta > 0 ? ArrowUpIcon : ArrowDownIcon : null
 
   return (
-    <Card className={compact ? "gap-1 py-2" : "gap-1 py-4"}>
-      <CardHeader className={compact ? "px-3 py-0" : "px-5 py-0"}>
-        <div className="flex items-center justify-between gap-1">
-          <p className={compact ? "truncate text-[9px] font-medium text-muted-foreground" : "text-sm font-medium text-muted-foreground"}>{label}</p>
+    <Card className={compact ? "gap-2 py-2" : "gap-0 border-border/80 py-0 shadow-sm"}>
+      <CardHeader className={compact ? "px-3 pt-2 pb-0" : "px-5 pt-5 pb-0"}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className={compact ? "grid size-6 shrink-0 place-items-center rounded-md bg-info-soft text-info" : "grid size-9 shrink-0 place-items-center rounded-lg bg-info-soft text-info"}>
+              <Icon aria-hidden="true" className={compact ? "size-3.5" : "size-4"} />
+            </span>
+            <p className={compact ? "truncate text-[9px] font-medium text-muted-foreground" : "truncate text-sm font-medium text-muted-foreground"}>{label}</p>
+          </div>
           {!compact && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <button type="button" aria-label={`About ${label}`} className="rounded-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+                <button type="button" aria-label={`About ${label}`} className="shrink-0 rounded-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
                   <InfoIcon className="size-4" />
                 </button>
               </TooltipTrigger>
@@ -87,21 +98,29 @@ function MetricCard({
           )}
         </div>
       </CardHeader>
-      <CardContent className={compact ? "flex flex-col gap-1 px-3 py-0" : "flex flex-col gap-2 px-5 py-0"}>
-        <p className={compact ? "font-data text-base font-semibold tabular-nums" : "font-data text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl"}>{value}</p>
-        {compact ? (
-          <span className="text-[8px] text-muted-foreground">selected period</span>
-        ) : compareEnabled && !comparison ? (
-          <p className="min-h-5 text-xs text-muted-foreground">Previous period unavailable</p>
-        ) : comparison ? (
-          <div className="flex min-h-5 flex-wrap items-center gap-1.5 text-xs">
-            {DirectionIcon && <DirectionIcon aria-hidden="true" className={`size-3.5 ${isImproving ? "text-success" : isWorsening ? "text-destructive" : "text-muted-foreground"}`} />}
-            <span className={`font-medium tabular-nums ${isImproving ? "text-success" : isWorsening ? "text-destructive" : "text-muted-foreground"}`}>{comparison.value}</span>
-            <span className="text-muted-foreground">vs. previous period</span>
-          </div>
-        ) : (
-          <p className="min-h-5 text-xs text-muted-foreground">Selected period</p>
-        )}
+      <CardContent className={compact ? "flex flex-col gap-1 px-3 pt-1 pb-2" : "flex flex-col gap-2.5 px-5 pt-4 pb-5"}>
+        <div className="flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
+          <p className={compact ? "font-data text-base font-semibold tabular-nums" : "font-data text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl"}>{value}</p>
+          {!compact && compareEnabled && comparison && (
+            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold tabular-nums ${trendTone} ${trendBackground}`}>
+              {DirectionIcon ? <DirectionIcon aria-hidden="true" className="size-3.5" /> : <span aria-hidden="true" className="font-mono">−</span>}
+              {comparison.value}
+            </span>
+          )}
+          {!compact && compareEnabled && !comparison && (
+            <span className="rounded-full bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground">No comparison</span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+          {compact ? (
+            <p className="text-[8px] leading-relaxed text-muted-foreground">{caption}</p>
+          ) : (
+            <>
+              <p className="text-xs leading-relaxed text-muted-foreground">{caption}</p>
+              {compareEnabled && comparison && <span className="text-xs leading-relaxed text-muted-foreground">· vs. previous period</span>}
+            </>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
@@ -123,6 +142,8 @@ function MetricSummary({
       label: "Total Activity",
       value: formatCompact(current.activity),
       help: metricHelp.activity,
+      caption: "Tracked events in this range",
+      icon: ActivityIcon,
       outcomeDirection: "neutral" as const,
       currentValue: current.activity,
       previousValue: previous?.activity ?? 0,
@@ -131,6 +152,8 @@ function MetricSummary({
       label: "Unique Users",
       value: formatCompact(current.uniqueUsers),
       help: metricHelp.uniqueUsers,
+      caption: "Distinct users active in this range",
+      icon: UsersRoundIcon,
       outcomeDirection: "neutral" as const,
       currentValue: current.uniqueUsers,
       previousValue: previous?.uniqueUsers ?? 0,
@@ -139,6 +162,8 @@ function MetricSummary({
       label: "Completion Rate",
       value: `${current.completionRate.toFixed(1)}%`,
       help: metricHelp.completionRate,
+      caption: "Share of activity marked complete",
+      icon: CircleCheckIcon,
       outcomeDirection: "higher" as const,
       currentValue: current.completionRate,
       previousValue: previous?.completionRate ?? 0,
@@ -147,6 +172,8 @@ function MetricSummary({
       label: "Average Response Time",
       value: `${current.averageResponseSeconds.toFixed(1)}s`,
       help: metricHelp.averageResponse,
+      caption: "Activity-weighted across channels",
+      icon: TimerIcon,
       currentValue: current.averageResponseSeconds,
       previousValue: previous?.averageResponseSeconds ?? 0,
       outcomeDirection: "lower" as const,
@@ -161,6 +188,8 @@ function MetricSummary({
           label={metric.label}
           value={metric.value}
           help={metric.help}
+          caption={metric.caption}
+          icon={metric.icon}
           outcomeDirection={metric.outcomeDirection}
           comparison={compare ? formatMetricChange(metric.currentValue, metric.previousValue) : undefined}
           compareEnabled={compare}
@@ -286,7 +315,7 @@ export function AnalyticsDashboard({ state = "default" }: { state?: AnalyticsDem
   const [preset, setPreset] = useState<DatePreset>("30")
   const [customStart, setCustomStart] = useState(() => addDaysToISO(ANALYTICS_END_DATE, -29))
   const [customEnd, setCustomEnd] = useState(ANALYTICS_END_DATE)
-  const [compare, setCompare] = useState(false)
+  const [compare, setCompare] = useState(true)
 
   const range = useMemo(() => {
     if (preset === "custom") return { start: customStart, end: customEnd }
@@ -379,10 +408,10 @@ export function AnalyticsDashboardThumbnail() {
           <span className="shrink-0 rounded-md border bg-card px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]">Last 30 Days</span>
         </div>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-          <MetricCard compact label="Total Activity" value={formatCompact(summary.activity)} help="Total activity" />
-          <MetricCard compact label="Unique Users" value={formatCompact(summary.uniqueUsers)} help="Unique users" />
-          <MetricCard compact label="Completion Rate" value={`${summary.completionRate.toFixed(1)}%`} help="Completion rate" />
-          <MetricCard compact label="Avg Response" value={`${summary.averageResponseSeconds.toFixed(1)}s`} help="Average response" />
+          <MetricCard compact label="Total Activity" value={formatCompact(summary.activity)} help="Total activity" caption="Tracked events" icon={ActivityIcon} />
+          <MetricCard compact label="Unique Users" value={formatCompact(summary.uniqueUsers)} help="Unique users" caption="Distinct active users" icon={UsersRoundIcon} />
+          <MetricCard compact label="Completion Rate" value={`${summary.completionRate.toFixed(1)}%`} help="Completion rate" caption="Completed activity" icon={CircleCheckIcon} />
+          <MetricCard compact label="Avg Response" value={`${summary.averageResponseSeconds.toFixed(1)}s`} help="Average response" caption="Across all channels" icon={TimerIcon} />
         </div>
         <ActivityTrendChart data={trend} compare={false} compact />
       </div>
