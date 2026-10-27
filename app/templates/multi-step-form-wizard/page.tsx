@@ -64,7 +64,8 @@ const dontGuidelines = [
 
 export default function MultiStepFormWizardPage() {
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">
+    <main className="w-full bg-card text-card-foreground">
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">
       <article className="flex min-w-0 flex-col gap-12 py-10">
         <header className="flex flex-col items-start gap-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -110,7 +111,7 @@ export default function MultiStepFormWizardPage() {
             <h2 id="preview-heading" className={sectionHeading}>Live Preview</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">Try required-field validation, conditional credentials, the simulated test outcomes, step navigation, review, draft save and restore, and reset confirmation. Use demo values only.</p>
           </div>
-          <div className="rounded-lg border bg-background p-3 sm:p-6">
+          <div className="rounded-lg border bg-card p-3 sm:p-6">
             <MultiStepFormWizard />
           </div>
         </section>
@@ -188,6 +189,7 @@ export default function MultiStepFormWizardPage() {
       <aside className="hidden py-10 xl:block">
         <div className="sticky top-24"><DocsToc items={toc} /></div>
       </aside>
-    </div>
+      </div>
+    </main>
   )
 }

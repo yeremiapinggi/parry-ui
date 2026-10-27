@@ -430,7 +430,7 @@ export function MultiStepFormWizard({ onDirtyChange }: { onDirtyChange?: (isDirt
       : null
 
   return (
-    <section data-parry-theme aria-label="Multi-Step Form Wizard" className="mx-auto flex min-h-[620px] w-full max-w-4xl flex-col bg-background pb-2 text-foreground">
+    <section data-parry-theme aria-label="Multi-Step Form Wizard" className="mx-auto flex min-h-[620px] w-full max-w-4xl flex-col bg-card pb-2 text-card-foreground">
       <div className="flex flex-col gap-6 px-1 pt-2 sm:gap-8 sm:px-2">
         <header className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
