@@ -22,12 +22,13 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { ConversationWorkspace } from "@/components/conversation-workspace"
+import { useSharedConversations } from "@/lib/conversation-state"
 import {
   conversationAssignees,
   conversationChannels,
   conversationPriorities,
   conversationStatuses,
-  demoConversations,
   type Conversation,
   type ConversationChannel,
   type ConversationPriority,
@@ -112,10 +113,12 @@ function SelectAssigneeItems({ onSelect }: { onSelect: (assignee: string | null)
 function ConversationActions({
   conversation,
   onView,
+  onOpenWorkspace,
   onUpdate,
 }: {
   conversation: Conversation
   onView: () => void
+  onOpenWorkspace: () => void
   onUpdate: (patch: Partial<Conversation>) => void
 }) {
   return <DropdownMenu>
@@ -126,7 +129,8 @@ function ConversationActions({
     </DropdownMenuTrigger>
     <DropdownMenuContent data-parry-theme align="end" className="w-56" onClick={(event) => event.stopPropagation()}>
       <DropdownMenuGroup>
-        <DropdownMenuItem onSelect={onView}>View conversation</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onView}>Quick preview</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onOpenWorkspace}><MessagesSquareIcon data-icon="inline-start" />View conversation</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => onUpdate({ assignee: demoCurrentUser })}><UserRoundIcon data-icon="inline-start" />Assign to me</DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger><UsersRoundIcon data-icon="inline-start" />Assign to agent</DropdownMenuSubTrigger>
@@ -205,7 +209,7 @@ function ConversationDrawer({ conversation, onClose }: { conversation: Conversat
       </div>
       <section aria-label="Recent messages" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-5">
         <p className="text-center text-xs text-muted-foreground">Today · {conversation.channel}</p>
-        {conversation.messages.map((message, index) => <div key={`${message.time}-${index}`} className={`flex flex-col gap-1 ${message.from === "agent" ? "items-end" : "items-start"}`}>
+        {conversation.messages.filter(({ from }) => from !== "note").map((message, index) => <div key={`${message.time}-${index}`} className={`flex flex-col gap-1 ${message.from === "agent" ? "items-end" : "items-start"}`}>
           <div className={`max-w-[88%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${message.from === "agent" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}>{message.body}</div>
           <span className="px-1 text-[11px] text-muted-foreground">{message.from === "agent" ? "Support · " : `${conversation.customer} · `}{message.time}</span>
         </div>)}
@@ -224,7 +228,8 @@ function ConversationDrawer({ conversation, onClose }: { conversation: Conversat
 }
 
 export function ConversationTable({ demoMode = "default" }: { demoMode?: ConversationDemoMode }) {
-  const [conversations, setConversations] = useState<Conversation[]>(demoConversations)
+  const [conversations, setConversations] = useSharedConversations()
+  const [workspaceConversationId, setWorkspaceConversationId] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<ConversationStatus | "All">("All")
   const [channelFilter, setChannelFilter] = useState<ConversationChannel | "all">("all")
   const [priorityFilter, setPriorityFilter] = useState<ConversationPriority | "all">("all")
@@ -249,7 +254,8 @@ export function ConversationTable({ demoMode = "default" }: { demoMode?: Convers
     const displayedSource = demoMode === "empty" && !createdWhileEmpty ? [] : conversations
     const normalizedQuery = query.trim().toLocaleLowerCase()
     const filtered = displayedSource.filter((conversation) => {
-      const matchesSearch = !normalizedQuery || [conversation.customer, conversation.id, conversation.preview, ...conversation.messages.map(({ body }) => body)].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))
+              const matchesSearch = !normalizedQuery || [conversation.customer, conversation.id, conversation.preview, ...conversation.messages.filter(({ from }) => from !== "note").map(({ body }) => body)].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))
+
       return matchesSearch &&
         (statusFilter === "All" || conversation.status === statusFilter) &&
         (channelFilter === "all" || conversation.channel === channelFilter) &&
@@ -398,7 +404,7 @@ export function ConversationTable({ demoMode = "default" }: { demoMode?: Convers
     }
   }
 
-  return <section aria-label="Conversation management table" className="flex min-w-0 flex-col gap-4 rounded-xl border bg-card p-4 sm:p-5">
+  return <><section aria-label="Conversation management table" className={`flex min-w-0 flex-col gap-4 rounded-xl border bg-card p-4 sm:p-5 ${workspaceConversationId ? "hidden" : ""}`}>
     <header className="flex flex-col gap-4 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="flex min-w-0 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
@@ -498,7 +504,7 @@ export function ConversationTable({ demoMode = "default" }: { demoMode?: Convers
                 <TableCell className="text-sm"><AssigneeLabel name={conversation.assignee} /></TableCell>
                 <TableCell><div className="flex flex-col gap-0.5"><span className="text-sm">{conversation.lastMessage}</span><span className="max-w-36 truncate text-xs text-muted-foreground">{conversation.preview}</span></div></TableCell>
                 <TableCell><span className="inline-flex items-center gap-2 text-sm"><span aria-hidden="true" className={`size-2 rounded-full ${slaTone[conversation.sla]}`} /><span className={conversation.sla === "Normal" ? "text-muted-foreground" : conversation.sla === "At Risk" ? "text-warning" : "text-destructive"}>{conversation.sla}</span></span></TableCell>
-                <TableCell className="text-right"><ConversationActions conversation={conversation} onView={() => setSelectedConversationId(conversation.id)} onUpdate={(patch) => updateOne(conversation.id, patch)} /></TableCell>
+                <TableCell className="text-right"><ConversationActions conversation={conversation} onView={() => setSelectedConversationId(conversation.id)} onOpenWorkspace={() => { setSelectedConversationId(null); setWorkspaceConversationId(conversation.id) }} onUpdate={(patch) => updateOne(conversation.id, patch)} /></TableCell>
               </TableRow>
             })}
           </TableBody>
@@ -541,7 +547,7 @@ export function ConversationTable({ demoMode = "default" }: { demoMode?: Convers
         </DialogContent>
       </Dialog>
     </div>
-  </section>
+  </section>{workspaceConversationId && <ConversationWorkspace initialConversationId={workspaceConversationId} embedded onReturnToTable={() => setWorkspaceConversationId(null)} />}</>
 }
 
 export function ConversationTablePreview() {

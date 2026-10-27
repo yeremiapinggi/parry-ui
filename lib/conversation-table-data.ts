@@ -3,10 +3,22 @@ export type ConversationPriority = "Low" | "Medium" | "High" | "Urgent"
 export type ConversationChannel = "WhatsApp" | "Email" | "Web Chat"
 export type SlaStatus = "Normal" | "At Risk" | "Breached"
 
+export type ConversationAttachment = {
+  name: string
+  type: string
+  size: number
+  sizeLabel?: string
+  url?: string
+}
+
 export type ConversationMessage = {
-  from: "customer" | "agent"
+  id?: string
+  from: "customer" | "agent" | "note"
   body: string
   time: string
+  date?: string
+  delivery?: "sending" | "sent" | "failed"
+  attachments?: ConversationAttachment[]
 }
 
 export type Conversation = {
@@ -25,6 +37,10 @@ export type Conversation = {
   sla: SlaStatus
   bookmarked: boolean
   messages: ConversationMessage[]
+  unreadCount?: number
+  phone?: string
+  tags?: string[]
+  category?: string
 }
 
 export const conversationStatuses: ConversationStatus[] = ["Open", "In Progress", "Pending", "Closed"]
@@ -38,16 +54,20 @@ const messages = (
   second: string,
   third: string,
 ): ConversationMessage[] => [
-  { from: "customer", body: first.trim() || `Message from ${customer}`, time: "10:14 AM" },
-  { from: "agent", body: second, time: "10:18 AM" },
-  { from: "customer", body: third, time: "10:22 AM" },
+  { from: "customer", body: first.trim() || `Message from ${customer}`, time: "10:14 AM", date: "2026-10-27" },
+  { from: "agent", body: second, time: "10:18 AM", date: "2026-10-27", delivery: "sent" },
+  { from: "customer", body: third, time: "10:22 AM", date: "2026-10-27" },
 ]
 
 export const demoConversations: Conversation[] = [
-  { id: "CNV-2048", customer: "Amara Okafor", initials: "AO", email: "amara.okafor@example.com", company: "Juniper Financial", channel: "WhatsApp", status: "Open", priority: "Urgent", assignee: "Asha Nair", preview: "I still can’t access my account after the reset…", lastMessage: "3 min ago", lastMessageAt: "2026-10-27T10:22:00", sla: "Breached", bookmarked: true, messages: messages("Amara Okafor", "I still can’t access my account after the reset.", "I’m checking the sign-in logs now. Could you confirm the email on the account?", "It’s the one ending in .com. I have a payment due today.") },
-  { id: "CNV-2047", customer: "Maya Chen", initials: "MC", email: "maya.chen@example.com", company: "Northstar Analytics", channel: "Email", status: "In Progress", priority: "High", assignee: "Marco Silva", preview: "Could you share the updated invoice for October?", lastMessage: "12 min ago", lastMessageAt: "2026-10-27T10:13:00", sla: "At Risk", bookmarked: false, messages: messages("Maya Chen", "Could you share the updated invoice for October?", "I’ve found the revised invoice and will send it over shortly.", "Thanks. Please make sure the billing address is updated too.") },
-  { id: "CNV-2046", customer: "Theo Martin", initials: "TM", email: "theo.martin@example.com", company: "Fieldstone Health", channel: "Web Chat", status: "Pending", priority: "Medium", assignee: "Jin Park", preview: "We’re waiting on the security review from your team.", lastMessage: "28 min ago", lastMessageAt: "2026-10-27T09:57:00", sla: "Normal", bookmarked: false, messages: messages("Theo Martin", "We’re waiting on the security review from your team.", "I’ve asked our security team for an update and will follow up here.", "Appreciate it. We need the review before Friday.") },
-  { id: "CNV-2045", customer: "Priya Shah", initials: "PS", email: "priya.shah@example.com", company: "Cedar & Stone", channel: "WhatsApp", status: "Open", priority: "High", assignee: null, preview: "The delivery arrived, but two items are missing.", lastMessage: "41 min ago", lastMessageAt: "2026-10-27T09:44:00", sla: "At Risk", bookmarked: false, messages: messages("Priya Shah", "The delivery arrived, but two items are missing.", "I’m sorry about that. Could you send the order number so I can investigate?", "Order 78422. The lamp and the small tray are missing.") },
+  { id: "CNV-2048", customer: "Amara Okafor", initials: "AO", email: "amara.okafor@example.com", phone: "+1 (415) 555-0198", company: "Juniper Financial", channel: "WhatsApp", status: "Open", priority: "Urgent", assignee: "Asha Nair", preview: "I still can’t access my account after the reset…", lastMessage: "3 min ago", lastMessageAt: "2026-10-27T10:22:00", sla: "Breached", bookmarked: true, unreadCount: 0, tags: ["Account access", "Priority customer"], category: "Account support", messages: messages("Amara Okafor", "I still can’t access my account after the reset.", "I’m checking the sign-in logs now. Could you confirm the email on the account?", "It’s the one ending in .com. I have a payment due today.") },
+
+  { id: "CNV-2047", customer: "Maya Chen", initials: "MC", email: "maya.chen@example.com", phone: "+1 (212) 555-0124", company: "Northstar Analytics", channel: "Email", status: "In Progress", priority: "High", assignee: "Marco Silva", preview: "Could you share the updated invoice for October?", lastMessage: "12 min ago", lastMessageAt: "2026-10-27T10:13:00", sla: "At Risk", bookmarked: false, unreadCount: 2, tags: ["Billing", "Invoice"], category: "Billing inquiry", messages: messages("Maya Chen", "Could you share the updated invoice for October?", "I’ve found the revised invoice and will send it over shortly.", "Thanks. Please make sure the billing address is updated too.") },
+
+  { id: "CNV-2046", customer: "Theo Martin", initials: "TM", email: "theo.martin@example.com", phone: "+1 (617) 555-0138", company: "Fieldstone Health", channel: "Web Chat", status: "Pending", priority: "Medium", assignee: "Jin Park", preview: "We’re waiting on the security review from your team.", lastMessage: "28 min ago", lastMessageAt: "2026-10-27T09:57:00", sla: "Normal", bookmarked: false, unreadCount: 1, tags: ["Security", "Review"], category: "Technical support", messages: messages("Theo Martin", "We’re waiting on the security review from your team.", "I’ve asked our security team for an update and will follow up here.", "Appreciate it. We need the review before Friday.") },
+
+  { id: "CNV-2045", customer: "Priya Shah", initials: "PS", email: "priya.shah@example.com", phone: "+1 (503) 555-0177", company: "Cedar & Stone", channel: "WhatsApp", status: "Open", priority: "High", assignee: null, preview: "The delivery arrived, but two items are missing.", lastMessage: "41 min ago", lastMessageAt: "2026-10-27T09:44:00", sla: "At Risk", bookmarked: false, unreadCount: 1, tags: ["Order 78422", "Missing items"], category: "Order issue", messages: messages("Priya Shah", "The delivery arrived, but two items are missing.", "I’m sorry about that. Could you send the order number so I can investigate?", "Order 78422. The lamp and the small tray are missing.").map((message, index) => index === 0 ? { ...message, attachments: [{ name: "delivery-photo.png", type: "image/png", size: 184320, sizeLabel: "180 KB", url: "/images/conversation-package-demo.png" }] } : message) },
+
   { id: "CNV-2044", customer: "Luca Moretti", initials: "LM", email: "luca.moretti@example.com", company: "Clearwater Systems", channel: "Email", status: "Closed", priority: "Low", assignee: "Elena Rossi", preview: "That fixed it, thank you for the quick help.", lastMessage: "1 hr ago", lastMessageAt: "2026-10-27T09:01:00", sla: "Normal", bookmarked: false, messages: messages("Luca Moretti", "The dashboard export is missing the date column.", "The export setting is updated. Please try downloading it again.", "That fixed it, thank you for the quick help.") },
   { id: "CNV-2043", customer: "Zara Ibrahim", initials: "ZI", email: "zara.ibrahim@example.com", company: "Summit Robotics", channel: "Web Chat", status: "In Progress", priority: "Urgent", assignee: "Naomi Reed", preview: "Our workspace is showing duplicate seats on the bill.", lastMessage: "1 hr ago", lastMessageAt: "2026-10-27T08:42:00", sla: "Breached", bookmarked: true, messages: messages("Zara Ibrahim", "Our workspace is showing duplicate seats on the bill.", "I’m reviewing your workspace membership and the latest invoice.", "We removed two users last week, but they are still listed.") },
   { id: "CNV-2042", customer: "Nora Williams", initials: "NW", email: "nora.williams@example.com", company: "Meridian Research", channel: "Email", status: "Pending", priority: "Low", assignee: "Asha Nair", preview: "I’ve attached the signed agreement for your records.", lastMessage: "2 hrs ago", lastMessageAt: "2026-10-27T08:02:00", sla: "Normal", bookmarked: false, messages: messages("Nora Williams", "I’ve attached the signed agreement for your records.", "Received. Our team will countersign and return a copy.", "Perfect, thank you.") },

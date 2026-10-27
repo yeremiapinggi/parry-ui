@@ -12,6 +12,8 @@ import { CreateEditFormThumbnail } from "@/components/create-edit-form-thumbnail
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
 import { ConversationTable } from "@/components/conversation-table-preview"
 import { ConversationTableThumbnail } from "@/components/conversation-table-thumbnail"
+import { ConversationWorkspace } from "@/components/conversation-workspace"
+import { ConversationWorkspaceThumbnail } from "@/components/conversation-workspace-thumbnail"
 import { MultiStepFormWizard } from "@/components/multi-step-form-wizard"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
@@ -31,7 +33,7 @@ import {
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-type TemplateCategory = "Table" | "Table & Data" | "Dashboard" | "Forms" | "Settings" | "Conversation" | "AI" | "Detail & Content"
+type TemplateCategory = "Table" | "Table & Data" | "Dashboard" | "Forms" | "Settings" | "Conversation" | "Conversation & Collaboration" | "AI" | "Detail & Content"
 type CategoryFilter = "All" | TemplateCategory
 
 type Template = {
@@ -62,6 +64,13 @@ const templates: Template[] = [
     name: "Conversation Table",
     description: "A conversation management table for monitoring, filtering, assigning, and managing customer conversations.",
     category: "Table & Data",
+    reference: "Parry UI · Contact center",
+  },
+  {
+    slug: "conversation-workspace",
+    name: "Conversation Workspace",
+    description: "An interactive workspace for managing customer conversations, replying to messages, and handling conversation workflows.",
+    category: "Conversation & Collaboration",
     reference: "Parry UI · Contact center",
   },
   {
@@ -246,7 +255,7 @@ function MultiStepFormWizardThumbnail() {
       <div className="grid grid-cols-4 gap-1.5 border-b pb-2.5 sm:gap-2">
         {["Basics", "Configure", "Test", "Review"].map((step, index) => (
           <span key={step} className={`flex items-center gap-1 rounded border px-1.5 py-1 text-[8px] sm:gap-1.5 sm:px-2 sm:text-[9px] ${index === 1 ? "border-primary bg-secondary text-secondary-foreground" : index === 0 ? "border-primary/40 bg-muted/30" : "text-muted-foreground"}`}>
-            <span className={`flex size-3.5 shrink-0 items-center justify-center rounded-full text-[8px] ${index === 0 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>{index === 0 ? "✓" : index + 1}</span>
+            <span className={`flex size-3.5 shrink-0 items-center justify-center rounded-full text-[8px] ${index === 0 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>{index === 0 ? "��" : index + 1}</span>
             <span className="truncate">{step}</span>
           </span>
         ))}
@@ -395,7 +404,7 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : <TemplateThumbnail />}
+              {template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -438,7 +447,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
