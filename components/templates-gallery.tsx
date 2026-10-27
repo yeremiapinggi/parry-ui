@@ -9,6 +9,7 @@ import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
+import { SettingsDialogPreview } from "@/components/settings-dialog-preview"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -54,6 +55,13 @@ const templates: Template[] = [
     description: "A single-page settings form for managing preferences and configuration.",
     category: "Settings",
     reference: "Parry UI · Workspace settings",
+  },
+  {
+    slug: "settings-dialog",
+    name: "Settings Dialog",
+    description: "A contextual settings dialog for managing preferences without leaving the current page.",
+    category: "Settings",
+    reference: "Parry UI · Notification preferences",
   },
   {
     slug: "advanced-filterable-table",
@@ -127,6 +135,40 @@ function SettingsFormThumbnail() {
       <div className="mt-auto flex justify-end gap-1.5 border-t pt-2">
         <span className="rounded border px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]">Cancel</span>
         <span className="rounded bg-primary px-2 py-1 text-[8px] text-primary-foreground sm:text-[9px]">Save Changes</span>
+      </div>
+    </div>
+  )
+}
+
+function SettingsDialogThumbnail() {
+  return (
+    <div aria-hidden="true" className="relative flex h-full min-h-0 flex-col overflow-hidden bg-background p-4 text-foreground sm:p-5">
+      <div className="flex flex-col gap-1 opacity-50">
+        <span className="text-[8px] font-medium sm:text-[9px]">WORKSPACE</span>
+        <span className="font-heading text-xs font-semibold sm:text-sm">Workspace Overview</span>
+        <span className="text-[8px] text-muted-foreground sm:text-[9px]">A quick look at your workspace and preferences.</span>
+        <span className="mt-3 flex items-center gap-1.5 text-[8px] text-muted-foreground sm:text-[9px]">Notification preferences · Daily Digest</span>
+        <span className="mt-2 w-fit rounded-md bg-primary px-2 py-1 text-[8px] text-primary-foreground sm:text-[9px]">Manage Preferences</span>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center bg-background/60 p-2 sm:p-4">
+        <div className="flex max-h-full w-full max-w-[300px] flex-col overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-lg">
+          <div className="border-b px-3 py-2.5 sm:px-4 sm:py-3">
+            <span className="font-heading text-[10px] font-semibold sm:text-xs">Notification Preferences</span>
+            <span className="mt-0.5 block text-[8px] leading-relaxed text-muted-foreground sm:text-[9px]">Choose what reaches your inbox and how your workspace opens.</span>
+          </div>
+          <div className="flex min-h-0 flex-col gap-2.5 overflow-hidden px-3 py-2.5 sm:px-4 sm:py-3">
+            <span className="text-[8px] font-semibold sm:text-[9px]">Notification Settings</span>
+            <div className="flex items-center justify-between gap-3"><span className="text-[8px] sm:text-[9px]">Enable Email Notifications</span><span className="flex h-3 w-6 items-center justify-end rounded-full bg-primary px-0.5"><span className="size-2 rounded-full bg-primary-foreground" /></span></div>
+            <div className="flex items-center justify-between rounded border bg-background px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]"><span>Daily Digest</span><span>⌄</span></div>
+            <div className="flex flex-col gap-1 text-[8px] sm:text-[9px]"><span className="text-muted-foreground">Notify About</span><span className="flex items-center gap-1.5"><span className="size-2.5 rounded-[3px] bg-primary" />Important Updates</span><span className="flex items-center gap-1.5"><span className="size-2.5 rounded-[3px] bg-primary" />Assigned Items</span></div>
+            <span className="border-t pt-2 text-[8px] font-semibold sm:text-[9px]">Display Preferences</span>
+            <div className="flex items-center justify-between rounded border bg-background px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]"><span>List</span><span>⌄</span></div>
+          </div>
+          <div className="mt-auto flex justify-end gap-1.5 border-t bg-muted/40 px-3 py-2 sm:px-4">
+            <span className="rounded border px-2 py-1 text-[7px] text-muted-foreground sm:text-[8px]">Cancel</span>
+            <span className="rounded bg-primary px-2 py-1 text-[7px] text-primary-foreground sm:text-[8px]">Save Changes</span>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -209,7 +251,7 @@ export function TemplatesGallery() {
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
               {template.slug === "settings-panels" ? (
                 <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
-              ) : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
+              ) : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -252,7 +294,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
