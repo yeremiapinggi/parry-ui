@@ -26,7 +26,7 @@ const sectionHeading = "scroll-mt-24 font-heading text-2xl font-semibold trackin
 
 const anatomy = [
   { title: "Conversation List", text: "Searches and filters conversations by status, with customer identity, channel, latest message, time, unread count, bookmark, and current state in each row." },
-  { title: "Conversation Header", text: "Keeps customer, channel, conversation ID, status, assignment, priority, bookmark, transfer, and status actions close to the thread." },
+  { title: "Conversation Header", text: "Keeps customer, channel, conversation ID, status, and assignee visible, with assignment, priority, bookmark, transfer, and status actions close to the thread." },
   { title: "Message Timeline", text: "Separates incoming replies, outgoing replies, and workspace-only internal notes; supports date markers, timestamps, delivery state, images, and files." },
   { title: "Composer", text: "Maintains drafts per conversation, supports reply and internal-note modes, validates demo attachments, and keeps the action area anchored below the thread." },
   { title: "Customer Details", text: "Groups contact information, editable assignee and priority, conversation metadata, tags, and recent activity into collapsible sections." },
