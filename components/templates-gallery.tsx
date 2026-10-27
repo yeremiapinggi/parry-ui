@@ -9,6 +9,7 @@ import { AnalyticsDashboard, AnalyticsDashboardThumbnail } from "@/components/an
 import { CreateEditForm } from "@/components/create-edit-form"
 import { CreateEditFormThumbnail } from "@/components/create-edit-form-thumbnail"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
+import { MultiStepFormWizard } from "@/components/multi-step-form-wizard"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
 import { SettingsDialogPreview } from "@/components/settings-dialog-preview"
@@ -57,6 +58,13 @@ const templates: Template[] = [
     description: "A reusable form for creating and editing structured business records.",
     category: "Forms",
     reference: "Parry UI · Record management",
+  },
+  {
+    slug: "multi-step-form-wizard",
+    name: "Multi-Step Form Wizard",
+    description: "A guided multi-step form for completing complex configurations with validation and progress tracking.",
+    category: "Forms",
+    reference: "Parry UI · Integration setup",
   },
   {
     slug: "settings-panels",
@@ -202,6 +210,38 @@ function SettingsFormThumbnail() {
   )
 }
 
+function MultiStepFormWizardThumbnail() {
+  return (
+    <div aria-hidden="true" data-parry-theme className="flex h-full min-h-0 flex-col overflow-hidden bg-background px-4 py-3 text-foreground sm:px-6 sm:py-4">
+      <div className="mb-2 flex items-center gap-2 border-b pb-2">
+        <span className="font-heading text-xs font-semibold sm:text-sm">Create Integration</span>
+        <span className="rounded border bg-muted px-1.5 py-0.5 text-[8px] text-muted-foreground sm:text-[9px]">Demo wizard</span>
+      </div>
+      <div className="grid grid-cols-4 gap-1.5 border-b pb-2.5 sm:gap-2">
+        {["Basics", "Configure", "Test", "Review"].map((step, index) => (
+          <span key={step} className={`flex items-center gap-1 rounded border px-1.5 py-1 text-[8px] sm:gap-1.5 sm:px-2 sm:text-[9px] ${index === 1 ? "border-primary bg-secondary text-secondary-foreground" : index === 0 ? "border-primary/40 bg-muted/30" : "text-muted-foreground"}`}>
+            <span className={`flex size-3.5 shrink-0 items-center justify-center rounded-full text-[8px] ${index === 0 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>{index === 0 ? "✓" : index + 1}</span>
+            <span className="truncate">{step}</span>
+          </span>
+        ))}
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden py-2.5 sm:gap-3 sm:py-3">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold sm:text-xs">Configuration</span>
+          <span className="text-[8px] text-muted-foreground sm:text-[10px]">Set the endpoint and authentication details.</span>
+        </div>
+        <div className="flex flex-col gap-1"><span className="text-[8px] font-medium sm:text-[9px]">Endpoint URL *</span><span className="flex h-5 items-center rounded border bg-card px-2 text-[8px] text-muted-foreground sm:h-6 sm:text-[9px]">https://api.example.com/v1</span></div>
+        <div className="flex flex-col gap-1"><span className="text-[8px] font-medium sm:text-[9px]">Authentication Type</span><span className="flex h-5 items-center justify-between rounded border bg-card px-2 text-[8px] sm:h-6 sm:text-[9px]">API Key <span>⌄</span></span></div>
+        <div className="flex flex-col gap-1"><span className="text-[8px] font-medium sm:text-[9px]">API Key *</span><span className="flex h-5 items-center rounded border bg-card px-2 text-[8px] sm:h-6 sm:text-[9px]">••••••••••••</span></div>
+      </div>
+      <div className="mt-auto flex items-center justify-between gap-2 rounded-lg border bg-card p-2 shadow-md sm:p-2.5">
+        <span className="text-[8px] text-muted-foreground sm:text-[9px]">Step 2 of 4 · Unsaved changes</span>
+        <span className="flex gap-1"><span className="rounded border px-1.5 py-1 text-[7px] sm:text-[8px]">Back</span><span className="rounded bg-primary px-1.5 py-1 text-[7px] text-primary-foreground sm:text-[8px]">Continue →</span></span>
+      </div>
+    </div>
+  )
+}
+
 function SettingsDialogThumbnail() {
   return (
     <div aria-hidden="true" className="relative flex h-full min-h-0 flex-col overflow-hidden bg-background p-4 text-foreground sm:p-5">
@@ -286,7 +326,7 @@ export function TemplatesGallery() {
 
   function handlePreviewOpenChange(open: boolean) {
     if (open) return
-    if (activeTemplate?.slug === "create-edit-form" && formHasUnsavedChanges) {
+    if ((activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard") && formHasUnsavedChanges) {
       setCloseConfirmationOpen(true)
       return
     }
@@ -329,7 +369,7 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : <TemplateThumbnail />}
+              {template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -372,7 +412,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
@@ -387,12 +427,12 @@ export function TemplatesGallery() {
             </footer>
           </DialogContent>
       )}
-      {activeTemplate?.slug === "create-edit-form" && (
+      {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard") && (
         <Dialog open={closeConfirmationOpen} onOpenChange={setCloseConfirmationOpen}>
           <DialogContent data-parry-theme>
             <DialogHeader>
               <DialogTitle>Discard unsaved changes?</DialogTitle>
-              <DialogDescription>Your form has unsaved edits. Keep working or discard them and close the preview.</DialogDescription>
+              <DialogDescription>Your changes have not been saved as a draft. Keep editing or discard them and close the preview.</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button type="button" variant="outline" onClick={() => setCloseConfirmationOpen(false)}>Keep Editing</Button>
