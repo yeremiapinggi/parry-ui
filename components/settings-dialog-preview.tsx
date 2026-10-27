@@ -206,13 +206,13 @@ export function SettingsDialogPreview() {
               event.preventDefault()
               headingRef.current?.focus()
             }}
-            className="flex h-[min(44rem,calc(100dvh-1.5rem))] w-[calc(100vw-1.5rem)] max-w-lg flex-col gap-0 overflow-hidden p-0 sm:h-[min(44rem,calc(100dvh-3rem))]"
+            className="font-data flex h-[88dvh] max-h-[88dvh] min-h-0 w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:w-[min(34rem,calc(100vw-3rem))] sm:max-w-[34rem]"
           >
-            <DialogHeader className="relative shrink-0 border-b px-5 py-4 pr-14 sm:px-6 sm:py-5">
-              <DialogTitle ref={headingRef} tabIndex={-1} className="font-heading text-lg font-semibold leading-snug outline-none">Notification Preferences</DialogTitle>
-              <DialogDescription>Choose what reaches your inbox and how your workspace opens.</DialogDescription>
+            <DialogHeader className="relative shrink-0 border-b px-6 py-5 pr-14">
+              <DialogTitle ref={headingRef} tabIndex={-1} className="font-data text-xl font-semibold leading-7 outline-none">Notification Preferences</DialogTitle>
+              <DialogDescription className="text-sm leading-5">Choose what reaches your inbox and how your workspace opens.</DialogDescription>
               {!confirmationOpen && (
-                <Button type="button" variant="ghost" size="icon-sm" aria-label="Close notification preferences" onClick={requestClose} disabled={saving} className="absolute right-4 top-4">
+                <Button type="button" variant="ghost" size="icon-sm" aria-label="Close notification preferences" onClick={requestClose} disabled={saving} className="absolute top-5 right-6">
                   <XIcon aria-hidden="true" />
                 </Button>
               )}
@@ -221,8 +221,8 @@ export function SettingsDialogPreview() {
             {confirmationOpen ? (
               <section role="alertdialog" aria-labelledby="settings-dialog-discard-title" aria-describedby="settings-dialog-discard-description" className="flex flex-1 flex-col justify-center gap-5 p-5 sm:p-6">
                 <div className="flex flex-col gap-2">
-                  <h3 id="settings-dialog-discard-title" className="font-heading text-base font-semibold">Discard unsaved changes?</h3>
-                  <p id="settings-dialog-discard-description" className="text-sm leading-relaxed text-muted-foreground">Your edits will be replaced with the most recently saved preferences.</p>
+                  <h3 id="settings-dialog-discard-title" className="font-data text-base font-semibold leading-6">Discard unsaved changes?</h3>
+                  <p id="settings-dialog-discard-description" className="text-[13px] leading-5 text-muted-foreground">Your edits will be replaced with the most recently saved preferences.</p>
                 </div>
                 <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                   <Button type="button" variant="outline" onClick={() => setConfirmationOpen(false)}>Keep Editing</Button>
@@ -231,23 +231,23 @@ export function SettingsDialogPreview() {
               </section>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
-                <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6 overflow-x-hidden overflow-y-auto overscroll-contain px-6 py-6">
                   <section aria-labelledby="settings-dialog-notifications-heading" className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-1">
-                      <h3 id="settings-dialog-notifications-heading" className="font-heading text-sm font-semibold">Notification Settings</h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground">Control email delivery and choose which updates matter.</p>
+                    <div className="flex flex-col gap-2">
+                      <h3 id="settings-dialog-notifications-heading" className="font-data text-base font-semibold leading-6">Notification Settings</h3>
+                      <p className="text-[13px] leading-5 text-muted-foreground">Control email delivery and choose which updates matter.</p>
                     </div>
 
-                    <div className="flex items-start justify-between gap-5">
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="settings-dialog-email" className="text-sm font-medium">Enable Email Notifications</Label>
-                        <p id="settings-dialog-email-description" className="text-sm leading-relaxed text-muted-foreground">Receive selected workspace updates by email.</p>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="settings-dialog-email" className="text-sm font-medium leading-5">Enable Email Notifications</Label>
+                        <p id="settings-dialog-email-description" className="text-[13px] leading-5 text-muted-foreground">Receive selected workspace updates by email.</p>
                       </div>
-                      <Switch id="settings-dialog-email" checked={draft.emailNotifications} onCheckedChange={(checked) => updateDraft("emailNotifications", checked)} disabled={saving} aria-describedby="settings-dialog-email-description" />
+                      <Switch size="sm" id="settings-dialog-email" checked={draft.emailNotifications} onCheckedChange={(checked) => updateDraft("emailNotifications", checked)} disabled={saving} aria-describedby="settings-dialog-email-description" />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <Label htmlFor="settings-dialog-frequency">Notification Frequency <span aria-hidden="true" className="text-destructive">*</span></Label>
+                      <Label htmlFor="settings-dialog-frequency" className="text-sm font-medium leading-5">Notification Frequency <span aria-hidden="true" className="text-destructive">*</span></Label>
                       <Select value={draft.frequency} onValueChange={(value) => updateDraft("frequency", value)} disabled={notificationFieldsDisabled}>
                         <SelectTrigger ref={frequencyTriggerRef} id="settings-dialog-frequency" className="w-full" aria-invalid={Boolean(errors.frequency)} aria-describedby={errors.frequency ? "settings-dialog-frequency-error" : "settings-dialog-frequency-help"}>
                           <SelectValue placeholder="Choose a frequency" />
@@ -256,14 +256,14 @@ export function SettingsDialogPreview() {
                           <SelectGroup>{frequencyOptions.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectGroup>
                         </SelectContent>
                       </Select>
-                      <p id={errors.frequency ? "settings-dialog-frequency-error" : "settings-dialog-frequency-help"} aria-live="polite" className={errors.frequency ? "text-sm text-destructive" : "text-sm leading-relaxed text-muted-foreground"}>
+                      <p id={errors.frequency ? "settings-dialog-frequency-error" : "settings-dialog-frequency-help"} aria-live="polite" className={errors.frequency ? "text-[13px] leading-5 text-destructive" : "text-[13px] leading-5 text-muted-foreground"}>
                         {errors.frequency ?? "Choose when enabled notification topics arrive."}
                       </p>
                     </div>
 
-                    <fieldset disabled={notificationFieldsDisabled} aria-describedby={errors.notifyAbout ? "settings-dialog-topics-error" : "settings-dialog-topics-help"} className="flex flex-col gap-3 disabled:opacity-60">
-                      <legend className="text-sm font-medium">Notify About <span aria-hidden="true" className="text-destructive">*</span></legend>
-                      <p id={errors.notifyAbout ? "settings-dialog-topics-error" : "settings-dialog-topics-help"} aria-live="polite" className={errors.notifyAbout ? "text-sm text-destructive" : "text-sm leading-relaxed text-muted-foreground"}>
+                    <fieldset disabled={notificationFieldsDisabled} aria-describedby={errors.notifyAbout ? "settings-dialog-topics-error" : "settings-dialog-topics-help"} className="flex flex-col gap-2 disabled:opacity-60">
+                      <legend className="text-sm font-medium leading-5">Notify About <span aria-hidden="true" className="text-destructive">*</span></legend>
+                      <p id={errors.notifyAbout ? "settings-dialog-topics-error" : "settings-dialog-topics-help"} aria-live="polite" className={errors.notifyAbout ? "text-[13px] leading-5 text-destructive" : "text-[13px] leading-5 text-muted-foreground"}>
                         {errors.notifyAbout ?? "Select one or more types of updates."}
                       </p>
                       <div className="flex flex-col gap-3">
@@ -271,7 +271,7 @@ export function SettingsDialogPreview() {
                           const checked = draft.notifyAbout.includes(option.value)
                           const id = `settings-dialog-topic-${option.value}`
                           return (
-                            <div key={option.value} className="flex items-center gap-3">
+                            <div key={option.value} className="flex items-center gap-2">
                               <Checkbox
                                 id={id}
                                 ref={option.value === notificationOptions[0].value ? firstTopicRef : undefined}
@@ -281,25 +281,25 @@ export function SettingsDialogPreview() {
                                 aria-describedby={errors.notifyAbout ? "settings-dialog-topics-error" : "settings-dialog-topics-help"}
                                 onCheckedChange={(nextChecked) => updateDraft("notifyAbout", nextChecked === true ? [...draft.notifyAbout, option.value] : draft.notifyAbout.filter((item) => item !== option.value))}
                               />
-                              <Label htmlFor={id} className="font-normal">{option.label}</Label>
+                              <Label htmlFor={id} className="min-h-6 text-sm font-normal leading-5">{option.label}</Label>
                             </div>
                           )
                         })}
                       </div>
                     </fieldset>
-                    {!draft.emailNotifications && <p className="text-sm leading-relaxed text-muted-foreground">Email delivery is off. Your frequency and selected topics are preserved.</p>}
+                    {!draft.emailNotifications && <p className="text-[13px] leading-5 text-muted-foreground">Email delivery is off. Your frequency and selected topics are preserved.</p>}
                   </section>
 
                   <Separator />
 
                   <section aria-labelledby="settings-dialog-display-heading" className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-1">
-                      <h3 id="settings-dialog-display-heading" className="font-heading text-sm font-semibold">Display Preferences</h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground">Set the starting view and density of workspace content.</p>
+                    <div className="flex flex-col gap-2">
+                      <h3 id="settings-dialog-display-heading" className="font-data text-base font-semibold leading-6">Display Preferences</h3>
+                      <p className="text-[13px] leading-5 text-muted-foreground">Set the starting view and density of workspace content.</p>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <Label htmlFor="settings-dialog-default-view">Default View <span aria-hidden="true" className="text-destructive">*</span></Label>
+                      <Label htmlFor="settings-dialog-default-view" className="text-sm font-medium leading-5">Default View <span aria-hidden="true" className="text-destructive">*</span></Label>
                       <Select value={draft.defaultView} onValueChange={(value) => updateDraft("defaultView", value)} disabled={saving}>
                         <SelectTrigger ref={defaultViewTriggerRef} id="settings-dialog-default-view" className="w-full" aria-invalid={Boolean(errors.defaultView)} aria-describedby={errors.defaultView ? "settings-dialog-default-view-error" : "settings-dialog-default-view-help"}>
                           <SelectValue placeholder="Choose a default view" />
@@ -311,24 +311,24 @@ export function SettingsDialogPreview() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <p id={errors.defaultView ? "settings-dialog-default-view-error" : "settings-dialog-default-view-help"} aria-live="polite" className={errors.defaultView ? "text-sm text-destructive" : "text-sm leading-relaxed text-muted-foreground"}>
+                      <p id={errors.defaultView ? "settings-dialog-default-view-error" : "settings-dialog-default-view-help"} aria-live="polite" className={errors.defaultView ? "text-[13px] leading-5 text-destructive" : "text-[13px] leading-5 text-muted-foreground"}>
                         {errors.defaultView ?? "Choose how workspace content is arranged by default."}
                       </p>
                     </div>
 
-                    <div className="flex items-start justify-between gap-5">
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="settings-dialog-compact-mode" className="text-sm font-medium">Compact Mode</Label>
-                        <p id="settings-dialog-compact-description" className="text-sm leading-relaxed text-muted-foreground">Reduce spacing to fit more content on screen.</p>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="settings-dialog-compact-mode" className="text-sm font-medium leading-5">Compact Mode</Label>
+                        <p id="settings-dialog-compact-description" className="text-[13px] leading-5 text-muted-foreground">Reduce spacing to fit more content on screen.</p>
                       </div>
-                      <Switch id="settings-dialog-compact-mode" checked={draft.compactMode} onCheckedChange={(checked) => updateDraft("compactMode", checked)} disabled={saving} aria-describedby="settings-dialog-compact-description" />
+                      <Switch size="sm" id="settings-dialog-compact-mode" checked={draft.compactMode} onCheckedChange={(checked) => updateDraft("compactMode", checked)} disabled={saving} aria-describedby="settings-dialog-compact-description" />
                     </div>
                   </section>
                 </div>
 
-                <DialogFooter className="shrink-0 rounded-none border-t bg-muted/40 px-5 py-3 sm:px-6">
-                  <Button type="button" variant="outline" onClick={requestClose} disabled={saving}>Cancel</Button>
-                  <Button type="submit" disabled={!hasChanges || saving}>
+                <DialogFooter className="sticky bottom-0 mx-0 mb-0 shrink-0 flex-row justify-end gap-3 rounded-none border-t bg-popover px-6 py-4 sm:px-6">
+                  <Button type="button" variant="outline" size="lg" onClick={requestClose} disabled={saving}>Cancel</Button>
+                  <Button type="submit" size="lg" disabled={!hasChanges || saving}>
                     {saving ? <LoaderCircleIcon data-icon="inline-start" className="animate-spin" /> : <CheckIcon data-icon="inline-start" />}
                     {saving ? "Saving…" : "Save Changes"}
                   </Button>
