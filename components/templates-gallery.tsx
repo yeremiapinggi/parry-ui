@@ -7,6 +7,8 @@ import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-reac
 
 import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
 import { AnalyticsDashboard, AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
+import { CreateEditForm } from "@/components/create-edit-form"
+import { CreateEditFormThumbnail } from "@/components/create-edit-form-thumbnail"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
@@ -49,6 +51,13 @@ const templates: Template[] = [
     description: "A data-driven dashboard for monitoring KPIs, trends, and performance breakdowns.",
     category: "Dashboard",
     reference: "Parry UI · Product analytics",
+  },
+  {
+    slug: "create-edit-form",
+    name: "Create / Edit Form",
+    description: "A reusable form for creating and editing structured business records.",
+    category: "Forms",
+    reference: "Parry UI · Record management",
   },
   {
     slug: "settings-panels",
@@ -227,6 +236,24 @@ function TemplateThumbnail() {
 export function TemplatesGallery() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All")
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null)
+  const [formHasUnsavedChanges, setFormHasUnsavedChanges] = useState(false)
+  const [closeConfirmationOpen, setCloseConfirmationOpen] = useState(false)
+
+  function handlePreviewOpenChange(open: boolean) {
+    if (open) return
+    if (activeTemplate?.slug === "create-edit-form" && formHasUnsavedChanges) {
+      setCloseConfirmationOpen(true)
+      return
+    }
+    setActiveTemplate(null)
+    setFormHasUnsavedChanges(false)
+  }
+
+  function closePreviewAndDiscard() {
+    setCloseConfirmationOpen(false)
+    setActiveTemplate(null)
+    setFormHasUnsavedChanges(false)
+  }
 
   const filteredTemplates = useMemo(
     () => activeCategory === "All" ? templates : templates.filter(({ category }) => category === activeCategory),
@@ -234,7 +261,7 @@ export function TemplatesGallery() {
   )
 
   return (
-    <Dialog open={activeTemplate !== null} onOpenChange={(open) => { if (!open) setActiveTemplate(null) }}>
+    <Dialog open={activeTemplate !== null} onOpenChange={handlePreviewOpenChange}>
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-12 sm:gap-10 sm:py-16">
       <header className="flex flex-col items-center gap-3 text-center">
         <h1 className="font-heading text-4xl font-bold tracking-tight text-balance sm:text-5xl">Templates</h1>
@@ -259,7 +286,7 @@ export function TemplatesGallery() {
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
               {template.slug === "settings-panels" ? (
                 <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
-              ) : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : <TemplateThumbnail />}
+              ) : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -267,7 +294,7 @@ export function TemplatesGallery() {
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <DialogTrigger asChild>
-                    <Button onClick={() => setActiveTemplate(template)} size="sm" variant="secondary">Preview</Button>
+                    <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary">Preview</Button>
                   </DialogTrigger>
                   <Button asChild size="sm" variant="outline" className="border-white/50 bg-transparent text-white hover:bg-white/15 hover:text-white">
                     <Link href={`/templates/${template.slug}`}>View Documentation</Link>
@@ -302,7 +329,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
@@ -316,6 +343,20 @@ export function TemplatesGallery() {
               </Button>
             </footer>
           </DialogContent>
+      )}
+      {activeTemplate?.slug === "create-edit-form" && (
+        <Dialog open={closeConfirmationOpen} onOpenChange={setCloseConfirmationOpen}>
+          <DialogContent data-parry-theme>
+            <DialogHeader>
+              <DialogTitle>Discard unsaved changes?</DialogTitle>
+              <DialogDescription>Your form has unsaved edits. Keep working or discard them and close the preview.</DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button type="button" variant="outline" onClick={() => setCloseConfirmationOpen(false)}>Keep Editing</Button>
+              <Button type="button" variant="destructive" onClick={closePreviewAndDiscard}>Discard Changes</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </Dialog>
   )
