@@ -509,12 +509,14 @@ export function ConversationWorkspace({
     }
   }
 
-  const confirmationTitle = confirmation === "close" ? "Close this conversation?" : confirmation === "reopen" ? "Reopen this conversation?" : "Transfer conversation?"
+  const confirmationTitle = confirmation === "close" ? "Close this conversation?" : confirmation === "reopen" ? "Reopen this conversation?" : confirmation === "transfer" ? "Transfer conversation?" : ""
   const confirmationDescription = confirmation === "close"
     ? `This will close ${selectedConversation?.customer ?? "this conversation"}. You can reopen it later.`
     : confirmation === "reopen"
       ? `This will move ${selectedConversation?.customer ?? "this conversation"} back to Open so the team can reply again.`
-      : `Transfer ${selectedConversation?.customer ?? "this conversation"} to the selected agent? The assignment will update in the shared demo table.`
+      : confirmation === "transfer"
+        ? `Transfer ${selectedConversation?.customer ?? "this conversation"} to the selected agent? The assignment will update in the shared demo table.`
+        : ""
 
   return <div data-parry-theme className={`flex ${embedded ? "h-[calc(90dvh-9rem)] min-h-[460px]" : "h-[min(76vh,900px)] min-h-[620px]"} min-w-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm`}>
     <div className="flex min-h-0 flex-1">
@@ -579,7 +581,7 @@ export function ConversationWorkspace({
       <DialogContent data-parry-theme aria-describedby="conversation-action-description" className="sm:max-w-md">
         <DialogHeader><DialogTitle>{confirmationTitle}</DialogTitle><DialogDescription id="conversation-action-description">{confirmationDescription}</DialogDescription></DialogHeader>
         {confirmation === "transfer" && <div className="flex flex-col gap-2"><Label htmlFor="transfer-agent">Transfer to</Label><AssigneeSelect id="transfer-agent" value={transferAssignee} onValueChange={(value) => { if (value) setTransferAssignee(value) }} /></div>}
-        <DialogFooter><Button type="button" variant="outline" onClick={() => { setConfirmation(null) }}>Cancel</Button><Button type="button" variant={confirmation === "close" ? "destructive" : "default"} onClick={confirmManagementAction}>{confirmation === "close" ? "Close conversation" : confirmation === "reopen" ? "Reopen conversation" : "Transfer conversation"}</Button></DialogFooter>
+        <DialogFooter><Button type="button" variant="outline" onClick={() => { setConfirmation(null) }}>Cancel</Button><Button type="button" variant={confirmation === "close" ? "destructive" : "default"} onClick={confirmManagementAction}>{confirmation === "close" ? "Close conversation" : confirmation === "reopen" ? "Reopen conversation" : confirmation === "transfer" ? "Transfer conversation" : ""}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   </div>
