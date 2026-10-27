@@ -236,7 +236,7 @@ export function SettingsPanelsPreview() {
             <SelectTrigger id={fieldId} aria-label={field.label} className="w-full" aria-describedby={descriptionId}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-parry-theme>
               <SelectGroup>{field.options?.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectGroup>
             </SelectContent>
           </Select>
@@ -253,7 +253,7 @@ export function SettingsPanelsPreview() {
   }
 
   return (
-    <section aria-label="Settings Panels preview" className="flex min-w-0 flex-col gap-6">
+    <section aria-label="Settings Panels preview" data-parry-theme className="flex min-w-0 flex-col gap-6 bg-background text-foreground">
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-heading text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Workspace Settings</h2>

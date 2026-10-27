@@ -1,7 +1,6 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
@@ -126,6 +125,52 @@ function AdvancedFilterableTableThumbnail() {
         <div className="hidden w-[28%] min-w-24 flex-col gap-2 border-l bg-muted/20 p-3 sm:flex"><span className="font-medium text-[10px]">{rows[0].name}</span><span className="font-mono text-[9px] text-muted-foreground">{rows[0].id}</span><span className="text-[9px]">{rows[0].company}</span><span className="mt-auto text-[8px] text-muted-foreground">Record details</span></div>
       </div>
       <div className="flex items-center justify-between border-t px-4 py-2 text-[9px] text-muted-foreground"><span>Showing 1–10 of 36</span><span>Rows 10&nbsp;&nbsp; ‹ &nbsp; ›</span></div>
+    </div>
+  )
+}
+
+function SettingsPanelsThumbnail() {
+  const sections = ["General", "Notifications", "Preferences", "Security"]
+
+  return (
+    <div aria-hidden="true" data-parry-theme className="flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground">
+      <div className="flex items-center justify-between gap-3 border-b px-4 py-2.5 sm:px-5">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <span className="truncate font-heading text-xs font-semibold sm:text-sm">Workspace Settings</span>
+          <span className="truncate text-[9px] text-muted-foreground sm:text-[10px]">Manage workspace configurations and preferences.</span>
+        </div>
+        <span className="shrink-0 rounded-md bg-secondary px-2 py-1 text-[9px] font-medium text-secondary-foreground">Workspace</span>
+      </div>
+      <div className="flex min-h-0 flex-1 gap-3 p-3 sm:gap-4 sm:p-4">
+        <nav aria-label="Settings sections" className="hidden w-[34%] max-w-32 shrink-0 flex-col gap-1 sm:flex">
+          {sections.map((section, index) => (
+            <span key={section} className={`flex items-center rounded-md px-2 py-1.5 text-[9px] font-medium sm:px-2.5 sm:text-[10px] ${index === 0 ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
+              {section}
+            </span>
+          ))}
+          <span className="mt-auto rounded-md border bg-muted/30 p-2 text-[8px] leading-relaxed text-muted-foreground sm:text-[9px]">Changes stay in this preview.</span>
+        </nav>
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-md border bg-card text-card-foreground">
+          <div className="border-b px-3 py-2 sm:px-4">
+            <span className="block text-[10px] font-semibold sm:text-xs">General</span>
+            <span className="mt-0.5 block text-[8px] leading-relaxed text-muted-foreground sm:text-[9px]">Workspace information and preferences.</span>
+          </div>
+          <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-hidden px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
+            <div className="flex flex-col gap-1">
+              <span className="text-[8px] font-medium sm:text-[9px]">Workspace Name</span>
+              <span className="flex h-6 items-center rounded-md border border-input bg-background px-2 text-[8px] sm:text-[9px]">Northstar Operations</span>
+            </div>
+            <div className="flex items-center justify-between gap-2 border-t pt-2">
+              <span className="text-[8px] font-medium sm:text-[9px]">Email notifications</span>
+              <span className="flex h-3 w-6 items-center justify-end rounded-full bg-primary px-0.5"><span className="size-2 rounded-full bg-primary-foreground" /></span>
+            </div>
+          </div>
+          <div className="flex justify-end gap-1.5 border-t bg-muted/20 px-3 py-2 sm:px-4">
+            <span className="rounded-md border px-2 py-1 text-[7px] text-muted-foreground sm:text-[8px]">Cancel</span>
+            <span className="rounded-md bg-primary px-2 py-1 text-[7px] font-medium text-primary-foreground sm:text-[8px]">Save Changes</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -284,9 +329,7 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "settings-panels" ? (
-                <Image src="/images/settings-panels-thumbnail.png" alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="bg-card object-contain" />
-              ) : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : <TemplateThumbnail />}
+              {template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
