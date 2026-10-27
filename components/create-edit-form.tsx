@@ -453,7 +453,7 @@ export function CreateEditForm({ onDirtyChange, onRequestBack }: { onDirtyChange
         </section>
         </div>
 
-        <footer className="sticky bottom-5 z-10 mx-3 flex min-w-0 flex-col gap-4 rounded-xl border bg-background p-4 shadow-md sm:mx-0 sm:flex-row sm:items-center sm:justify-between">
+        <footer className="sticky bottom-5 z-10 mx-3 flex min-w-0 flex-col gap-4 rounded-xl border bg-background p-4 shadow-sm sm:mx-0 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-h-10 min-w-0 flex-col justify-center gap-1.5">
             <p aria-live="polite" className="min-w-0 break-words text-sm text-muted-foreground">{isSaving ? <><LoaderCircleIcon aria-hidden="true" className="mr-1 inline size-4 animate-spin align-[-3px]" />{mode === "create" ? "Creating local demo record…" : "Saving local demo changes…"}</> : feedback}</p>
             {hasUnsavedChanges && <Badge variant="outline" className="w-fit border-warning/40 bg-warning-soft text-warning">You have unsaved changes.</Badge>}
