@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-type TemplateCategory = "Table" | "Table & Data" | "Dashboard" | "Forms" | "Settings" | "Conversation" | "Conversation & Collaboration" | "AI" | "Detail & Content" | "Integration"
+type TemplateCategory = "Table & Conversation" | "Dashboard" | "Forms" | "Settings" | "AI" | "Detail & Content" | "Integration"
 type CategoryFilter = "All" | TemplateCategory
 
 type Template = {
@@ -67,21 +67,21 @@ const templates: Template[] = [
     slug: "data-management-list",
     name: "Data Management List",
     description: "A reusable record management template for creating, organizing, updating, and deleting structured business data.",
-    category: "Table",
+    category: "Table & Conversation",
     reference: "Parry UI · Data management",
   },
   {
     slug: "conversation-table",
     name: "Conversation Table",
     description: "A conversation management table for monitoring, filtering, assigning, and managing customer conversations.",
-    category: "Table & Data",
+    category: "Table & Conversation",
     reference: "Parry UI · Contact center",
   },
   {
     slug: "conversation-workspace",
     name: "Conversation Workspace",
     description: "An interactive workspace for managing customer conversations, replying to messages, and handling conversation workflows.",
-    category: "Conversation & Collaboration",
+    category: "Table & Conversation",
     reference: "Parry UI · Contact center",
   },
   {
@@ -144,7 +144,7 @@ const templates: Template[] = [
     slug: "advanced-filterable-table",
     name: "Advanced Filterable Table",
     description: "Explore complex datasets with advanced filtering, saved views, column customization, grouping, and record inspection.",
-    category: "Table",
+    category: "Table & Conversation",
     reference: "Parry UI · Data exploration",
   },
 ]
@@ -411,7 +411,7 @@ export function TemplatesGallery() {
           variant="outline"
           size="sm"
           aria-label="Filter templates by category"
-          className="mt-3"
+          className="mt-3 max-w-full flex-wrap justify-center"
         >
           <ToggleGroupItem value="All">All</ToggleGroupItem>
           {availableCategories.map((category) => <ToggleGroupItem key={category} value={category}>{category}</ToggleGroupItem>)}
