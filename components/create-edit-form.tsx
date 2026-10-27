@@ -317,6 +317,7 @@ export function CreateEditForm({ onDirtyChange, onRequestBack }: { onDirtyChange
       </header>
 
       <form noValidate onSubmit={handleSubmit} className="flex min-w-0 flex-col">
+        <div className="pb-32">
         <section aria-labelledby="create-edit-basic-heading" className="flex flex-col gap-6 py-6 first:pt-0">
           <SectionHeading id="create-edit-basic-heading" title={createEditFormSections[0].title} description={createEditFormSections[0].description} />
           <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
@@ -450,16 +451,17 @@ export function CreateEditForm({ onDirtyChange, onRequestBack }: { onDirtyChange
             </div>
           </div>
         </section>
+        </div>
 
-        <footer className="sticky bottom-0 z-10 -mx-4 flex flex-col gap-3 border-t bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div className="flex min-h-10 flex-col justify-center gap-1">
-            <p aria-live="polite" className="text-sm text-muted-foreground">{isSaving ? <><LoaderCircleIcon aria-hidden="true" className="mr-1 inline size-4 animate-spin align-[-3px]" />{mode === "create" ? "Creating local demo record…" : "Saving local demo changes…"}</> : feedback}</p>
-            {hasUnsavedChanges && <p className="text-xs font-medium text-warning">You have unsaved changes.</p>}
+        <footer className="sticky bottom-5 z-10 mx-3 flex min-w-0 flex-col gap-4 rounded-xl border bg-background p-4 shadow-md sm:mx-0 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-h-10 min-w-0 flex-col justify-center gap-1.5">
+            <p aria-live="polite" className="min-w-0 break-words text-sm text-muted-foreground">{isSaving ? <><LoaderCircleIcon aria-hidden="true" className="mr-1 inline size-4 animate-spin align-[-3px]" />{mode === "create" ? "Creating local demo record…" : "Saving local demo changes…"}</> : feedback}</p>
+            {hasUnsavedChanges && <Badge variant="outline" className="w-fit border-warning/40 bg-warning-soft text-warning">You have unsaved changes.</Badge>}
           </div>
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => requestIntent({ kind: "cancel" })} disabled={!hasUnsavedChanges || disabled}>Cancel</Button>
-            <Button type="button" variant="outline" onClick={resetChanges} disabled={!hasUnsavedChanges || disabled}>Reset Changes</Button>
-            <Button type="submit" disabled={disabled || (mode === "edit" && !canSave)}>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+            <Button type="button" variant="outline" size="lg" onClick={() => requestIntent({ kind: "cancel" })} disabled={!hasUnsavedChanges || disabled}>Cancel</Button>
+            <Button type="button" variant="outline" size="lg" onClick={resetChanges} disabled={!hasUnsavedChanges || disabled}>Reset Changes</Button>
+            <Button type="submit" size="lg" className="col-span-2 sm:col-span-1" disabled={disabled || (mode === "edit" && !canSave)}>
               {isSaving ? <LoaderCircleIcon data-icon="inline-start" className="animate-spin" /> : mode === "edit" ? <CheckIcon data-icon="inline-start" /> : null}
               {isSaving ? "Saving…" : mode === "create" ? "Create Record" : "Save Changes"}
             </Button>
