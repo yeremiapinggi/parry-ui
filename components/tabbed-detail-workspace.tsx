@@ -429,7 +429,7 @@ export function TabbedDetailWorkspace({
       </header>
 
       <Tabs value={activeTab} onValueChange={(value) => requestNavigation({ kind: "tab", tab: value as WorkspaceTab })} className="flex min-w-0 flex-col gap-5">
-        <div className="sticky top-14 z-10 -mx-1 bg-background px-1 pt-1"><TabsList aria-label="Workspace detail sections" className="grid h-auto w-full grid-cols-4 rounded-none border-b bg-transparent p-0 sm:flex sm:justify-start sm:gap-2">
+        <div className="-mx-1 px-1 pt-1"><TabsList aria-label="Workspace detail sections" className="grid h-auto w-full grid-cols-4 rounded-none border-b bg-transparent p-0 sm:flex sm:justify-start sm:gap-2">
           <TabsTrigger value="overview" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><LayoutDashboardIcon className="hidden sm:block" data-icon="inline-start" /><span>Overview</span></TabsTrigger>
           <TabsTrigger value="configuration" aria-label="Configuration" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><FileTextIcon className="hidden sm:block" data-icon="inline-start" /><span className="hidden sm:inline">Configuration</span><span className="sm:hidden">Setup</span></TabsTrigger>
           <TabsTrigger value="activity" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><HistoryIcon className="hidden sm:block" data-icon="inline-start" /><span>Activity</span></TabsTrigger>
