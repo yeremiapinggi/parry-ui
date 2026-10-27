@@ -695,7 +695,7 @@ export function IntegrationConnectionPreview({ onDirtyChange }: { onDirtyChange?
               )}
             </div>
 
-            <DialogFooter className="shrink-0 flex-col-reverse gap-2 border-t bg-card px-5 py-4 sm:flex-row sm:justify-between sm:px-6">
+            <DialogFooter className="mx-0 mb-0 shrink-0 flex-col-reverse gap-2 border-t bg-card px-5 py-4 sm:flex-row sm:justify-between sm:px-6">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheckIcon aria-hidden="true" className="size-4 shrink-0" />Credentials remain in local React state only.
               </div>
