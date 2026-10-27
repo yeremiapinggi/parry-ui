@@ -87,10 +87,10 @@ type WorkspaceDetailsTab = "customer-info" | "ticket-info"
 type WorkspaceSystemEvent = { id: string; date: string; time: string; timestamp: number; text: string }
 
 const statusTone: Record<ConversationStatus, string> = {
-  Open: "border-border bg-secondary text-secondary-foreground",
+  Open: "border-success/35 bg-success-soft text-success",
   "In Progress": "border-info/35 bg-info-soft text-info",
   Pending: "border-warning/35 bg-warning-soft text-warning",
-  Closed: "border-success/35 bg-success-soft text-success",
+  Closed: "border-border bg-secondary text-secondary-foreground",
 }
 
 const priorityTone: Record<ConversationPriority, string> = {
