@@ -30,7 +30,7 @@ const anatomy = [
   { title: "Message Timeline", text: "Separates incoming replies, outgoing replies, and workspace-only internal notes; supports date markers, timestamps, delivery state, images, and files." },
   { title: "Composer", text: "Maintains drafts per conversation, supports reply and internal-note modes, validates demo attachments, and keeps the action area anchored below the thread." },
   { title: "Customer Details", text: "Groups contact information, editable assignee and priority, conversation metadata, tags, and recent activity into collapsible sections." },
-  { title: "Responsive Navigation", text: "Uses three panels on desktop, a details drawer at tablet widths, and a list-to-thread flow with a separate details drawer on mobile." },
+  { title: "Responsive Navigation", text: "Uses independently collapsible panels on desktop, list and details drawers on tablet, and a list-to-thread flow with a details drawer on mobile." },
 ]
 
 const features = [
@@ -55,7 +55,7 @@ const guidelines = [
   "Ask for confirmation before closing, transferring, or reopening a conversation.",
 ]
 
-const componentLinks = ["avatar", "badge", "button", "dialog", "dropdown-menu", "input", "select", "textarea", "toggle-group"]
+const componentLinks = ["avatar", "badge", "button", "dialog", "dropdown-menu", "input", "select", "tabs", "textarea", "toggle-group"]
 
 export default function ConversationWorkspacePage() {
   return <div className="mx-auto grid w-full max-w-[1600px] gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">

@@ -21,6 +21,6 @@ export function ConversationWorkspacePreview() {
       <div className="flex items-center gap-2"><span aria-hidden="true" className="size-2 rounded-full bg-primary" /><p className="text-sm font-medium">Interactive demo</p><span className="hidden text-sm text-muted-foreground sm:inline">Fictional records · simulated messaging only.</span></div>
       <div className="flex items-center gap-2"><Label htmlFor="conversation-workspace-demo-state" className="text-xs text-muted-foreground">Preview state</Label><Select value={state} onValueChange={(value) => setState(value as ConversationWorkspaceDemoState)}><SelectTrigger id="conversation-workspace-demo-state" aria-label="Choose workspace demo state" className="h-8 w-52"><SelectValue /></SelectTrigger><SelectContent data-parry-theme><SelectGroup>{states.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectGroup></SelectContent></Select></div>
     </div>
-    <ConversationWorkspace key={state} demoState={state} />
+    <ConversationWorkspace key={state} demoState={state} embedded />
   </div>
 }
