@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { CheckIcon, CopyIcon, TriangleAlertIcon } from "lucide-react"
 
-import { PRODUCTS, hasScope, toggleScope, type Scope } from "@/lib/developer-portal-data"
+import { PRODUCTS, hasScope, toggleScope, type Scope, type UsageDay } from "@/lib/developer-portal-data"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -130,5 +132,26 @@ export function ConfirmDialog({ confirmation, onClose }: { confirmation: Confirm
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+const usageConfig = {
+  success: { label: "Successful", color: "var(--chart-2)" },
+  errors: { label: "Errors", color: "var(--destructive)" },
+} satisfies ChartConfig
+
+/** Stacked daily requests (successful + errors). `summary` is the screen-reader description of the totals. */
+export function UsageAreaChart({ days, summary, className = "h-64" }: { days: UsageDay[]; summary: string; className?: string }) {
+  return (
+    <ChartContainer config={usageConfig} aria-label={`Stacked area chart of daily API requests: ${summary}`} className={`aspect-auto w-full ${className}`}>
+      <AreaChart data={days} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="4 6" />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={10} minTickGap={28} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
+        <YAxis width={44} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickFormatter={(value: number) => (value >= 1000 ? `${Math.round(value / 1000)}k` : String(value))} />
+        <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+        <Area dataKey="success" stackId="requests" type="monotone" stroke="var(--color-success)" fill="var(--color-success)" fillOpacity={0.15} strokeWidth={2} isAnimationActive={false} />
+        <Area dataKey="errors" stackId="requests" type="monotone" stroke="var(--color-errors)" fill="var(--color-errors)" fillOpacity={0.25} strokeWidth={2} isAnimationActive={false} />
+      </AreaChart>
+    </ChartContainer>
   )
 }

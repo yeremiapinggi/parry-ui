@@ -1,7 +1,7 @@
 // Self-check for the Developer Portal template's pure logic. Run: npm run check:portal
 import assert from "node:assert/strict"
 
-import { SEED_APPS, eventsForScopes, hasScope, isScopeSubset, simulateDelivery, toggleScope, trimKeys, validateAppDraft, validateRedirectUri, validateWebhookDraft } from "../lib/developer-portal-data.ts"
+import { PRODUCTS, SEED_APPS, USAGE_DAYS, eventsForScopes, getRateLimit, getUsage, summarizeUsage, hasScope, isScopeSubset, simulateDelivery, toggleScope, trimKeys, validateAppDraft, validateRedirectUri, validateWebhookDraft } from "../lib/developer-portal-data.ts"
 
 // Scopes: write implies read, unchecking read drops write.
 let scopes = toggleScope([], "cognivo", "write", true)
@@ -46,5 +46,19 @@ assert.ok(validateWebhookDraft({ ...hook, events: ["sociomile.ticket.created"] }
 assert.ok(validateWebhookDraft({ ...hook, appId: "" }, SEED_APPS).appId)
 assert.equal(simulateDelivery("https://hooks.example.com/ivo", 1).status, 200)
 assert.equal(simulateDelivery("https://fail.example.com/ivo", 1).status, 500)
+
+// Usage: every filter reads from the same per-app, per-endpoint shares.
+const near = (actual, expected, label) => assert.ok(Math.abs(actual - expected) <= Math.max(60, expected * 0.002), `${label}: ${actual} vs ${expected}`)
+const all = getUsage({ range: 30, appId: "all", product: "all" }, SEED_APPS)
+near(all.summary.requests, summarizeUsage(USAGE_DAYS.slice(-30)).requests, "all apps match the raw series")
+assert.equal(all.days.length, 30)
+near(PRODUCTS.reduce((sum, { key }) => sum + getUsage({ range: 30, appId: "all", product: key }, SEED_APPS).summary.requests, 0), all.summary.requests, "products add up")
+near(all.endpoints.reduce((sum, row) => sum + row.requests, 0), all.summary.requests, "endpoints add up")
+assert.equal(getUsage({ range: 7, appId: "29507667", product: "sociomile" }, SEED_APPS).summary.requests, 0, "no traffic outside the app's scopes")
+const fresh = { ...SEED_APPS[0], id: "new-app" }
+assert.equal(getUsage({ range: 7, appId: "new-app", product: "all" }, [...SEED_APPS, fresh]).summary.requests, 0, "new apps have no traffic")
+const limit = getRateLimit(SEED_APPS[1], SEED_APPS)
+assert.equal(limit.quota, 10000)
+assert.ok(limit.used > 0 && limit.used <= limit.quota)
 
 console.log("developer-portal checks passed")

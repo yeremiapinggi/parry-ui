@@ -2,7 +2,6 @@
 
 import { useState, type ComponentType } from "react"
 import Link from "next/link"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import {
   AppWindowIcon,
   ArrowUpRightIcon,
@@ -17,12 +16,13 @@ import {
 
 import { AppsSection, type AppsIntent } from "@/components/developer-portal-apps"
 import { WebhooksSection } from "@/components/developer-portal-webhooks"
-import { SEED_APPS, SEED_WEBHOOKS, USAGE_DAYS, summarizeUsage, type PortalApp, type Webhook } from "@/lib/developer-portal-data"
+import { SEED_APPS, SEED_WEBHOOKS, getUsage, type PortalApp, type Webhook } from "@/lib/developer-portal-data"
+import { UsageAreaChart } from "@/components/developer-portal-shared"
+import { UsageSection } from "@/components/developer-portal-usage"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type PortalSection = "overview" | "apps" | "webhooks" | "usage" | "logs"
@@ -41,11 +41,6 @@ const navGroups: { label?: string; items: { id: PortalSection; label: string; Ic
 ]
 
 const navItems = navGroups.flatMap((group) => group.items)
-
-const usageConfig = {
-  success: { label: "Successful", color: "var(--chart-2)" },
-  errors: { label: "Errors", color: "var(--destructive)" },
-} satisfies ChartConfig
 
 const numberFormat = new Intl.NumberFormat("en-US")
 
@@ -128,6 +123,8 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
             <AppsSection key={visit} apps={apps} setApps={setApps} intent={appsIntent} onDirtyChange={onDirtyChange} />
           ) : section === "webhooks" ? (
             <WebhooksSection key={visit} webhooks={webhooks} setWebhooks={setWebhooks} apps={apps} onDirtyChange={onDirtyChange} />
+          ) : section === "usage" ? (
+            <UsageSection apps={apps} webhooks={webhooks} />
           ) : (
             // shortcut: placeholder until T2–T6 build each section
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
@@ -142,8 +139,7 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
 }
 
 function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: (section: PortalSection, intent?: AppsIntent) => void }) {
-  const days = USAGE_DAYS.slice(-30)
-  const usage = summarizeUsage(days)
+  const { days, summary: usage } = getUsage({ range: 30, appId: "all", product: "all" }, apps)
   const stats = [
     { label: "Requests (30 days)", value: numberFormat.format(usage.requests) },
     { label: "Error rate", value: `${(usage.errorRate * 100).toFixed(2)}%` },
@@ -179,20 +175,7 @@ function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: 
             <Button variant="ghost" size="sm" onClick={() => onNavigate("usage")}>View usage <ChevronRightIcon data-icon="inline-end" /></Button>
           </CardHeader>
           <CardContent>
-            <ChartContainer
-              config={usageConfig}
-              aria-label={`Stacked area chart of daily API requests: ${numberFormat.format(usage.requests)} requests and ${numberFormat.format(usage.errors)} errors in the last 30 days`}
-              className="aspect-auto h-64 w-full"
-            >
-              <AreaChart data={days} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="4 6" />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={10} minTickGap={28} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-                <YAxis width={44} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickFormatter={(value: number) => `${Math.round(value / 1000)}k`} />
-                <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
-                <Area dataKey="success" stackId="requests" type="monotone" stroke="var(--color-success)" fill="var(--color-success)" fillOpacity={0.15} strokeWidth={2} isAnimationActive={false} />
-                <Area dataKey="errors" stackId="requests" type="monotone" stroke="var(--color-errors)" fill="var(--color-errors)" fillOpacity={0.25} strokeWidth={2} isAnimationActive={false} />
-              </AreaChart>
-            </ChartContainer>
+            <UsageAreaChart days={days} summary={`${numberFormat.format(usage.requests)} requests and ${numberFormat.format(usage.errors)} errors in the last 30 days`} />
           </CardContent>
         </Card>
 

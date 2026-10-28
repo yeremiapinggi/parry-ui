@@ -266,3 +266,52 @@ export function validateWebhookDraft(draft: WebhookDraft, apps: PortalApp[]): We
 export function simulateDelivery(url: string, sequence: number) {
   return { status: url.includes("fail") ? 500 : 200, latencyMs: 80 + ((sequence * 37) % 200) }
 }
+
+export const ENDPOINTS = [
+  { product: "cognivo", method: "GET", path: "/v1/cognivo/insights", weight: 3 },
+  { product: "cognivo", method: "POST", path: "/v1/cognivo/reports", weight: 1 },
+  { product: "sociomile", method: "GET", path: "/v1/sociomile/tickets", weight: 5 },
+  { product: "sociomile", method: "POST", path: "/v1/sociomile/tickets", weight: 2 },
+  { product: "sociomile", method: "PATCH", path: "/v1/sociomile/tickets/{id}", weight: 1 },
+  { product: "ripple10", method: "GET", path: "/v1/ripple10/mentions", weight: 4 },
+  { product: "agentics", method: "POST", path: "/v1/agentics/runs", weight: 2 },
+  { product: "agentics", method: "GET", path: "/v1/agentics/runs/{id}", weight: 2 },
+] as const satisfies readonly { product: ProductKey; method: string; path: string; weight: number }[]
+
+export type Endpoint = (typeof ENDPOINTS)[number]
+
+// Share of all generated traffic per seed app; apps created in the preview have none yet.
+const APP_TRAFFIC: Record<string, number> = { "33283010": 0.55, "29507667": 0.3, "30417937": 0.15 }
+
+/** Splits each app's traffic across the endpoints its scopes allow (GET needs read, others need write). */
+export function endpointShares(apps: PortalApp[]) {
+  return apps.flatMap((app) => {
+    const weight = APP_TRAFFIC[app.id] ?? 0
+    const usable = ENDPOINTS.filter((endpoint) => hasScope(app.scopes, endpoint.product, endpoint.method === "GET" ? "read" : "write"))
+    const total = usable.reduce((sum, endpoint) => sum + endpoint.weight, 0)
+    return weight && total ? usable.map((endpoint) => ({ appId: app.id, endpoint, share: (weight * endpoint.weight) / total })) : []
+  })
+}
+
+export type UsageRange = 7 | 30 | 90
+export type UsageFilter = { range: UsageRange; appId: string; product: ProductKey | "all" }
+
+export function getUsage({ range, appId, product }: UsageFilter, apps: PortalApp[]) {
+  const shares = endpointShares(apps).filter((item) => (appId === "all" || item.appId === appId) && (product === "all" || item.endpoint.product === product))
+  const factor = shares.reduce((sum, item) => sum + item.share, 0)
+  const raw = USAGE_DAYS.slice(-range)
+  const rawSummary = summarizeUsage(raw)
+  const days = raw.map((day) => ({ ...day, success: Math.round(day.success * factor), errors: Math.round(day.errors * factor) }))
+  const byEndpoint = new Map<Endpoint, number>()
+  for (const { endpoint, share } of shares) byEndpoint.set(endpoint, (byEndpoint.get(endpoint) ?? 0) + share)
+  const endpoints = [...byEndpoint]
+    .map(([endpoint, share]) => ({ ...endpoint, requests: Math.round(rawSummary.requests * share), errors: Math.round(rawSummary.errors * share) }))
+    .sort((first, second) => second.requests - first.requests)
+  return { days, endpoints, summary: { ...summarizeUsage(days), p95Ms: factor ? Math.max(...raw.map((day) => day.p95Ms)) : 0 } }
+}
+
+export function getRateLimit(app: PortalApp, apps: PortalApp[]) {
+  const last = USAGE_DAYS[USAGE_DAYS.length - 1]
+  const share = endpointShares(apps).filter((item) => item.appId === app.id).reduce((sum, item) => sum + item.share, 0)
+  return { quota: app.environment === "Production" ? 50_000 : 10_000, used: Math.round((last.success + last.errors) * share) }
+}
