@@ -5,7 +5,9 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import { ChartCatalogPreview, PopoverCatalogPreview, RadioGroupCatalogPreview, ToggleGroupCatalogPreview } from "@/components/component-catalog-previews";
-import { ProductSwitcher } from "@/components/product-theme";
+import { ApplicationShellComponentExample } from "@/components/application-shell-component-examples"
+import { ProductSwitcher } from "@/components/product-theme"
+;
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +29,7 @@ export const metadata: Metadata = { title: "Components · Parry UI" };
 // Every `name` is a registry item, so it doubles as the anchor id and the `@parry/<name>` install name.
 const timezones = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Singapore", "Asia/Kuala_Lumpur", "Asia/Bangkok", "Asia/Manila", "Asia/Tokyo", "Asia/Seoul", "Australia/Sydney", "Europe/London", "America/New_York"];
 
-const groups: { title: string; items: { name: string; preview: ReactNode }[] }[] = [
+const groups: { title: string; items: { name: string; preview: ReactNode; description?: string }[] }[] = [
   {
     title: "Action",
     items: [
@@ -201,6 +203,19 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     ],
   },
   {
+    title: "Navigation",
+    items: [
+      { name: "app-sidebar", description: "Grouped application navigation with workspace branding, collapsible nested routes, and an icon-only mode.", preview: <ApplicationShellComponentExample kind="app-sidebar" /> },
+      { name: "top-navbar", description: "A responsive horizontal primary navigation with workspace selection and dropdown destinations.", preview: <ApplicationShellComponentExample kind="top-navbar" /> },
+      { name: "navigation-item", description: "A reusable navigation control with active, disabled, focus, hover, and collapsed presentations.", preview: <ApplicationShellComponentExample kind="navigation-item" /> },
+      { name: "navigation-group", description: "A labelled set of routes whose nested items can be expanded and collapsed independently.", preview: <ApplicationShellComponentExample kind="navigation-group" /> },
+      { name: "breadcrumb", description: "A semantic location trail with optional interactive ancestor links.", preview: <ApplicationShellComponentExample kind="breadcrumb" /> },
+      { name: "workspace-switcher", description: "An accessible menu for changing the active workspace, with a compact icon-only option.", preview: <ApplicationShellComponentExample kind="workspace-switcher" /> },
+      { name: "user-menu", description: "An account dropdown that routes profile and settings actions into the application.", preview: <ApplicationShellComponentExample kind="user-menu" /> },
+      { name: "mobile-navigation-drawer", description: "A keyboard-accessible modal drawer that exposes the shared navigation tree on mobile.", preview: <ApplicationShellComponentExample kind="mobile-navigation-drawer" /> },
+    ],
+  },
+  {
     title: "Layout & data",
     items: [
       { name: "chart", preview: <ChartCatalogPreview /> },
@@ -327,14 +342,16 @@ export default function ComponentsPage() {
           <section key={g.title} className="flex flex-col gap-4" aria-labelledby={`group-${g.title}`}>
             <h2 id={`group-${g.title}`} className="font-heading text-xl font-semibold">{g.title}</h2>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {g.items.map(({ name, preview }) => (
-                <div key={name} id={name} className="flex scroll-mt-20 flex-col gap-2">
-                  <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
-                  <div className="flex items-center justify-between gap-2 px-1">
-                    <h3 className="text-sm font-medium capitalize">{label(name)}</h3>
-                    <code className="truncate font-mono text-xs text-muted-foreground">@parry/{name}</code>
+              {g.items.map(({ name, preview, description }) => (
+                  <div key={name} id={name} className="flex scroll-mt-20 flex-col gap-2">
+                    <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
+                    <div className="flex items-center justify-between gap-2 px-1">
+                      <h3 className="text-sm font-medium capitalize">{label(name)}</h3>
+                      <code className="truncate font-mono text-xs text-muted-foreground">@parry/{name}</code>
+                    </div>
+                    {description ? <p className="px-1 text-xs leading-relaxed text-muted-foreground">{description}</p> : null}
                   </div>
-                </div>
+
               ))}
             </div>
           </section>

@@ -5,8 +5,11 @@ import Link from "next/link"
 import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
 import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
-import { AnalyticsDashboard, AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
-import { OperationalDashboard, OperationalDashboardThumbnail } from "@/components/operational-dashboard"
+import { ApplicationShellDemo, ApplicationShellThumbnail } from "@/components/application-shell-demo"
+import { AnalyticsDashboardPreview } from "@/components/analytics-dashboard-preview"
+import { AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
+import { OperationalDashboardPreview } from "@/components/operational-dashboard-preview"
+import { OperationalDashboardThumbnail } from "@/components/operational-dashboard"
 import { CreateEditForm } from "@/components/create-edit-form"
 import { CreateEditFormThumbnail } from "@/components/create-edit-form-thumbnail"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
@@ -37,7 +40,7 @@ import {
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-type TemplateCategory = "Table & Conversation" | "Dashboard" | "Forms" | "Settings" | "AI" | "Detail & Content" | "Integration"
+type TemplateCategory = "Table & Conversation" | "Dashboard" | "Forms" | "Settings" | "AI" | "Detail & Content" | "Integration" | "Layouts"
 type CategoryFilter = "All" | TemplateCategory
 
 type Template = {
@@ -146,6 +149,13 @@ const templates: Template[] = [
     description: "Explore complex datasets with advanced filtering, saved views, column customization, grouping, and record inspection.",
     category: "Table & Conversation",
     reference: "Parry UI · Data exploration",
+  },
+  {
+    slug: "application-shell",
+    name: "Application Shell",
+    description: "A reusable application framework with sidebar, top navigation, and hybrid navigation layouts.",
+    category: "Layouts",
+    reference: "Parry UI · Application architecture",
   },
 ]
 
@@ -422,7 +432,7 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : <TemplateThumbnail />}
+              {template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "application-shell" ? <ApplicationShellThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -465,7 +475,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboardPreview /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboardPreview /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "application-shell" ? <ApplicationShellDemo /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">

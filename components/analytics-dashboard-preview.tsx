@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 
+import { ApplicationShellDemo } from "@/components/application-shell-demo"
 import { AnalyticsDashboard, type AnalyticsDemoState } from "@/components/analytics-dashboard"
+import { TemplateShellPreview } from "@/components/template-shell-preview"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -35,7 +37,10 @@ export function AnalyticsDashboardPreview() {
           </SelectContent>
         </Select>
       </div>
-      <AnalyticsDashboard state={state} />
+      <TemplateShellPreview
+        standalone={<AnalyticsDashboard state={state} />}
+        withAppShell={<ApplicationShellDemo dashboardTemplate="analytics" analyticsState={state} />}
+      />
     </div>
   )
 }

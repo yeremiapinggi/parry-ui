@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 
+import { ApplicationShellDemo } from "@/components/application-shell-demo"
 import { OperationalDashboard } from "@/components/operational-dashboard"
+import { TemplateShellPreview } from "@/components/template-shell-preview"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -37,7 +39,10 @@ export function OperationalDashboardPreview() {
           </SelectContent>
         </Select>
       </div>
-      <OperationalDashboard previewState={state} />
+      <TemplateShellPreview
+        standalone={<OperationalDashboard previewState={state} />}
+        withAppShell={<ApplicationShellDemo dashboardTemplate="operational" operationalState={state} />}
+      />
     </div>
   )
 }
