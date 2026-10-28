@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { WizardStepper } from "@/components/wizard-stepper"
 
 type ConnectionType = "API" | "Webhook"
 type AuthenticationType = "None" | "API Key" | "OAuth"
@@ -440,36 +441,13 @@ export function MultiStepFormWizard({ onDirtyChange }: { onDirtyChange?: (isDirt
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Connect a service in four guided steps. Your entries stay in this browser preview.</p>
         </header>
 
-        <nav aria-label="Integration setup steps">
-          <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-            {steps.map((step, index) => {
-              const isCurrent = index === currentStep
-              const isComplete = completedSteps.includes(index)
-              const isAvailable = index <= currentStep || isComplete
-              return (
-                <li key={step.title}>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    disabled={!isAvailable}
-                    aria-current={isCurrent ? "step" : undefined}
-                    aria-label={`${step.title}${isComplete ? ", completed" : isCurrent ? ", current step" : ", upcoming"}`}
-                    onClick={() => goToStep(index)}
-                    className={`h-auto w-full justify-start gap-2 rounded-lg border px-2.5 py-2 text-left sm:px-3 ${isCurrent ? "border-primary bg-secondary text-secondary-foreground hover:bg-secondary" : isComplete ? "border-primary/40 bg-muted/30 text-foreground hover:bg-muted" : "border-border bg-card text-muted-foreground"}`}
-                  >
-                    <span className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs ${isComplete ? "bg-primary text-primary-foreground" : isCurrent ? "bg-background text-foreground" : "bg-muted text-muted-foreground"}`}>
-                      {isComplete ? <CheckIcon aria-hidden="true" className="size-3.5" /> : index + 1}
-                    </span>
-                    <span className="flex min-w-0 flex-col gap-0.5">
-                      <span className="truncate text-xs font-medium sm:text-sm">{step.shortTitle}</span>
-                      <span className="hidden truncate text-[11px] text-muted-foreground sm:block">{isComplete ? "Completed" : isCurrent ? "In progress" : "Upcoming"}</span>
-                    </span>
-                  </Button>
-                </li>
-              )
-            })}
-          </ol>
-        </nav>
+        <WizardStepper
+          steps={steps}
+          currentStep={currentStep}
+          completedSteps={completedSteps}
+          label="Integration setup steps"
+          onStepChange={goToStep}
+        />
 
         <form
           noValidate
