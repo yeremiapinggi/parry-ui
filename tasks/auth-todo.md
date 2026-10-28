@@ -8,7 +8,7 @@ See `tasks/auth-plan.md` for decisions and the acceptance criteria.
 - [x] T1c `app/templates/login/page.tsx` doc page (settings-form section structure)
 - [x] T1d Gallery: `Authentication` category, `login` entry, LoginThumbnail, thumbnail and preview branches
 - [x] T1e Verify: lint, build, preview at desktop and 375px, light and dark, keyboard pass
-- [ ] **Checkpoint A: user reviews Login against the reference**
+- [x] **Checkpoint A: user reviews Login against the reference**
 
 ## Phase 2: Remaining screens
 - [x] T2 Register: form, `/templates/register` doc page, gallery entry and thumbnail, verify
@@ -16,6 +16,6 @@ See `tasks/auth-plan.md` for decisions and the acceptance criteria.
 - [x] T4 Change Password: form, `/templates/change-password`, gallery, verify
 
 ## Final
-- [ ] Cross-links between the 4 templates work
-- [ ] `npm run lint`, `npm run build`, `npm run check:contrast` pass
+- [x] Cross-links between the 4 templates work
+- [x] `npm run lint`, `npm run build`, `npm run check:contrast` pass
 - [ ] **Checkpoint B: user review**
