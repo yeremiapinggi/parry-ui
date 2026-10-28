@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:portal": "node scripts/check-developer-portal.mjs",
     "registry:build": "node scripts/sync-theme.mjs && shadcn build"
   },
   "dependencies": {

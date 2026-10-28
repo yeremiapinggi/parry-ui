@@ -15,6 +15,7 @@ import {
   WebhookIcon,
 } from "lucide-react"
 
+import { AppsSection, type AppsIntent } from "@/components/developer-portal-apps"
 import { SEED_APPS, USAGE_DAYS, summarizeUsage, type PortalApp } from "@/lib/developer-portal-data"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Badge } from "@/components/ui/badge"
@@ -47,9 +48,15 @@ const usageConfig = {
 
 const numberFormat = new Intl.NumberFormat("en-US")
 
-export function DeveloperPortal() {
+export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
   const [section, setSection] = useState<PortalSection>("overview")
-  const [apps] = useState<PortalApp[]>(SEED_APPS)
+  const [apps, setApps] = useState<PortalApp[]>(SEED_APPS)
+  const [appsIntent, setAppsIntent] = useState<AppsIntent>(null)
+
+  function navigate(next: PortalSection, intent: AppsIntent = null) {
+    setAppsIntent(intent)
+    setSection(next)
+  }
   const activeLabel = navItems.find((item) => item.id === section)?.label
 
   return (
@@ -70,7 +77,7 @@ export function DeveloperPortal() {
                   key={id}
                   type="button"
                   aria-current={section === id ? "page" : undefined}
-                  onClick={() => setSection(id)}
+                  onClick={() => navigate(id)}
                   className="flex items-center gap-3 rounded-md border-l-2 border-transparent px-3 py-2 text-left text-sm transition-colors hover:bg-sidebar-border hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:border-sidebar-primary aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium aria-[current=page]:text-sidebar-accent-foreground"
                 >
                   <Icon className="size-4 shrink-0" />
@@ -90,7 +97,7 @@ export function DeveloperPortal() {
         <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-4 sm:px-6">
           <span className="hidden truncate text-sm font-medium lg:block">IvosightsDev workspace</span>
           <div className="lg:hidden">
-            <Select value={section} onValueChange={(value) => setSection(value as PortalSection)}>
+            <Select value={section} onValueChange={(value) => navigate(value as PortalSection)}>
               <SelectTrigger aria-label="Portal section" className="w-36">
                 <SelectValue />
               </SelectTrigger>
@@ -109,7 +116,9 @@ export function DeveloperPortal() {
 
         <main className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
           {section === "overview" ? (
-            <OverviewSection apps={apps} onNavigate={setSection} />
+            <OverviewSection apps={apps} onNavigate={navigate} />
+          ) : section === "apps" ? (
+            <AppsSection apps={apps} setApps={setApps} intent={appsIntent} onDirtyChange={onDirtyChange} />
           ) : (
             // shortcut: placeholder until T2–T6 build each section
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
@@ -123,7 +132,7 @@ export function DeveloperPortal() {
   )
 }
 
-function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: (section: PortalSection) => void }) {
+function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: (section: PortalSection, intent?: AppsIntent) => void }) {
   const days = USAGE_DAYS.slice(-30)
   const usage = summarizeUsage(days)
   const stats = [
@@ -139,7 +148,7 @@ function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: 
           <h2 className="font-heading text-2xl font-semibold tracking-tight">Hello, Ivosights Dev</h2>
           <p className="text-sm text-muted-foreground">Build on Ivosights products with OAuth apps, API keys, and webhooks.</p>
         </div>
-        <Button onClick={() => onNavigate("apps")}><PlusIcon data-icon="inline-start" />Create app</Button>
+        <Button onClick={() => onNavigate("apps", { create: true })}><PlusIcon data-icon="inline-start" />Create app</Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -188,7 +197,7 @@ function OverviewSection({ apps, onNavigate }: { apps: PortalApp[]; onNavigate: 
               <button
                 key={app.id}
                 type="button"
-                onClick={() => onNavigate("apps")}
+                onClick={() => onNavigate("apps", { appId: app.id })}
                 className="flex items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary text-secondary-foreground"><AppWindowIcon className="size-4" /></span>

@@ -442,7 +442,7 @@ export function TemplatesGallery() {
 
   function handlePreviewOpenChange(open: boolean) {
     if (open) return
-    if ((activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection") && formHasUnsavedChanges) {
+    if ((activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection" || activeTemplate?.slug === "developer-portal") && formHasUnsavedChanges) {
       setCloseConfirmationOpen(true)
       return
     }
@@ -528,7 +528,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "developer-portal" ? <DeveloperPortal /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : activeTemplate.slug === "forgot-password" ? <ForgotPasswordForm /> : activeTemplate.slug === "change-password" ? <ChangePasswordForm /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "developer-portal" ? <DeveloperPortal onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : activeTemplate.slug === "forgot-password" ? <ForgotPasswordForm /> : activeTemplate.slug === "change-password" ? <ChangePasswordForm /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
@@ -543,7 +543,7 @@ export function TemplatesGallery() {
             </footer>
           </DialogContent>
       )}
-      {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection") && (
+      {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection" || activeTemplate?.slug === "developer-portal") && (
         <Dialog open={closeConfirmationOpen} onOpenChange={setCloseConfirmationOpen}>
           <DialogContent data-parry-theme>
             <DialogHeader>

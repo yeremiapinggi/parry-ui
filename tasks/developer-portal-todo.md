@@ -8,10 +8,10 @@ See `tasks/developer-portal-plan.md` for decisions and the acceptance criteria.
 - [x] T1c `app/templates/developer-portal/page.tsx` doc page (integration-connection section structure)
 - [x] T1d Gallery: `developer-portal` entry (Integration), thumbnail, preview branch (unsaved-changes guard deferred to T2, the first section with a form)
 - [x] T1e Verify: lint, build, preview at desktop and 375px, light and dark
-- [ ] **Checkpoint A: user reviews the shell and confirms the decisions**
+- [x] **Checkpoint A: user reviews the shell and confirms the decisions**
 
 ## Phase 2: Apps and access
-- [ ] T2 Apps: list, create/edit dialog (OAuth / API key, scopes), reveal-once secret, delete, empty state, verify
+- [x] T2 Apps: list, create/edit dialog (OAuth / API key, scopes), reveal-once secret, delete, empty state, verify
 - [ ] T3 App detail: OAuth credentials + rotate + redirect URIs, API keys (create ⊆ app scopes, reveal-once, revoke), scopes matrix + trim warning, self-check for scope trimming, verify
 - [ ] **Checkpoint B: user reviews apps, auth and scopes**
 
