@@ -317,3 +317,68 @@ export function ForgotPasswordForm() {
 function maskEmail(email: string) {
   return email.replace(/^(.)[^@]*/, "$1•••")
 }
+
+type ChangePasswordErrors = { current?: string; next?: string; confirm?: string }
+const emptyChangePassword = { current: "", next: "", confirm: "" }
+
+export function ChangePasswordForm() {
+  const [values, setValues] = useState(emptyChangePassword)
+  const [errors, setErrors] = useState<ChangePasswordErrors>({})
+  const [pending, setPending] = useState(false)
+  const update = (field: keyof typeof values) => (event: ChangeEvent<HTMLInputElement>) => setValues((current) => ({ ...current, [field]: event.target.value }))
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const nextErrors: ChangePasswordErrors = {
+      current: values.current ? undefined : "Enter your current password.",
+      next: !values.next ? "Create a new password."
+        : !meetsPasswordRules(values.next) ? "Use at least 8 characters with a letter and a number."
+        : values.next === values.current ? "Choose a password different from your current one."
+        : undefined,
+      confirm: !values.confirm ? "Confirm your new password." : values.confirm === values.next ? undefined : "Passwords don't match.",
+    }
+    setErrors(nextErrors)
+    if (focusFirstError("change", nextErrors)) return
+
+    simulateRequest(setPending, () => {
+      setValues(emptyChangePassword)
+      toast.success("Password changed in this preview.", { description: "Nothing was saved; this template does not contact a server.", position: "bottom-right" })
+    })
+  }
+
+  return (
+    <AuthLayout>
+      <Link href="/templates/login" className="inline-flex items-center gap-1.5 self-start text-sm font-medium text-link hover:underline">
+        <ArrowLeftIcon aria-hidden="true" className="size-4" />
+        Back to login
+      </Link>
+      <header className="flex flex-col gap-1.5 text-center">
+        <h2 className="font-heading text-2xl font-semibold tracking-tight">Change your password</h2>
+        <p className="text-sm text-muted-foreground">Choose a new password you don&apos;t use for other accounts.</p>
+      </header>
+
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="change-current">Current password</Label>
+          <PasswordInput id="change-current" autoComplete="current-password" placeholder="Enter your current password" value={values.current} onChange={update("current")} disabled={pending} required aria-invalid={Boolean(errors.current)} aria-describedby={describedBy("change-current", errors.current)} className="h-10" />
+          <FieldError id="change-current-error" message={errors.current} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="change-next">New password</Label>
+          <PasswordInput id="change-next" autoComplete="new-password" placeholder="Create a new password" value={values.next} onChange={update("next")} disabled={pending} required aria-invalid={Boolean(errors.next)} aria-describedby={describedBy("change-next", errors.next, "change-next-rules")} className="h-10" />
+          <PasswordRules id="change-next-rules" value={values.next} />
+          <FieldError id="change-next-error" message={errors.next} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="change-confirm">Confirm new password</Label>
+          <PasswordInput id="change-confirm" autoComplete="new-password" placeholder="Enter the new password again" value={values.confirm} onChange={update("confirm")} disabled={pending} required aria-invalid={Boolean(errors.confirm)} aria-describedby={describedBy("change-confirm", errors.confirm)} className="h-10" />
+          <FieldError id="change-confirm-error" message={errors.confirm} />
+        </div>
+
+        <SubmitButton pending={pending} label="Update password" pendingLabel="Updating…" />
+      </form>
+    </AuthLayout>
+  )
+}
