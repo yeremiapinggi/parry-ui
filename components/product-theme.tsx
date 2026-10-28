@@ -56,7 +56,7 @@ const overlays = ["dialog-content", "select-content", "dropdown-menu-content", "
   .map((slot) => `[data-slot="${slot}"]`)
   .concat("[data-sonner-toaster]")
   .join(",")
-const scope = `.product-scope,:is(${overlays}):not([data-shell])`
+const scope = `.product-scope:not([data-parry-theme]),:is(${overlays}):not([data-shell]):not([data-parry-theme])`
 
 /** Injects the selected product's tokens and font into preview scopes; renders nothing for Parry. */
 export function ProductThemeStyle() {

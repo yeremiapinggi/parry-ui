@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     // next-themes sets the class on <html> before hydration
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="en" className="bg-background h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TooltipProvider>

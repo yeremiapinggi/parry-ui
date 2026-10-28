@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-react";
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
+import { ChartCatalogPreview, PopoverCatalogPreview, RadioGroupCatalogPreview, ToggleGroupCatalogPreview } from "@/components/component-catalog-previews";
 import { ProductSwitcher } from "@/components/product-theme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -138,6 +139,8 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
           </div>
         ),
       },
+      { name: "radio-group", preview: <RadioGroupCatalogPreview /> },
+      { name: "toggle-group", preview: <ToggleGroupCatalogPreview /> },
     ],
   },
   {
@@ -193,23 +196,15 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     items: [
       { name: "dialog", preview: <DialogDemo /> },
       { name: "dropdown-menu", preview: <DropdownMenuDemo /> },
+      { name: "popover", preview: <PopoverCatalogPreview /> },
       { name: "tooltip", preview: <TooltipDemo /> },
     ],
   },
   {
     title: "Layout & data",
     items: [
-      {
-        name: "card",
-        preview: (
-          <Card className="w-full max-w-60">
-            <CardHeader>
-              <CardDescription>Total Components</CardDescription>
-              <CardTitle className="text-2xl">19</CardTitle>
-            </CardHeader>
-          </Card>
-        ),
-      },
+      { name: "chart", preview: <ChartCatalogPreview /> },
+      { name: "card", preview: <ComponentCountPreview /> },
       {
         name: "tabs",
         preview: (
@@ -274,6 +269,19 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
   },
 ];
 
+const componentCount = groups.reduce((total, group) => total + group.items.length, 0);
+
+function ComponentCountPreview() {
+  return (
+    <Card className="w-full max-w-60">
+      <CardHeader>
+        <CardDescription>Total Components</CardDescription>
+        <CardTitle className="text-2xl">{componentCount}</CardTitle>
+      </CardHeader>
+    </Card>
+  );
+}
+
 const label = (name: string) => name.replace("-", " ");
 
 export default function ComponentsPage() {
@@ -298,7 +306,7 @@ export default function ComponentsPage() {
         <header className="flex flex-col items-center gap-3 text-center">
           <h1 className="font-heading text-4xl font-bold tracking-tight">Browse the library</h1>
           <p className="max-w-xl text-muted-foreground">
-            19 shadcn components with the Parry theme. Install them one at a time with{" "}
+            {componentCount} shadcn components with the Parry theme. Install them one at a time with{" "}
             <code className="font-mono text-sm">npx shadcn@latest add @parry/&lt;name&gt;</code>.
           </p>
           <div className="flex gap-2">
