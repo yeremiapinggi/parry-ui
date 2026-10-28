@@ -548,12 +548,12 @@ export function RankingAnalyticsTable() {
               <SearchIcon aria-hidden="true" className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1) }} aria-label="Search accounts" placeholder="Search accounts" className="h-8 pl-8" />
             </div>
-            <ToggleGroup type="single" value={period} onValueChange={updatePeriod} aria-label="Reporting period" variant="outline" size="sm" spacing={0} className="h-8 rounded-md border">
-              <ToggleGroupItem value="7" aria-label="Last 7 days" className="h-7 rounded-none border-0 px-2.5">7D</ToggleGroupItem>
-              <ToggleGroupItem value="30" aria-label="Last 30 days" className="h-7 rounded-none border-0 px-2.5">30D</ToggleGroupItem>
-              <ToggleGroupItem value="90" aria-label="Last 90 days" className="h-7 rounded-none border-0 px-2.5">90D</ToggleGroupItem>
-              <ToggleGroupItem value="custom" aria-label="Custom date range" className="h-7 rounded-none border-0 px-2.5">Custom</ToggleGroupItem>
-            </ToggleGroup>
+          <ToggleGroup type="single" value={period} onValueChange={updatePeriod} aria-label="Reporting period" size="sm" spacing={1} className="h-8 gap-0 rounded-md border border-input bg-muted/50 p-px">
+            <ToggleGroupItem value="7" aria-label="Last 7 days" className="h-full rounded-none data-[state=on]:rounded-[calc(var(--radius-md)-1px)] border-0 px-2.5 focus-visible:ring-2 focus-visible:ring-ring/50 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">7D</ToggleGroupItem>
+            <ToggleGroupItem value="30" aria-label="Last 30 days" className="h-full rounded-none data-[state=on]:rounded-[calc(var(--radius-md)-1px)] border-0 px-2.5 focus-visible:ring-2 focus-visible:ring-ring/50 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">30D</ToggleGroupItem>
+            <ToggleGroupItem value="90" aria-label="Last 90 days" className="h-full rounded-none data-[state=on]:rounded-[calc(var(--radius-md)-1px)] border-0 px-2.5 focus-visible:ring-2 focus-visible:ring-ring/50 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">90D</ToggleGroupItem>
+            <ToggleGroupItem value="custom" aria-label="Custom date range" className="h-full rounded-none data-[state=on]:rounded-[calc(var(--radius-md)-1px)] border-0 px-2.5 focus-visible:ring-2 focus-visible:ring-ring/50 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">Custom</ToggleGroupItem>
+          </ToggleGroup>
             <PlatformFilter selected={selectedPlatforms} onChange={(next) => { setSelectedPlatforms(next); setPage(1) }} />
             <div className="flex items-center gap-2">
               <Label htmlFor="sentiment-filter" className="sr-only">Filter by sentiment</Label>
