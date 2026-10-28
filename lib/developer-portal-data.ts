@@ -315,3 +315,92 @@ export function getRateLimit(app: PortalApp, apps: PortalApp[]) {
   const share = endpointShares(apps).filter((item) => item.appId === app.id).reduce((sum, item) => sum + item.share, 0)
   return { quota: app.environment === "Production" ? 50_000 : 10_000, used: Math.round((last.success + last.errors) * share) }
 }
+
+export type LogEntry = {
+  requestId: string
+  at: string
+  method: Endpoint["method"]
+  path: string
+  product: ProductKey
+  status: number
+  latencyMs: number
+  appId: string
+  credential: string
+  credentialLast4: string
+}
+
+// Deterministic 0–1 value per seed, so generated rows match between server and client renders.
+function unit(seed: number) {
+  return (Math.imul(seed ^ 0x5bd1e995, 2654435761) >>> 0) / 4294967296
+}
+
+const LOG_END = Date.UTC(2026, 9, 27, 23, 59, 59)
+
+/** Row `index` counts back from the end of the period; negative indexes are newer (used by live tail). */
+export function createLogEntry(index: number, apps: PortalApp[]): LogEntry | null {
+  const shares = endpointShares(apps)
+  const total = shares.reduce((sum, item) => sum + item.share, 0)
+  if (!total) return null
+  let roll = unit(index * 3 + 1) * total
+  const picked = shares.find((item) => (roll -= item.share) <= 0) ?? shares[shares.length - 1]
+  const app = apps.find((item) => item.id === picked.appId)!
+  const { endpoint } = picked
+  const statusRoll = unit(index * 3 + 2)
+  const status = statusRoll < 0.012 ? 500 : statusRoll < 0.024 ? 429 : statusRoll < 0.032 ? 401 : statusRoll < 0.04 ? 400 : endpoint.method === "POST" ? 201 : 200
+  const requestId = `req_${(Math.imul(index + 7919, 2654435761) >>> 0).toString(36).padStart(7, "0")}`
+  const activeKeys = app.keys.filter((key) => !key.revoked)
+  const key = app.authMethod === "api-key" ? activeKeys[Math.abs(index) % Math.max(1, activeKeys.length)] : undefined
+  return {
+    requestId,
+    at: new Date(LOG_END - index * 97_000).toISOString().slice(0, 19).replace("T", " "),
+    method: endpoint.method,
+    path: endpoint.path.replace("{id}", `${endpoint.product === "agentics" ? "run" : "tkt"}_${10_000 + Math.abs(index * 131) % 90_000}`),
+    product: endpoint.product,
+    status,
+    latencyMs: Math.round(60 + unit(index * 3 + 3) * 380 + (status === 500 ? 1200 : 0)),
+    appId: app.id,
+    credential: app.authMethod === "oauth" ? "OAuth access token" : key ? `API key · ${key.name}` : "API key",
+    credentialLast4: key?.last4 ?? requestId.slice(-4),
+  }
+}
+
+export type LogFilter = { status: "all" | "2xx" | "4xx" | "5xx"; method: "all" | Endpoint["method"]; appId: string; query: string }
+
+export function filterLogs(logs: LogEntry[], { status, method, appId, query }: LogFilter) {
+  const needle = query.trim().toLowerCase()
+  return logs.filter((log) =>
+    (status === "all" || String(log.status).startsWith(status[0])) &&
+    (method === "all" || log.method === method) &&
+    (appId === "all" || log.appId === appId) &&
+    (!needle || log.path.toLowerCase().includes(needle) || log.requestId.toLowerCase().includes(needle)),
+  )
+}
+
+const errorMessages: Record<number, string> = {
+  400: "Request body failed validation.",
+  401: "The access token is expired or revoked.",
+  429: "Rate limit exceeded. Retry after 30 seconds.",
+  500: "Internal error. The request was not applied.",
+}
+
+/** Sample request/response for the log detail view. The credential is always masked. */
+export function requestDetail(log: LogEntry, apps: PortalApp[]) {
+  const app = apps.find((item) => item.id === log.appId)
+  const prefix = app?.authMethod === "oauth" ? "eyJhbGci" : app?.environment === "Production" ? "ivk_live" : "ivk_test"
+  const write = log.method !== "GET"
+  const resource = log.path.split("/").pop() ?? ""
+  const okBody = resource.includes("_") ? { id: resource, status: "ok" } : write ? { id: `${log.product}_${log.requestId.slice(-6)}`, status: "created" } : { object: "list", count: 50, has_more: true }
+  return {
+    headers: {
+      Authorization: `Bearer ${prefix}••••${log.credentialLast4}`,
+      "Content-Type": "application/json",
+      "User-Agent": `${app?.name ?? "app"}/1.4.2`,
+      "X-Request-Id": log.requestId,
+    },
+    query: write ? null : { limit: 50, since: log.at.slice(0, 10) },
+    body: write ? { source: app?.name ?? "app", payload: { subject: "Order delayed", priority: "high" } } : null,
+    response: log.status < 300
+      ? okBody
+      : { error: { code: log.status, message: errorMessages[log.status], request_id: log.requestId } },
+  }
+}

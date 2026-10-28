@@ -19,6 +19,7 @@ import { WebhooksSection } from "@/components/developer-portal-webhooks"
 import { SEED_APPS, SEED_WEBHOOKS, getUsage, type PortalApp, type Webhook } from "@/lib/developer-portal-data"
 import { UsageAreaChart } from "@/components/developer-portal-shared"
 import { UsageSection } from "@/components/developer-portal-usage"
+import { LogsSection } from "@/components/developer-portal-logs"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -59,7 +60,6 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
     setVisit((current) => current + 1)
     setSection(next)
   }
-  const activeLabel = navItems.find((item) => item.id === section)?.label
 
   return (
     <div className="flex h-[760px] max-h-[85vh] min-h-[560px] overflow-hidden rounded-xl border bg-background text-foreground">
@@ -126,11 +126,7 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
           ) : section === "usage" ? (
             <UsageSection apps={apps} webhooks={webhooks} />
           ) : (
-            // shortcut: placeholder until T2–T6 build each section
-            <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-              <h2 className="font-heading text-lg font-semibold">{activeLabel}</h2>
-              <p className="max-w-sm text-sm text-muted-foreground">This section is not built yet in the preview.</p>
-            </div>
+            <LogsSection apps={apps} />
           )}
         </main>
       </div>

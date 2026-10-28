@@ -1,7 +1,7 @@
 // Self-check for the Developer Portal template's pure logic. Run: npm run check:portal
 import assert from "node:assert/strict"
 
-import { PRODUCTS, SEED_APPS, USAGE_DAYS, eventsForScopes, getRateLimit, getUsage, summarizeUsage, hasScope, isScopeSubset, simulateDelivery, toggleScope, trimKeys, validateAppDraft, validateRedirectUri, validateWebhookDraft } from "../lib/developer-portal-data.ts"
+import { PRODUCTS, SEED_APPS, createLogEntry, filterLogs, requestDetail, USAGE_DAYS, eventsForScopes, getRateLimit, getUsage, summarizeUsage, hasScope, isScopeSubset, simulateDelivery, toggleScope, trimKeys, validateAppDraft, validateRedirectUri, validateWebhookDraft } from "../lib/developer-portal-data.ts"
 
 // Scopes: write implies read, unchecking read drops write.
 let scopes = toggleScope([], "cognivo", "write", true)
@@ -60,5 +60,18 @@ assert.equal(getUsage({ range: 7, appId: "new-app", product: "all" }, [...SEED_A
 const limit = getRateLimit(SEED_APPS[1], SEED_APPS)
 assert.equal(limit.quota, 10000)
 assert.ok(limit.used > 0 && limit.used <= limit.quota)
+
+// Logs: deterministic rows, combinable filters, masked credentials.
+assert.deepEqual(createLogEntry(5, SEED_APPS), createLogEntry(5, SEED_APPS), "same index, same row (no hydration mismatch)")
+const logs = Array.from({ length: 200 }, (_, index) => createLogEntry(index, SEED_APPS))
+assert.equal(new Set(logs.map((log) => log.requestId)).size, 200, "request IDs are unique")
+assert.ok(logs.every((log) => SEED_APPS.some((app) => app.id === log.appId)))
+assert.ok(logs.some((log) => log.status >= 400), "some errors to filter")
+const errors5xx = filterLogs(logs, { status: "5xx", method: "all", appId: "all", query: "" })
+assert.ok(errors5xx.length > 0 && errors5xx.every((log) => log.status >= 500))
+const combined = filterLogs(logs, { status: "2xx", method: "GET", appId: "29507667", query: "MENTIONS" })
+assert.ok(combined.length > 0 && combined.every((log) => log.status < 300 && log.method === "GET" && log.appId === "29507667" && log.path.includes("mentions")))
+assert.deepEqual(filterLogs(logs, { status: "all", method: "all", appId: "all", query: logs[3].requestId }), [logs[3]])
+for (const log of logs.slice(0, 20)) assert.match(requestDetail(log, SEED_APPS).headers.Authorization, /^Bearer \S+••••\S{4}$/)
 
 console.log("developer-portal checks passed")
