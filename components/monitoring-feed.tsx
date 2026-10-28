@@ -95,7 +95,8 @@ type SortMode = "Newest" | "Oldest" | "Highest engagement"
 type DateRange = "Any time" | "Past 24 hours" | "Past 7 days" | "Past 30 days"
 
 const DAY = 24 * 60 * 60 * 1000
-const baseTime = Date.now()
+const DEMO_REFERENCE_TIME = Date.UTC(2026, 9, 28, 10)
+const baseTime = DEMO_REFERENCE_TIME
 
 const demoItems: MonitoringFeedItem[] = [
   {
@@ -244,13 +245,6 @@ function formatPublicationDate(value: string, full = false) {
     : { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(date)
 }
 
-function relativeDate(value: string) {
-  const elapsedMinutes = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 60000))
-  if (elapsedMinutes < 60) return `${elapsedMinutes}m ago`
-  if (elapsedMinutes < 1440) return `${Math.floor(elapsedMinutes / 60)}h ago`
-  return `${Math.floor(elapsedMinutes / 1440)}d ago`
-}
-
 function compactNumber(value: number) {
   return new Intl.NumberFormat("en", { notation: value >= 1000 ? "compact" : "standard", maximumFractionDigits: 1 }).format(value)
 }
@@ -329,7 +323,7 @@ function FeedItemCard({
             <span className="truncate text-[11px] text-muted-foreground">{item.handle}</span>
             <span aria-hidden="true" className="text-muted-foreground">·</span>
             <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground"><SourceIcon aria-hidden="true" className="size-3" />{item.platform}</span>
-            <time dateTime={item.publishedAt} className="ml-auto shrink-0 text-[10px] text-muted-foreground">{relativeDate(item.publishedAt)}</time>
+            <time dateTime={item.publishedAt} className="ml-auto shrink-0 text-[10px] text-muted-foreground">{formatPublicationDate(item.publishedAt)}</time>
           </span>
           <span className="block min-w-0">{renderContent(item, "preview")}</span>
           <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -398,7 +392,7 @@ function DetailContent({
       </div>
       <div className="text-sm leading-relaxed">{renderContent(item, "detail")}</div>
       {item.mediaUrl ? <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md border bg-muted">
-        <Image src={item.mediaUrl} alt={item.mediaAlt ?? `Media attached to ${item.author}'s ${item.platform} mention`} fill sizes="(max-width: 768px) 90vw, 34vw" className="object-cover" />
+        <Image src={item.mediaUrl} alt={item.mediaAlt ?? `Media attached to ${item.author}'s ${item.platform} mention`} fill sizes="(max-width: 768px) 90vw, 34vw" loading="eager" className="object-cover" />
         <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-md bg-background/90 px-2 py-1 text-[10px] font-medium text-foreground"><CameraIcon aria-hidden="true" className="size-3" />Media preview</span>
       </div> : <div className="flex items-center gap-2 rounded-md border border-dashed px-3 py-2.5 text-xs text-muted-foreground"><CameraIcon aria-hidden="true" className="size-4 shrink-0" />This item has no media attachment.</div>}
       <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground"><Clock3Icon aria-hidden="true" className="size-3.5" /><time dateTime={item.publishedAt}>{formatPublicationDate(item.publishedAt, true)}</time></p>
@@ -514,7 +508,8 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase()
-    const dateBoundary = dateRange === "Past 24 hours" ? Date.now() - DAY : dateRange === "Past 7 days" ? Date.now() - 7 * DAY : dateRange === "Past 30 days" ? Date.now() - 30 * DAY : null
+    const dateReference = items.reduce((latest, item) => Math.max(latest, Date.parse(item.publishedAt) || 0), DEMO_REFERENCE_TIME)
+    const dateBoundary = dateRange === "Past 24 hours" ? dateReference - DAY : dateRange === "Past 7 days" ? dateReference - 7 * DAY : dateRange === "Past 30 days" ? dateReference - 30 * DAY : null
     return items.filter((item) => {
       const matchesQuery = !normalizedQuery || [item.author, item.handle, item.content, item.platform, ...item.tags].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))
       const matchesSource = source === "All sources" || item.platform === source
@@ -578,6 +573,7 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
   }
 
   function simulateNewMention() {
+    setDemoState("ready")
     const mention: MonitoringFeedItem = {
       id: `mention-demo-${Date.now()}`,
       author: "Riley Morgan",
@@ -671,7 +667,7 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
         </div>}
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          {demoState === "loading" ? <div aria-label="Loading mentions" className="flex flex-col gap-2 p-3">{Array.from({ length: 6 }, (_, index) => <div key={index} className="flex flex-col gap-2 rounded-md border p-3"><div className="flex items-center gap-2"><span className="size-8 rounded-full bg-muted" /><span className="h-3 w-32 rounded bg-muted" /></div><span className="h-3 w-full rounded bg-muted" /><span className="h-3 w-3/4 rounded bg-muted" /></div>)}</div> : demoState === "unavailable" ? <div role="alert" className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-destructive-soft text-destructive"><RefreshCwIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">Feed data is unavailable</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">This preview state represents a temporary data issue. No external service is connected.</p><Button type="button" variant="outline" size="sm" onClick={() => setDemoState("ready")}>Retry demo feed</Button></div> : demoState === "empty" ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">No mentions yet</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">New items will appear here when available. Add a fictional mention to explore the empty feed state.</p><Button type="button" size="sm" variant="outline" onClick={() => { setDemoState("ready"); simulateNewMention() }}>Simulate New Mention</Button></div> : items.length === 0 ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">Your feed is clear</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">There are no items in this feed yet. Add a fictional mention to see how the workspace works.</p><Button type="button" variant="outline" size="sm" onClick={simulateNewMention}>Simulate New Mention</Button></div> : visibleItems.length === 0 ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">No mentions match these filters</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">Try a different search or reset the source, sentiment, date, and review filters.</p><Button type="button" variant="outline" size="sm" onClick={resetFilters}>Reset filters</Button></div> : <ul aria-label="Mentions, use up and down arrow keys to move between items" className="flex flex-col gap-1 p-2">
+          {demoState === "loading" ? <div role="status" aria-label="Loading mentions" className="flex flex-col gap-2 p-3">{Array.from({ length: 6 }, (_, index) => <div key={index} className="flex flex-col gap-2 rounded-md border p-3"><div className="flex items-center gap-2"><span className="size-8 rounded-full bg-muted" /><span className="h-3 w-32 rounded bg-muted" /></div><span className="h-3 w-full rounded bg-muted" /><span className="h-3 w-3/4 rounded bg-muted" /></div>)}</div> : demoState === "unavailable" ? <div role="alert" className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-destructive-soft text-destructive"><RefreshCwIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">Feed data is unavailable</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">This preview state represents a temporary data issue. No external service is connected.</p><Button type="button" variant="outline" size="sm" onClick={() => setDemoState("ready")}>Retry demo feed</Button></div> : demoState === "empty" ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">No mentions yet</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">New items will appear here when available. Add a fictional mention to explore the empty feed state.</p><Button type="button" size="sm" variant="outline" onClick={simulateNewMention}>Simulate New Mention</Button></div> : items.length === 0 ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">Your feed is clear</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">There are no items in this feed yet. Add a fictional mention to see how the workspace works.</p><Button type="button" variant="outline" size="sm" onClick={simulateNewMention}>Simulate New Mention</Button></div> : visibleItems.length === 0 ? <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-5 text-center"><div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground"><SearchIcon aria-hidden="true" className="size-4" /></div><p className="text-sm font-medium">No mentions match these filters</p><p className="max-w-xs text-xs leading-relaxed text-muted-foreground">Try a different search or reset the source, sentiment, date, and review filters.</p><Button type="button" variant="outline" size="sm" onClick={resetFilters}>Reset filters</Button></div> : <ul aria-label="Mentions, use up and down arrow keys to move between items" className="flex flex-col gap-1 p-2">
             {visibleItems.map((item) => <FeedItemCard
               key={item.id}
               item={item}
