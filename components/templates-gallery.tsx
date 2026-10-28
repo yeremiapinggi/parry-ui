@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
+import { ArrowUpRightIcon, Maximize2Icon, Minimize2Icon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
 import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
 import { AnalyticsDashboard, AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
@@ -39,6 +39,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { cn } from "@/lib/utils"
 
 type TemplateCategory = "Table & Conversation" | "Dashboard" | "Forms" | "Settings" | "AI" | "Detail & Content" | "Integration" | "Authentication"
 type CategoryFilter = "All" | TemplateCategory
@@ -439,6 +440,7 @@ export function TemplatesGallery() {
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null)
   const [formHasUnsavedChanges, setFormHasUnsavedChanges] = useState(false)
   const [closeConfirmationOpen, setCloseConfirmationOpen] = useState(false)
+  const [previewFullscreen, setPreviewFullscreen] = useState(false)
 
   function handlePreviewOpenChange(open: boolean) {
     if (open) return
@@ -448,12 +450,14 @@ export function TemplatesGallery() {
     }
     setActiveTemplate(null)
     setFormHasUnsavedChanges(false)
+    setPreviewFullscreen(false)
   }
 
   function closePreviewAndDiscard() {
     setCloseConfirmationOpen(false)
     setActiveTemplate(null)
     setFormHasUnsavedChanges(false)
+    setPreviewFullscreen(false)
   }
 
   const filteredTemplates = useMemo(
@@ -520,17 +524,24 @@ export function TemplatesGallery() {
       {activeTemplate && (
           <DialogContent
             data-parry-theme
+            showCloseButton={!previewFullscreen}
             aria-describedby="template-preview-description"
-            className="flex h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden p-0 sm:h-[90dvh] sm:w-[90vw] sm:max-w-[90vw] xl:w-[88vw] xl:max-w-[88vw]"
+            className={cn("flex flex-col gap-0 overflow-hidden p-0", previewFullscreen ? "h-dvh w-screen max-w-none rounded-none ring-0 sm:max-w-none" : "h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:h-[90dvh] sm:w-[90vw] sm:max-w-[90vw] xl:w-[88vw] xl:max-w-[88vw]")}
           >
-            <DialogHeader className="shrink-0 border-b px-4 py-4 pr-12 sm:px-6">
+            <Button type="button" variant={previewFullscreen ? "outline" : "ghost"} size="icon-sm" className={cn("absolute z-10", previewFullscreen ? "right-4 bottom-4 bg-background shadow-md" : "top-2 right-10")} aria-pressed={previewFullscreen} onClick={() => setPreviewFullscreen((value) => !value)}>
+              {previewFullscreen ? <Minimize2Icon /> : <Maximize2Icon />}
+              <span className="sr-only">{previewFullscreen ? "Exit full screen" : "Enter full screen"}</span>
+            </Button>
+            {/* Title stays for screen readers so the dialog keeps its accessible name */}
+            <DialogHeader className={cn("shrink-0 border-b px-4 py-4 pr-20 sm:px-6 sm:pr-20", previewFullscreen && "sr-only")}>
               <DialogTitle className="font-heading text-lg font-semibold">{activeTemplate.name}</DialogTitle>
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
+            {/* Fullscreen stretches each template's root edge to edge, overriding its own card sizing */}
+            <div className={cn("min-h-0 flex-1 overflow-y-auto overscroll-contain", previewFullscreen ? "*:min-h-full! *:max-h-none! *:rounded-none! *:border-0!" : "px-3 py-4 sm:px-6")}>
               {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "developer-portal" ? <DeveloperPortal onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : activeTemplate.slug === "forgot-password" ? <ForgotPasswordForm /> : activeTemplate.slug === "change-password" ? <ChangePasswordForm /> : <DataManagementListPreview showControls />}
             </div>
-            <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            {!previewFullscreen && <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">{activeTemplate.category}</Badge>
                 <span className="text-sm text-muted-foreground">{activeTemplate.reference}</span>
@@ -540,7 +551,7 @@ export function TemplatesGallery() {
                   View Documentation <ArrowUpRightIcon data-icon="inline-end" />
                 </Link>
               </Button>
-            </footer>
+            </footer>}
           </DialogContent>
       )}
       {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection" || activeTemplate?.slug === "developer-portal") && (
