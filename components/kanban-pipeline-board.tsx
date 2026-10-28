@@ -64,10 +64,12 @@ export function KanbanPipelineBoard() {
   const [showArchived, setShowArchived] = useState(false)
   const [loading, setLoading] = useState(true)
   const [formOpen, setFormOpen] = useState(false)
+  const [formSession, setFormSession] = useState(0)
   const [formMode, setFormMode] = useState<FormMode>("create")
   const [formInitial, setFormInitial] = useState<Opportunity | null>(null)
   const [formStageId, setFormStageId] = useState(DEFAULT_PIPELINE_STAGES[0].id)
   const [stageManagerOpen, setStageManagerOpen] = useState(false)
+  const [stageSession, setStageSession] = useState(0)
   const [detailOpportunity, setDetailOpportunity] = useState<Opportunity | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Opportunity | null>(null)
   const [dragOpportunity, setDragOpportunity] = useState<Opportunity | null>(null)
@@ -105,6 +107,7 @@ export function KanbanPipelineBoard() {
   const emptyCollection = sourceOpportunities.length === 0
 
   function openCreate(stageId = stages.find((stage) => !stage.terminal)?.id ?? stages[0]?.id) {
+    setFormSession((session) => session + 1)
     setFormInitial(null)
     setFormMode("create")
     setFormStageId(stageId ?? "")
@@ -112,6 +115,7 @@ export function KanbanPipelineBoard() {
   }
 
   function openEdit(opportunity: Opportunity) {
+    setFormSession((session) => session + 1)
     setDetailOpportunity(null)
     setFormInitial(opportunity)
     setFormMode("edit")
@@ -120,6 +124,7 @@ export function KanbanPipelineBoard() {
   }
 
   function duplicateOpportunity(opportunity: Opportunity) {
+    setFormSession((session) => session + 1)
     setFormInitial({ ...opportunity, id: `${opportunity.id}-copy`, name: `${opportunity.name} (copy)`, archived: false, status: getOpportunityStatus(opportunity.stageId, stages) })
     setFormMode("create")
     setFormStageId(opportunity.stageId)
@@ -189,6 +194,11 @@ export function KanbanPipelineBoard() {
       moveOpportunity(String(event.active.id), targetStageId)
     }
     setDragOpportunity(null)
+  }
+
+  function openStageManager() {
+    setStageSession((session) => session + 1)
+    setStageManagerOpen(true)
   }
 
   function clearFilters() {
@@ -264,7 +274,7 @@ export function KanbanPipelineBoard() {
             <Button aria-pressed={showArchived} onClick={() => setShowArchived((current) => !current)} size="sm" variant={showArchived ? "secondary" : "outline"}>
               <ArchiveIcon data-icon="inline-start" />{showArchived ? "Active" : `Archived${archivedOpportunities.length ? ` · ${archivedOpportunities.length}` : ""}`}
             </Button>
-            <Button onClick={() => setStageManagerOpen(true)} size="sm" variant="outline">Manage Stages</Button>
+            <Button onClick={openStageManager} size="sm" variant="outline">Manage Stages</Button>
             {hasFilters && <Button onClick={clearFilters} size="sm" variant="ghost">Clear filters</Button>}
           </div>
           <span className="text-xs text-muted-foreground">{visibleOpportunities.length} shown</span>
@@ -309,7 +319,7 @@ export function KanbanPipelineBoard() {
                   stages={stages}
                   opportunities={visibleOpportunities.filter((opportunity) => opportunity.stageId === stage.id)}
                   onAddOpportunity={openCreate}
-                  onManageStages={() => setStageManagerOpen(true)}
+                  onManageStages={openStageManager}
                   {...cardHandlers}
                 />
               ))}
@@ -356,8 +366,8 @@ export function KanbanPipelineBoard() {
         </div>
       )}
 
-      <OpportunityFormDialog open={formOpen} onOpenChange={setFormOpen} initialOpportunity={formInitial} isEditing={formMode === "edit"} initialStageId={formStageId} stages={stages} onSave={saveOpportunity} />
-      <StageManagerDialog open={stageManagerOpen} onOpenChange={setStageManagerOpen} stages={stages} opportunities={opportunities} onSave={saveStages} />
+      <OpportunityFormDialog key={`form-${formSession}`} open={formOpen} onOpenChange={setFormOpen} initialOpportunity={formInitial} isEditing={formMode === "edit"} initialStageId={formStageId} stages={stages} onSave={saveOpportunity} />
+      <StageManagerDialog key={`stages-${stageSession}`} open={stageManagerOpen} onOpenChange={setStageManagerOpen} stages={stages} opportunities={opportunities} onSave={saveStages} />
 
       <Sheet open={detailOpportunity !== null} onOpenChange={(open) => { if (!open) setDetailOpportunity(null) }}>
         {detailOpportunity && (

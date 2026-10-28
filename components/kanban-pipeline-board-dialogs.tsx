@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import { OPPORTUNITY_OWNERS } from "@/components/kanban-pipeline-board-data"
@@ -51,13 +51,6 @@ export function OpportunityFormDialog({ open, onOpenChange, initialOpportunity, 
   const initialDraft = useMemo(() => getOpportunityDraft(initialOpportunity, initialStageId), [initialOpportunity, initialStageId])
   const isDirty = JSON.stringify(draft) !== JSON.stringify(initialDraft)
   const canSubmit = Boolean(draft.name.trim() && draft.company.trim() && draft.value.trim() && draft.owner && draft.stageId && draft.closeDate)
-
-  useEffect(() => {
-    if (open) {
-      setDraft(getOpportunityDraft(initialOpportunity, initialStageId))
-      setErrors({})
-    }
-  }, [open, initialOpportunity, initialStageId])
 
   function updateField(field: OpportunityField, value: string) {
     setDraft((current) => ({
@@ -191,21 +184,12 @@ function hasDuplicateStageNames(stages: PipelineStage[]) {
 }
 
 export function StageManagerDialog({ open, onOpenChange, stages, opportunities, onSave }: StageManagerDialogProps) {
-  const [draftStages, setDraftStages] = useState(stages)
+  const [draftStages, setDraftStages] = useState(() => stages.map((stage) => ({ ...stage })))
   const [newStageName, setNewStageName] = useState("")
   const [error, setError] = useState("")
   const [deleteTarget, setDeleteTarget] = useState<PipelineStage | null>(null)
   const [reassignToId, setReassignToId] = useState("")
   const [deleteActions, setDeleteActions] = useState<StageDeleteAction[]>([])
-
-  useEffect(() => {
-    if (open) {
-      setDraftStages(stages.map((stage) => ({ ...stage })))
-      setNewStageName("")
-      setError("")
-      setDeleteActions([])
-    }
-  }, [open, stages])
 
   const canSave = draftStages.length >= 2 && !hasDuplicateStageNames(draftStages) && draftStages.every((stage) => stage.name.trim())
   const deleteCount = deleteTarget ? opportunities.filter((opportunity) => opportunity.stageId === deleteTarget.id).length : 0
