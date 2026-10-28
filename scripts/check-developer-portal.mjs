@@ -1,7 +1,7 @@
 // Self-check for the Developer Portal template's pure logic. Run: npm run check:portal
 import assert from "node:assert/strict"
 
-import { SEED_APPS, hasScope, isScopeSubset, toggleScope, trimKeys, validateAppDraft, validateRedirectUri } from "../lib/developer-portal-data.ts"
+import { SEED_APPS, eventsForScopes, hasScope, isScopeSubset, simulateDelivery, toggleScope, trimKeys, validateAppDraft, validateRedirectUri, validateWebhookDraft } from "../lib/developer-portal-data.ts"
 
 // Scopes: write implies read, unchecking read drops write.
 let scopes = toggleScope([], "cognivo", "write", true)
@@ -34,5 +34,17 @@ assert.equal(validateRedirectUri("http://localhost:3000/cb", []), null)
 assert.ok(validateRedirectUri("http://app.example.com/cb", []))
 assert.ok(validateRedirectUri("not a url", []))
 assert.ok(validateRedirectUri("https://app.example.com/cb", ["https://app.example.com/cb"]))
+
+// Webhooks: events follow the owning app's scopes; endpoints must be https.
+const ripple = SEED_APPS.find((app) => app.id === "29507667")
+assert.ok(eventsForScopes(ripple.scopes).every((event) => event.startsWith("ripple10.")))
+const hook = { url: "https://hooks.example.com/ivo", appId: ripple.id, events: ["ripple10.mention.created"] }
+assert.deepEqual(validateWebhookDraft(hook, SEED_APPS), {})
+assert.ok(validateWebhookDraft({ ...hook, url: "http://hooks.example.com" }, SEED_APPS).url)
+assert.ok(validateWebhookDraft({ ...hook, events: [] }, SEED_APPS).events)
+assert.ok(validateWebhookDraft({ ...hook, events: ["sociomile.ticket.created"] }, SEED_APPS).events, "event outside the app's scopes")
+assert.ok(validateWebhookDraft({ ...hook, appId: "" }, SEED_APPS).appId)
+assert.equal(simulateDelivery("https://hooks.example.com/ivo", 1).status, 200)
+assert.equal(simulateDelivery("https://fail.example.com/ivo", 1).status, 500)
 
 console.log("developer-portal checks passed")

@@ -97,7 +97,7 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
   function requestDelete(app: PortalApp) {
     setConfirmation({
       title: `Delete ${app.name}?`,
-      description: "Its client credentials and API keys stop working immediately. This cannot be undone in the preview.",
+      description: "Its client credentials, API keys, and webhook endpoints stop working immediately. This cannot be undone in the preview.",
       action: "Delete app",
       onConfirm: () => {
         setApps((current) => current.filter((item) => item.id !== app.id))

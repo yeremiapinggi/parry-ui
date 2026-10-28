@@ -194,3 +194,75 @@ export function summarizeUsage(days: UsageDay[]) {
   const requests = days.reduce((sum, day) => sum + day.success + day.errors, 0)
   return { requests, errors, errorRate: requests ? errors / requests : 0 }
 }
+
+export const WEBHOOK_EVENTS: Record<ProductKey, string[]> = {
+  cognivo: ["cognivo.insight.created", "cognivo.report.ready"],
+  sociomile: ["sociomile.ticket.created", "sociomile.ticket.updated", "sociomile.message.received"],
+  ripple10: ["ripple10.mention.created", "ripple10.alert.triggered"],
+  agentics: ["agentics.run.completed", "agentics.run.failed"],
+}
+
+export type WebhookDelivery = { id: string; at: string; event: string; status: number; latencyMs: number }
+
+export type Webhook = {
+  id: string
+  url: string
+  appId: string
+  events: string[]
+  enabled: boolean
+  secretLast4: string
+  deliveries: WebhookDelivery[]
+}
+
+export type WebhookDraft = Pick<Webhook, "url" | "appId" | "events">
+
+export const SEED_WEBHOOKS: Webhook[] = [
+  {
+    id: "wh-1",
+    url: "https://helpdesk.example.com/hooks/ivosights",
+    appId: "33283010",
+    events: ["sociomile.ticket.created", "sociomile.ticket.updated"],
+    enabled: true,
+    secretLast4: "Qm4t",
+    deliveries: [
+      { id: "d-3", at: "2026-10-27 14:02:11", event: "sociomile.ticket.updated", status: 200, latencyMs: 142 },
+      { id: "d-2", at: "2026-10-27 13:58:40", event: "sociomile.ticket.created", status: 200, latencyMs: 118 },
+      { id: "d-1", at: "2026-10-27 09:12:05", event: "sociomile.ticket.created", status: 503, latencyMs: 3004 },
+    ],
+  },
+  {
+    id: "wh-2",
+    url: "https://jne-listening.example.com/ripple10",
+    appId: "29507667",
+    events: ["ripple10.mention.created"],
+    enabled: false,
+    secretLast4: "Hd8p",
+    deliveries: [],
+  },
+]
+
+/** Events for every product the app can at least read. */
+export function eventsForScopes(scopes: Scope[]) {
+  return PRODUCTS.flatMap(({ key }) => (hasScope(scopes, key, "read") ? WEBHOOK_EVENTS[key] : []))
+}
+
+export type WebhookDraftErrors = Partial<Record<"url" | "appId" | "events", string>>
+
+export function validateWebhookDraft(draft: WebhookDraft, apps: PortalApp[]): WebhookDraftErrors {
+  const errors: WebhookDraftErrors = {}
+  try {
+    if (new URL(draft.url.trim()).protocol !== "https:") errors.url = "Webhook endpoints must use https."
+  } catch {
+    errors.url = "Enter a full URL, such as https://example.com/webhooks."
+  }
+  const app = apps.find((item) => item.id === draft.appId)
+  if (!app) errors.appId = "Choose the app that owns this endpoint."
+  if (!draft.events.length) errors.events = "Select at least one event."
+  else if (app && !draft.events.every((event) => eventsForScopes(app.scopes).includes(event))) errors.events = "Some events are outside the app's scopes."
+  return errors
+}
+
+// shortcut: a URL containing "fail" simulates a 500 so the failure state can be demonstrated.
+export function simulateDelivery(url: string, sequence: number) {
+  return { status: url.includes("fail") ? 500 : 200, latencyMs: 80 + ((sequence * 37) % 200) }
+}

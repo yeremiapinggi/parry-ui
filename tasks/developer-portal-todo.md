@@ -16,7 +16,7 @@ See `tasks/developer-portal-plan.md` for decisions and the acceptance criteria.
 - [ ] **Checkpoint B: user reviews apps, auth and scopes**
 
 ## Phase 3: Webhooks, usage, logs
-- [ ] T4 Webhooks: list, create/edit (HTTPS, events by scoped product, signing secret), test delivery success/fail, verify
+- [x] T4 Webhooks: list, create/edit (HTTPS, events by scoped product, signing secret), test delivery success/fail, verify
 - [ ] T5 Usage: range/app/product filters, stat cards, requests chart, by-endpoint breakdown, rate-limit meter, empty state, verify
 - [ ] T6 Logs: table, filters + search, pagination, detail dialog with masked auth, live tail with cleanup, verify
 

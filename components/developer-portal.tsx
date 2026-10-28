@@ -16,7 +16,8 @@ import {
 } from "lucide-react"
 
 import { AppsSection, type AppsIntent } from "@/components/developer-portal-apps"
-import { SEED_APPS, USAGE_DAYS, summarizeUsage, type PortalApp } from "@/lib/developer-portal-data"
+import { WebhooksSection } from "@/components/developer-portal-webhooks"
+import { SEED_APPS, SEED_WEBHOOKS, USAGE_DAYS, summarizeUsage, type PortalApp, type Webhook } from "@/lib/developer-portal-data"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -51,6 +52,9 @@ const numberFormat = new Intl.NumberFormat("en-US")
 export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
   const [section, setSection] = useState<PortalSection>("overview")
   const [apps, setApps] = useState<PortalApp[]>(SEED_APPS)
+  const [allWebhooks, setWebhooks] = useState<Webhook[]>(SEED_WEBHOOKS)
+  // Endpoints belong to an app, so deleting the app removes them too.
+  const webhooks = allWebhooks.filter((webhook) => apps.some((app) => app.id === webhook.appId))
   const [appsIntent, setAppsIntent] = useState<AppsIntent>(null)
   // Bumped on every navigation so re-selecting the current section resets it (e.g. back to the app list).
   const [visit, setVisit] = useState(0)
@@ -122,6 +126,8 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
             <OverviewSection apps={apps} onNavigate={navigate} />
           ) : section === "apps" ? (
             <AppsSection key={visit} apps={apps} setApps={setApps} intent={appsIntent} onDirtyChange={onDirtyChange} />
+          ) : section === "webhooks" ? (
+            <WebhooksSection key={visit} webhooks={webhooks} setWebhooks={setWebhooks} apps={apps} onDirtyChange={onDirtyChange} />
           ) : (
             // shortcut: placeholder until T2–T6 build each section
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
