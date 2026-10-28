@@ -19,7 +19,7 @@ import { IntegrationConnectionPreview } from "@/components/integration-connectio
 import { IntegrationConnectionThumbnail } from "@/components/integration-connection-thumbnail"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
-import { LoginForm, RegisterForm } from "@/components/auth-templates"
+import { ForgotPasswordForm, LoginForm, RegisterForm } from "@/components/auth-templates"
 import { SettingsDialogPreview } from "@/components/settings-dialog-preview"
 import { RecordDetailPage } from "@/components/record-detail-page"
 import { RecordDetailPageThumbnail } from "@/components/record-detail-page-thumbnail"
@@ -162,6 +162,13 @@ const templates: Template[] = [
     category: "Authentication",
     reference: "Parry UI · Account access",
   },
+  {
+    slug: "forgot-password",
+    name: "Forgot Password",
+    description: "A two-step password recovery page: request a reset link, then confirm it was sent.",
+    category: "Authentication",
+    reference: "Parry UI · Account recovery",
+  },
 ]
 
 const availableCategories = Array.from(new Set(templates.map(({ category }) => category)))
@@ -281,6 +288,7 @@ function SettingsFormThumbnail() {
 const authThumbnails: Record<string, { mode?: "Login" | "Sign Up"; title: string; fields: string[]; action: string; social?: boolean }> = {
   login: { mode: "Login", title: "Welcome back", fields: ["Email address", "Password"], action: "Log In", social: true },
   register: { mode: "Sign Up", title: "Create your account", fields: ["Full name", "Work email", "Password"], action: "Create account", social: true },
+  "forgot-password": { title: "Forgot your password?", fields: ["Email address"], action: "Send reset link" },
 }
 
 function AuthThumbnail({ slug }: { slug: string }) {
@@ -503,7 +511,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : activeTemplate.slug === "forgot-password" ? <ForgotPasswordForm /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">

@@ -12,7 +12,7 @@ See `tasks/auth-plan.md` for decisions and the acceptance criteria.
 
 ## Phase 2: Remaining screens
 - [x] T2 Register: form, `/templates/register` doc page, gallery entry and thumbnail, verify
-- [ ] T3 Forgot Password: form + "check your email" state, `/templates/forgot-password`, gallery, verify
+- [x] T3 Forgot Password: form + "check your email" state, `/templates/forgot-password`, gallery, verify
 - [ ] T4 Change Password: form, `/templates/change-password`, gallery, verify
 
 ## Final

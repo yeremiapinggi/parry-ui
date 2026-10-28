@@ -1,8 +1,8 @@
 "use client"
 
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react"
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react"
 import Link from "next/link"
-import { CheckIcon, CircleIcon, LoaderCircleIcon } from "lucide-react"
+import { ArrowLeftIcon, CheckIcon, CircleIcon, LoaderCircleIcon, MailCheckIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { AuthLayout, AuthModeSwitch, PasswordInput, SocialSignInButtons } from "@/components/auth-layout"
@@ -232,4 +232,88 @@ export function RegisterForm() {
       <SocialSignInButtons onSelect={showProviderToast} disabled={pending} />
     </AuthLayout>
   )
+}
+
+const RESEND_COOLDOWN_SECONDS = 30
+
+// Stable ref callback: runs on mount only, so the cooldown ticks don't steal focus back.
+const focusOnMount = (node: HTMLElement | null) => node?.focus()
+
+export function ForgotPasswordForm() {
+  const [email, setEmail] = useState("")
+  const [error, setError] = useState<string>()
+  const [pending, setPending] = useState(false)
+  const [sentTo, setSentTo] = useState<string>()
+  const [cooldown, setCooldown] = useState(0)
+
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = window.setTimeout(() => setCooldown((current) => current - 1), 1000)
+    return () => window.clearTimeout(timer)
+  }, [cooldown])
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const value = email.trim()
+    const nextError = !value ? "Enter your email address." : emailPattern.test(value) ? undefined : "Enter a valid email address, like name@company.com."
+    setError(nextError)
+    if (focusFirstError("forgot", { email: nextError })) return
+
+    simulateRequest(setPending, () => {
+      setSentTo(value)
+      setCooldown(RESEND_COOLDOWN_SECONDS)
+    })
+  }
+
+  function resend() {
+    setCooldown(RESEND_COOLDOWN_SECONDS)
+    toast.success("Reset link sent again in this preview.", { description: "No email was sent; this template does not contact a server.", position: "bottom-right" })
+  }
+
+  const backToLogin = (
+    <Link href="/templates/login" className="inline-flex items-center gap-1.5 self-center text-sm font-medium text-link hover:underline">
+      <ArrowLeftIcon aria-hidden="true" className="size-4" />
+      Back to login
+    </Link>
+  )
+
+  if (sentTo) {
+    return (
+      <AuthLayout footer={<>Didn&apos;t get it? Check your spam folder or <button type="button" onClick={() => setSentTo(undefined)} className="font-medium text-link hover:underline">use a different email</button>.</>}>
+        <header className="flex flex-col items-center gap-3 text-center">
+          <span className="flex size-12 items-center justify-center rounded-full bg-success-soft text-success"><MailCheckIcon aria-hidden="true" className="size-6" /></span>
+          <h2 tabIndex={-1} ref={focusOnMount} className="font-heading text-2xl font-semibold tracking-tight outline-none">Check your email</h2>
+          <p className="text-sm text-muted-foreground">If an account exists for <span className="font-medium text-foreground">{maskEmail(sentTo)}</span>, we sent a link to reset your password. It expires in 30 minutes.</p>
+        </header>
+        <Button type="button" variant="outline" size="lg" onClick={resend} disabled={cooldown > 0} className="h-11 w-full">
+          {cooldown > 0 ? `Resend link in ${cooldown}s` : "Resend link"}
+        </Button>
+        {backToLogin}
+      </AuthLayout>
+    )
+  }
+
+  return (
+    <AuthLayout footer={<>Remember your password? <Link href="/templates/login" className="font-medium text-link hover:underline">Log in</Link></>}>
+      <header className="flex flex-col gap-1.5 text-center">
+        <h2 className="font-heading text-2xl font-semibold tracking-tight">Forgot your password?</h2>
+        <p className="text-sm text-muted-foreground">Enter the email you use to log in and we&apos;ll send you a reset link.</p>
+      </header>
+
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="forgot-email">Email address</Label>
+          <Input id="forgot-email" type="email" autoComplete="email" placeholder="Enter your email address" value={email} onChange={(event) => setEmail(event.target.value)} disabled={pending} required aria-invalid={Boolean(error)} aria-describedby={describedBy("forgot-email", error)} className="h-10" />
+          <FieldError id="forgot-email-error" message={error} />
+        </div>
+        <SubmitButton pending={pending} label="Send reset link" pendingLabel="Sending…" />
+      </form>
+      {backToLogin}
+    </AuthLayout>
+  )
+}
+
+// Show only the first character of the local part, so the page doesn't echo the full address.
+function maskEmail(email: string) {
+  return email.replace(/^(.)[^@]*/, "$1•••")
 }
