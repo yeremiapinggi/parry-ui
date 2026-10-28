@@ -19,7 +19,7 @@ import { IntegrationConnectionPreview } from "@/components/integration-connectio
 import { IntegrationConnectionThumbnail } from "@/components/integration-connection-thumbnail"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
-import { LoginForm } from "@/components/auth-templates"
+import { LoginForm, RegisterForm } from "@/components/auth-templates"
 import { SettingsDialogPreview } from "@/components/settings-dialog-preview"
 import { RecordDetailPage } from "@/components/record-detail-page"
 import { RecordDetailPageThumbnail } from "@/components/record-detail-page-thumbnail"
@@ -155,6 +155,13 @@ const templates: Template[] = [
     category: "Authentication",
     reference: "Parry UI · Account access",
   },
+  {
+    slug: "register",
+    name: "Register",
+    description: "A split-screen sign-up page with live password rules, terms consent, and social sign-up.",
+    category: "Authentication",
+    reference: "Parry UI · Account access",
+  },
 ]
 
 const availableCategories = Array.from(new Set(templates.map(({ category }) => category)))
@@ -271,16 +278,21 @@ function SettingsFormThumbnail() {
   )
 }
 
-function LoginThumbnail() {
+const authThumbnails: Record<string, { mode?: "Login" | "Sign Up"; title: string; fields: string[]; action: string; social?: boolean }> = {
+  login: { mode: "Login", title: "Welcome back", fields: ["Email address", "Password"], action: "Log In", social: true },
+  register: { mode: "Sign Up", title: "Create your account", fields: ["Full name", "Work email", "Password"], action: "Create account", social: true },
+}
+
+function AuthThumbnail({ slug }: { slug: string }) {
+  const { mode, title, fields, action, social } = authThumbnails[slug]
   return (
     <div aria-hidden="true" className="grid h-full grid-cols-2 gap-2 bg-background p-3 text-foreground">
       <div className="flex flex-col items-center justify-center gap-2 px-3">
-        <span className="flex gap-1 rounded-md bg-muted p-0.5 text-[8px]"><span className="rounded bg-card px-1.5 py-0.5 shadow-sm">Login</span><span className="px-1.5 py-0.5 text-muted-foreground">Sign Up</span></span>
-        <span className="font-heading text-xs font-semibold sm:text-sm">Welcome back</span>
-        <span className="flex h-5 w-full items-center rounded-md border bg-card px-2 text-[8px] text-muted-foreground">Email address</span>
-        <span className="flex h-5 w-full items-center rounded-md border bg-card px-2 text-[8px] text-muted-foreground">Password</span>
-        <span className="flex h-5 w-full items-center justify-center rounded-md bg-primary text-[8px] text-primary-foreground">Log In</span>
-        <span className="flex h-5 w-full items-center justify-center rounded-md border bg-card text-[8px]">Continue with Google</span>
+        {mode && <span className="flex gap-1 rounded-md bg-muted p-0.5 text-[8px]">{["Login", "Sign Up"].map((label) => <span key={label} className={label === mode ? "rounded bg-card px-1.5 py-0.5 shadow-sm" : "px-1.5 py-0.5 text-muted-foreground"}>{label}</span>)}</span>}
+        <span className="font-heading text-xs font-semibold sm:text-sm">{title}</span>
+        {fields.map((field) => <span key={field} className="flex h-5 w-full items-center rounded-md border bg-card px-2 text-[8px] text-muted-foreground">{field}</span>)}
+        <span className="flex h-5 w-full items-center justify-center rounded-md bg-primary text-[8px] text-primary-foreground">{action}</span>
+        {social && <span className="flex h-5 w-full items-center justify-center rounded-md border bg-card text-[8px]">Continue with Google</span>}
       </div>
       <div className="flex flex-col justify-end rounded-md bg-sidebar bg-[radial-gradient(120%_80%_at_85%_0%,color-mix(in_oklch,var(--ring),transparent_35%),transparent_70%)] p-2">
         <span className="flex flex-col gap-1 rounded-md border border-white/15 bg-white/10 p-2 text-[8px] text-white"><span>&ldquo;One workspace for every regional team.&rdquo;</span><span className="font-semibold">Alya Pratama</span></span>
@@ -448,7 +460,7 @@ export function TemplatesGallery() {
         {filteredTemplates.map((template) => (
           <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : template.slug === "login" ? <LoginThumbnail /> : <TemplateThumbnail />}
+              {template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : template.category === "Authentication" ? <AuthThumbnail slug={template.slug} /> : <TemplateThumbnail />}
               <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                 <div className="flex max-w-sm flex-col gap-1.5">
                   <p className="font-heading text-lg font-semibold">{template.name}</p>
@@ -491,7 +503,7 @@ export function TemplatesGallery() {
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : <DataManagementListPreview showControls />}
+              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : <DataManagementListPreview showControls />}
             </div>
             <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
