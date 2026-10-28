@@ -13,7 +13,7 @@ export function RankingAnalyticsTableThumbnail() {
       </div>
       <div className="flex items-center gap-1.5 border-b px-3 py-2 sm:px-4">
         <span className="min-w-0 flex-1 truncate rounded border bg-background px-2 py-1 text-[9px] text-muted-foreground">Search accounts</span>
-        <span className="grid shrink-0 grid-cols-4 rounded-lg bg-muted p-0.5 text-[8px] text-muted-foreground"><span className="rounded-md px-1 py-1 text-center">7D</span><span className="rounded-md bg-background px-1 py-1 text-center font-medium text-foreground shadow-sm">30D</span><span className="rounded-md px-1 py-1 text-center">90D</span><span className="rounded-md px-1 py-1 text-center">Custom</span></span>
+        <span className="grid shrink-0 grid-cols-4 rounded-lg bg-muted p-[3px] text-[8px] text-muted-foreground"><span className="rounded-md px-1 py-0.5 text-center">7D</span><span className="rounded-md bg-background px-1 py-0.5 text-center font-medium text-foreground shadow-sm">30D</span><span className="rounded-md px-1 py-0.5 text-center">90D</span><span className="rounded-md px-1 py-0.5 text-center">Custom</span></span>
         <span className="hidden rounded border px-2 py-1 text-[9px] text-muted-foreground sm:inline">Platforms</span>
         <span className="hidden rounded border px-2 py-1 text-[9px] text-muted-foreground md:inline">Rank by Engagement</span>
       </div>

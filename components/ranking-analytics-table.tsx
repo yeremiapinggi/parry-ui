@@ -43,8 +43,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const columnOptions = [
   { key: "mentions", label: "Total Mentions" },
@@ -548,12 +548,18 @@ export function RankingAnalyticsTable() {
               <SearchIcon aria-hidden="true" className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1) }} aria-label="Search accounts" placeholder="Search accounts" className="h-8 pl-8" />
             </div>
-          <ToggleGroup type="single" value={period} onValueChange={updatePeriod} aria-label="Reporting period" size="sm" spacing={1} className="h-12 gap-0 rounded-2xl bg-muted p-1">
-            <ToggleGroupItem value="7" aria-label="Last 7 days" className="h-full rounded-xl border-0 px-4 py-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">7D</ToggleGroupItem>
-            <ToggleGroupItem value="30" aria-label="Last 30 days" className="h-full rounded-xl border-0 px-4 py-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">30D</ToggleGroupItem>
-            <ToggleGroupItem value="90" aria-label="Last 90 days" className="h-full rounded-xl border-0 px-4 py-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">90D</ToggleGroupItem>
-            <ToggleGroupItem value="custom" aria-label="Custom date range" className="h-full rounded-xl border-0 px-4 py-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">Custom</ToggleGroupItem>
-          </ToggleGroup>
+            <Tabs value={period} onValueChange={updatePeriod} className="shrink-0 gap-0">
+              <TabsList aria-label="Reporting period" className="h-8 shrink-0">
+                <TabsTrigger value="7" aria-label="Last 7 days" className="px-2 py-0.5 text-xs">7D</TabsTrigger>
+                <TabsTrigger value="30" aria-label="Last 30 days" className="px-2 py-0.5 text-xs">30D</TabsTrigger>
+                <TabsTrigger value="90" aria-label="Last 90 days" className="px-2 py-0.5 text-xs">90D</TabsTrigger>
+                <TabsTrigger value="custom" aria-label="Custom date range" className="px-2 py-0.5 text-xs">Custom</TabsTrigger>
+              </TabsList>
+              <TabsContent value="7" className="sr-only">Showing ranking results for the last 7 days.</TabsContent>
+              <TabsContent value="30" className="sr-only">Showing ranking results for the last 30 days.</TabsContent>
+              <TabsContent value="90" className="sr-only">Showing ranking results for the last 90 days.</TabsContent>
+              <TabsContent value="custom" className="sr-only">Showing ranking results for the custom date range: {dateLabel}.</TabsContent>
+            </Tabs>
             <PlatformFilter selected={selectedPlatforms} onChange={(next) => { setSelectedPlatforms(next); setPage(1) }} />
             <div className="flex items-center gap-2">
               <Label htmlFor="sentiment-filter" className="sr-only">Filter by sentiment</Label>
