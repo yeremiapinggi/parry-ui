@@ -16,6 +16,7 @@ import {
 export const siteNav = [
   { href: "/docs", label: "Docs" },
   { href: "/components", label: "Components" },
+  { href: "/templates", label: "Templates" },
   { href: "/themes", label: "Themes" },
 ] as const
 
