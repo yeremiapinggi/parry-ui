@@ -21,6 +21,6 @@ See `tasks/developer-portal-plan.md` for decisions and the acceptance criteria.
 - [x] T6 Logs: table, filters + search, pagination, detail dialog with masked auth, live tail with cleanup, verify
 
 ## Final
-- [ ] Doc page content matches the final behavior
-- [ ] `npm run lint`, `npm run build`, `npm run check:contrast` pass
+- [x] Doc page content matches the final behavior
+- [x] `npm run lint`, `npm run build`, `npm run check:contrast`, `npm run check:portal` pass
 - [ ] **Checkpoint C: user review**
