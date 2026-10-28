@@ -1,6 +1,6 @@
 # Parry UI
 
-The Ivosights design system, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
+The Ivosights UI Kit, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
 **Midnight + Frost Blue** palette, **Plus Jakarta Sans** and **JetBrains Mono** fonts, and light/dark modes.
 
 Parry UI is a **shadcn registry**: components are copied into your project with the `shadcn` CLI instead of being installed

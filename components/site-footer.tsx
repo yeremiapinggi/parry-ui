@@ -31,7 +31,7 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:grid-cols-[2fr_repeat(3,1fr)]">
         <div className="flex flex-col gap-2">
           <p className="font-heading text-2xl font-extrabold tracking-tighter text-primary">parry</p>
-          <p className="max-w-xs text-sm text-muted-foreground">The Ivosights design system, built on shadcn/ui.</p>
+          <p className="max-w-xs text-sm text-muted-foreground">The Ivosights UI Kit, built on shadcn/ui.</p>
         </div>
         {columns.map((col) => (
           <nav key={col.title} aria-label={col.title} className="flex flex-col gap-2 text-sm">
