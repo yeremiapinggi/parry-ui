@@ -306,9 +306,9 @@ function CustomerDetails({
   const section = (key: string, title: string, defaultOpen: boolean, children: ReactNode) => <CustomerDetailsSection id={`${conversation.id}-${key}`} title={title} defaultOpen={defaultOpen} open={openSections[key]} onOpenChange={(open) => onSectionChange(key, open)}>{children}</CustomerDetailsSection>
 
   return <Tabs value={activeTab} onValueChange={(value) => onActiveTabChange(value as WorkspaceDetailsTab)} className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden">
-    <TabsList aria-label="Customer and ticket details" variant="line" className="mx-0 mt-0 h-10 w-full justify-stretch rounded-none border-b border-border/70 px-2">
-      <TabsTrigger value="customer-info" className="h-full rounded-none px-3 text-xs after:bottom-[-1px]">Customer Info</TabsTrigger>
-      <TabsTrigger value="ticket-info" className="h-full rounded-none px-3 text-xs after:bottom-[-1px]">Ticket Info</TabsTrigger>
+    <TabsList aria-label="Customer and ticket details" className="mx-0 mt-0 h-12 w-full justify-stretch">
+      <TabsTrigger value="customer-info" className="h-full px-3 text-xs">Customer Info</TabsTrigger>
+      <TabsTrigger value="ticket-info" className="h-full px-3 text-xs">Ticket Info</TabsTrigger>
     </TabsList>
     <TabsContent value="customer-info" className="m-0 min-h-0 flex-1 overflow-y-auto px-3 py-2.5">
       <div className="flex flex-col items-center gap-1.5 border-b border-border/70 px-2 pb-4 pt-2 text-center">

@@ -429,11 +429,11 @@ export function TabbedDetailWorkspace({
       </header>
 
       <Tabs value={activeTab} onValueChange={(value) => requestNavigation({ kind: "tab", tab: value as WorkspaceTab })} className="flex min-w-0 flex-col gap-5">
-        <div className="-mx-1 px-1 pt-1"><TabsList aria-label="Workspace detail sections" className="grid h-auto w-full grid-cols-4 rounded-none border-b bg-transparent p-0 sm:flex sm:justify-start sm:gap-2">
-          <TabsTrigger value="overview" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><LayoutDashboardIcon className="hidden sm:block" data-icon="inline-start" /><span>Overview</span></TabsTrigger>
-          <TabsTrigger value="configuration" aria-label="Configuration" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><FileTextIcon className="hidden sm:block" data-icon="inline-start" /><span className="hidden sm:inline">Configuration</span><span className="sm:hidden">Setup</span></TabsTrigger>
-          <TabsTrigger value="activity" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><HistoryIcon className="hidden sm:block" data-icon="inline-start" /><span>Activity</span></TabsTrigger>
-          <TabsTrigger value="access" aria-label="Access and permissions" className="min-w-0 rounded-none px-1 py-3 text-sm after:bottom-[-1px] sm:px-4"><UsersRoundIcon className="hidden sm:block" data-icon="inline-start" /><span className="hidden sm:inline">Access &amp; permissions</span><span className="sm:hidden">Access</span></TabsTrigger>
+        <div className="-mx-1 px-1 pt-1"><TabsList aria-label="Workspace detail sections" className="grid h-12 w-full grid-cols-4 sm:flex sm:w-fit sm:justify-start">
+          <TabsTrigger value="overview" className="min-w-0 px-1 text-xs sm:px-4 sm:text-sm"><LayoutDashboardIcon className="hidden sm:block" data-icon="inline-start" /><span>Overview</span></TabsTrigger>
+          <TabsTrigger value="configuration" aria-label="Configuration" className="min-w-0 px-1 text-xs sm:px-4 sm:text-sm"><FileTextIcon className="hidden sm:block" data-icon="inline-start" /><span className="hidden sm:inline">Configuration</span><span className="sm:hidden">Setup</span></TabsTrigger>
+          <TabsTrigger value="activity" className="min-w-0 px-1 text-xs sm:px-4 sm:text-sm"><HistoryIcon className="hidden sm:block" data-icon="inline-start" /><span>Activity</span></TabsTrigger>
+          <TabsTrigger value="access" aria-label="Access and permissions" className="min-w-0 px-1 text-xs sm:px-4 sm:text-sm"><UsersRoundIcon className="hidden sm:block" data-icon="inline-start" /><span className="hidden sm:inline">Access &amp; permissions</span><span className="sm:hidden">Access</span></TabsTrigger>
         </TabsList></div>
 
         <TabsContent value="overview" className="mt-0 flex flex-col gap-5 focus-visible:outline-none">
