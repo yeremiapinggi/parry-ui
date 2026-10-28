@@ -104,6 +104,38 @@ export function toggleScope(scopes: Scope[], product: ProductKey, access: ScopeA
   return PRODUCTS.flatMap(({ key }) => ordered.filter((item) => item.product === key))
 }
 
+export function isScopeSubset(scopes: Scope[], allowed: Scope[]) {
+  return scopes.every(({ product, access }) => hasScope(allowed, product, access))
+}
+
+/** Narrows each key to the app's scopes (write falls back to read when only read remains). */
+export function trimKeys(keys: ApiKey[], appScopes: Scope[]) {
+  let affected = 0
+  const next = keys.map((key) => {
+    const scopes = key.scopes.flatMap((scope): Scope[] => {
+      if (hasScope(appScopes, scope.product, scope.access)) return [scope]
+      return hasScope(appScopes, scope.product, "read") ? [{ product: scope.product, access: "read" }] : []
+    })
+    if (scopes.length === key.scopes.length && scopes.every((scope, index) => scope.access === key.scopes[index].access)) return key
+    if (!key.revoked) affected += 1
+    return { ...key, scopes }
+  })
+  return { keys: next, affected }
+}
+
+export function validateRedirectUri(value: string, existing: string[]): string | null {
+  let url: URL
+  try {
+    url = new URL(value.trim())
+  } catch {
+    return "Enter a full URL, such as https://example.com/callback."
+  }
+  const local = url.hostname === "localhost" || url.hostname === "127.0.0.1"
+  if (url.protocol !== "https:" && !(url.protocol === "http:" && local)) return "Use https, or http only for localhost."
+  if (existing.includes(url.href) || existing.includes(value.trim())) return "This redirect URI is already added."
+  return null
+}
+
 export function formatScope({ product, access }: Scope) {
   return `${product}:${access}`
 }

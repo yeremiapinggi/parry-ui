@@ -12,7 +12,7 @@ See `tasks/developer-portal-plan.md` for decisions and the acceptance criteria.
 
 ## Phase 2: Apps and access
 - [x] T2 Apps: list, create/edit dialog (OAuth / API key, scopes), reveal-once secret, delete, empty state, verify
-- [ ] T3 App detail: OAuth credentials + rotate + redirect URIs, API keys (create ⊆ app scopes, reveal-once, revoke), scopes matrix + trim warning, self-check for scope trimming, verify
+- [x] T3 App detail: OAuth credentials + rotate + redirect URIs, API keys (create ⊆ app scopes, reveal-once, revoke), scopes matrix + trim warning, self-check for scope trimming, verify
 - [ ] **Checkpoint B: user reviews apps, auth and scopes**
 
 ## Phase 3: Webhooks, usage, logs

@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState, type Dispatch, type FormEvent, type SetStateAction } from "react"
 import { toast } from "sonner"
-import { AppWindowIcon, EllipsisIcon, PlusIcon } from "lucide-react"
+import { AppWindowIcon, EllipsisIcon, PlusIcon, TriangleAlertIcon } from "lucide-react"
 
-import { PORTAL_END_DATE, randomToken, validateAppDraft, type AppDraft, type AppDraftErrors, type PortalApp } from "@/lib/developer-portal-data"
+import { PORTAL_END_DATE, randomToken, trimKeys, validateAppDraft, type AppDraft, type AppDraftErrors, type PortalApp } from "@/lib/developer-portal-data"
+import { AppDetail } from "@/components/developer-portal-app-detail"
 import { ConfirmDialog, ScopeBadges, ScopeMatrix, SecretRevealDialog, type Confirmation, type RevealedSecret } from "@/components/developer-portal-shared"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -25,15 +27,23 @@ const authLabel = { oauth: "OAuth 2.0", "api-key": "API key" } as const
 export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: PortalApp[]; setApps: Dispatch<SetStateAction<PortalApp[]>>; intent: AppsIntent; onDirtyChange?: (dirty: boolean) => void }) {
   const [editor, setEditor] = useState<{ editingId: string | null; draft: AppDraft; initial: AppDraft } | null>(() => (intent && "create" in intent ? { editingId: null, draft: emptyDraft, initial: emptyDraft } : null))
   const [editorOpen, setEditorOpen] = useState(Boolean(intent && "create" in intent))
+  const [selectedId, setSelectedId] = useState<string | null>(intent && "appId" in intent ? intent.appId : null)
+  const [detailDirty, setDetailDirty] = useState(false)
   const [errors, setErrors] = useState<AppDraftErrors>({})
   const [secret, setSecret] = useState<RevealedSecret | null>(null)
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const nameRef = useRef<HTMLInputElement>(null)
   const dirty = Boolean(editorOpen && editor && JSON.stringify(editor.draft) !== JSON.stringify(editor.initial))
 
+  const selectedApp = apps.find((app) => app.id === selectedId)
+  const editingApp = apps.find((app) => app.id === editor?.editingId)
+  const editorTrim = editingApp && editor ? trimKeys(editingApp.keys, editor.draft.scopes) : null
+
   useEffect(() => {
-    onDirtyChange?.(dirty)
-  }, [dirty, onDirtyChange])
+    onDirtyChange?.(dirty || (Boolean(selectedApp) && detailDirty))
+  }, [dirty, detailDirty, selectedApp, onDirtyChange])
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange])
 
   function openEditor(app?: PortalApp) {
     const draft: AppDraft = app ? { name: app.name, description: app.description, environment: app.environment, authMethod: app.authMethod, scopes: app.scopes } : emptyDraft
@@ -57,7 +67,7 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
 
     const draft = { ...editor.draft, name: editor.draft.name.trim(), description: editor.draft.description.trim() }
     if (editor.editingId) {
-      setApps((current) => current.map((app) => (app.id === editor.editingId ? { ...app, ...draft } : app)))
+      setApps((current) => current.map((app) => (app.id === editor.editingId ? { ...app, ...draft, keys: trimKeys(app.keys, draft.scopes).keys } : app)))
       toast.success(`${draft.name} updated`)
     } else {
       const clientSecret = `ivs_${randomToken(32)}`
@@ -91,6 +101,7 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
       action: "Delete app",
       onConfirm: () => {
         setApps((current) => current.filter((item) => item.id !== app.id))
+        setSelectedId(null)
         toast.success(`${app.name} deleted`)
       },
     })
@@ -98,15 +109,25 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {!selectedApp && <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-2xl font-semibold tracking-tight">Apps</h2>
           <p className="text-sm text-muted-foreground">Each app has its own credentials and scopes for Ivosights products.</p>
         </div>
         {apps.length > 0 && <Button onClick={() => openEditor()}><PlusIcon data-icon="inline-start" />Create app</Button>}
-      </div>
+      </div>}
 
-      {apps.length === 0 ? (
+      {selectedApp ? (
+        <AppDetail
+          key={selectedApp.id}
+          app={selectedApp}
+          onBack={() => setSelectedId(null)}
+          onChange={(next) => setApps((current) => current.map((app) => (app.id === next.id ? next : app)))}
+          onEdit={() => openEditor(selectedApp)}
+          onDelete={() => requestDelete(selectedApp)}
+          onDirtyChange={setDetailDirty}
+        />
+      ) : apps.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-16 text-center">
           <span className="flex size-10 items-center justify-center rounded-lg bg-secondary"><AppWindowIcon className="size-5" /></span>
           <div className="flex flex-col gap-1">
@@ -133,7 +154,7 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
                 <TableRow key={app.id}>
                   <TableCell className="pl-4">
                     <span className="flex flex-col">
-                      <span className="font-medium">{app.name}</span>
+                      <button type="button" onClick={() => setSelectedId(app.id)} className="self-start rounded-sm font-medium text-link hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{app.name}</button>
                       <span className="font-mono text-xs text-muted-foreground">{app.id}</span>
                     </span>
                   </TableCell>
@@ -145,6 +166,7 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm" aria-label={`Actions for ${app.name}`}><EllipsisIcon /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => setSelectedId(app.id)}>Open</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => openEditor(app)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem variant="destructive" onSelect={() => requestDelete(app)}>Delete</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -196,6 +218,12 @@ export function AppsSection({ apps, setApps, intent, onDirtyChange }: { apps: Po
                 </RadioGroup>
               </fieldset>
               <ScopeMatrix id="app-scopes" value={editor.draft.scopes} onChange={(scopes) => updateDraft({ scopes })} error={errors.scopes} />
+              {editorTrim && editorTrim.affected > 0 && (
+                <Alert>
+                  <TriangleAlertIcon />
+                  <AlertDescription>Saving removes scopes from {editorTrim.affected} active API key{editorTrim.affected > 1 ? "s" : ""} that use the access you unchecked.</AlertDescription>
+                </Alert>
+              )}
             </form>
           )}
           <DialogFooter className="mx-0 mb-0 px-6 py-4">

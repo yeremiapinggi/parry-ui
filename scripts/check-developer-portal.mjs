@@ -1,7 +1,7 @@
 // Self-check for the Developer Portal template's pure logic. Run: npm run check:portal
 import assert from "node:assert/strict"
 
-import { SEED_APPS, hasScope, toggleScope, validateAppDraft } from "../lib/developer-portal-data.ts"
+import { SEED_APPS, hasScope, isScopeSubset, toggleScope, trimKeys, validateAppDraft, validateRedirectUri } from "../lib/developer-portal-data.ts"
 
 // Scopes: write implies read, unchecking read drops write.
 let scopes = toggleScope([], "cognivo", "write", true)
@@ -17,5 +17,22 @@ const draft = { name: "", description: "", environment: "Development", authMetho
 assert.deepEqual(Object.keys(validateAppDraft(draft, SEED_APPS, null)).sort(), ["name", "scopes"])
 assert.ok(validateAppDraft({ ...draft, name: "SOCIOMILE-DEMO", scopes }, SEED_APPS, null).name)
 assert.deepEqual(validateAppDraft({ ...draft, name: "sociomile-demo", scopes }, SEED_APPS, SEED_APPS[0].id), {})
+
+// Key scopes stay within the app's scopes; narrowing the app trims keys.
+const appScopes = [{ product: "sociomile", access: "write" }, { product: "cognivo", access: "read" }]
+assert.ok(isScopeSubset([{ product: "sociomile", access: "read" }], appScopes))
+assert.ok(!isScopeSubset([{ product: "cognivo", access: "write" }], appScopes))
+const key = (scopes, revoked = false) => ({ id: "k", name: "k", last4: "0000", scopes, createdAt: "", lastUsed: null, expiresAt: null, revoked })
+const trimmed = trimKeys([key(appScopes), key([{ product: "cognivo", access: "read" }]), key(appScopes, true)], [{ product: "sociomile", access: "read" }])
+assert.deepEqual(trimmed.keys[0].scopes, [{ product: "sociomile", access: "read" }])
+assert.deepEqual(trimmed.keys[1].scopes, [])
+assert.equal(trimmed.affected, 2, "revoked keys are not counted")
+
+// Redirect URIs: https, or http only on localhost; no duplicates.
+assert.equal(validateRedirectUri("https://app.example.com/cb", []), null)
+assert.equal(validateRedirectUri("http://localhost:3000/cb", []), null)
+assert.ok(validateRedirectUri("http://app.example.com/cb", []))
+assert.ok(validateRedirectUri("not a url", []))
+assert.ok(validateRedirectUri("https://app.example.com/cb", ["https://app.example.com/cb"]))
 
 console.log("developer-portal checks passed")

@@ -52,9 +52,12 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
   const [section, setSection] = useState<PortalSection>("overview")
   const [apps, setApps] = useState<PortalApp[]>(SEED_APPS)
   const [appsIntent, setAppsIntent] = useState<AppsIntent>(null)
+  // Bumped on every navigation so re-selecting the current section resets it (e.g. back to the app list).
+  const [visit, setVisit] = useState(0)
 
   function navigate(next: PortalSection, intent: AppsIntent = null) {
     setAppsIntent(intent)
+    setVisit((current) => current + 1)
     setSection(next)
   }
   const activeLabel = navItems.find((item) => item.id === section)?.label
@@ -118,7 +121,7 @@ export function DeveloperPortal({ onDirtyChange }: { onDirtyChange?: (dirty: boo
           {section === "overview" ? (
             <OverviewSection apps={apps} onNavigate={navigate} />
           ) : section === "apps" ? (
-            <AppsSection apps={apps} setApps={setApps} intent={appsIntent} onDirtyChange={onDirtyChange} />
+            <AppsSection key={visit} apps={apps} setApps={setApps} intent={appsIntent} onDirtyChange={onDirtyChange} />
           ) : (
             // shortcut: placeholder until T2–T6 build each section
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
