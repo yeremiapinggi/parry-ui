@@ -580,7 +580,7 @@ export function RankingAnalyticsTable() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-2 rounded-md border px-2.5 py-1">
+            <div className="flex items-center gap-2">
               <Switch id="compare-period" checked={compare} onCheckedChange={setCompare} />
               <Label htmlFor="compare-period" className="cursor-pointer text-xs">Compare period</Label>
             </div>
