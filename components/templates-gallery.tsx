@@ -523,8 +523,8 @@ export function TemplatesGallery() {
                   className="absolute inset-0 z-0 block w-full cursor-zoom-in touch-pan-y bg-transparent p-0 text-left outline-none transition-opacity active:opacity-95 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                 />
               </DialogTrigger>
-              <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-end p-3 opacity-0 transition-opacity duration-150 [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-hover/preview:opacity-100 [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:opacity-100 [@media(hover:none)]:hidden">
-                <div className="pointer-events-none flex items-center gap-1 rounded-lg border border-border/80 bg-background/90 p-1 shadow-sm backdrop-blur-sm [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:none)]:hidden">
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-end bg-black/40 p-3 opacity-0 transition-opacity duration-150 [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-hover/preview:opacity-100 [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:opacity-100 [@media(hover:none)]:hidden">
+                <div className="pointer-events-none flex items-center gap-1 rounded-lg border border-border/80 bg-background/95 p-1 shadow-md backdrop-blur-sm [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:none)]:hidden">
                   <DialogTrigger asChild>
                     <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary" className="min-h-8 text-xs [@media(hover:none)]:min-h-11">Preview</Button>
                   </DialogTrigger>
