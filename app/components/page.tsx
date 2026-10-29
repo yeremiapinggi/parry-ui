@@ -6,10 +6,13 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
   AspectRatioCatalogPreview,
+  AutocompleteCatalogPreview,
   BorderButtonCatalogPreview,
   ButtonGroupCatalogPreview,
   CalendarCatalogPreview,
   ChartCatalogPreview,
+  ComboboxCatalogPreview,
+  CommandCatalogPreview,
   DatePickerCatalogPreview,
   FieldCatalogPreview,
   GithubStarsCatalogPreview,
@@ -108,6 +111,9 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "calendar", preview: <CalendarCatalogPreview /> },
       { name: "date-picker", preview: <DatePickerCatalogPreview /> },
       { name: "mini-calendar", preview: <MiniCalendarCatalogPreview /> },
+      { name: "command", preview: <CommandCatalogPreview /> },
+      { name: "combobox", preview: <ComboboxCatalogPreview /> },
+      { name: "autocomplete", preview: <AutocompleteCatalogPreview /> },
       {
         name: "input",
         preview: (

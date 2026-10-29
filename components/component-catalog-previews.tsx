@@ -3,17 +3,20 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, MinusIcon, PlusIcon, SearchIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Autocomplete } from "@/components/ui/autocomplete"
 import { BorderButton } from "@/components/ui/border-button"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Combobox } from "@/components/ui/combobox"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
@@ -460,4 +463,47 @@ export function DatePickerCatalogPreview() {
 export function MiniCalendarCatalogPreview() {
   const [date, setDate] = useState(demoToday)
   return <MiniCalendar value={date} onValueChange={setDate} />
+}
+
+export function CommandCatalogPreview() {
+  return (
+    <Command className="w-full max-w-64 rounded-lg border">
+      <CommandInput placeholder="Type a command…" />
+      <CommandList className="max-h-44">
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Go to">
+          <CommandItem><InboxIcon /> Inbox <CommandShortcut>G I</CommandShortcut></CommandItem>
+          <CommandItem><UsersIcon /> Contacts <CommandShortcut>G C</CommandShortcut></CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+          <CommandItem><SettingsIcon /> Preferences <CommandShortcut>⌘,</CommandShortcut></CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  )
+}
+
+const channelOptions = [
+  { value: "whatsapp", label: "WhatsApp", group: "Messaging" },
+  { value: "telegram", label: "Telegram", group: "Messaging" },
+  { value: "instagram", label: "Instagram", group: "Social" },
+  { value: "facebook", label: "Facebook", group: "Social" },
+  { value: "email", label: "Email", group: "Other" },
+]
+
+export function ComboboxCatalogPreview() {
+  const [channel, setChannel] = useState("instagram")
+  return <Combobox aria-label="Channel" options={channelOptions} value={channel} onValueChange={setChannel} placeholder="Select a channel" searchPlaceholder="Search channels…" />
+}
+
+const cities = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Medan", "Makassar", "Denpasar", "Semarang"]
+
+export function AutocompleteCatalogPreview() {
+  const [city, setCity] = useState("")
+  return (
+    <div className="w-full max-w-60">
+      <Autocomplete aria-label="City" placeholder="Search a city…" value={city} onValueChange={setCity} suggestions={cities} />
+    </div>
+  )
 }
