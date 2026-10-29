@@ -5,8 +5,10 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
+  AnnouncementCatalogPreview,
   AspectRatioCatalogPreview,
   AutocompleteCatalogPreview,
+  BannerCatalogPreview,
   BorderButtonCatalogPreview,
   ButtonGroupCatalogPreview,
   CalendarCatalogPreview,
@@ -17,6 +19,7 @@ import {
   CommandCatalogPreview,
   DatePickerCatalogPreview,
   DropzoneCatalogPreview,
+  EmptyCatalogPreview,
   FieldCatalogPreview,
   FileUploadCatalogPreview,
   GithubStarsCatalogPreview,
@@ -27,6 +30,7 @@ import {
   MiniCalendarCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
+  ProgressCatalogPreview,
   RatingCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
@@ -34,6 +38,7 @@ import {
   SocialButtonCatalogPreview,
   TagsInputCatalogPreview,
   SpinnerCatalogPreview,
+  StatusCatalogPreview,
   ToggleGroupCatalogPreview,
 } from "@/components/component-catalog-previews";
 import { ProductSwitcher } from "@/components/product-theme";
@@ -253,6 +258,11 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       },
       { name: "sonner", preview: <ToastDemo /> },
       { name: "spinner", preview: <SpinnerCatalogPreview /> },
+      { name: "progress", preview: <ProgressCatalogPreview /> },
+      { name: "empty", preview: <EmptyCatalogPreview /> },
+      { name: "banner", preview: <BannerCatalogPreview /> },
+      { name: "announcement", preview: <AnnouncementCatalogPreview /> },
+      { name: "status", preview: <StatusCatalogPreview /> },
       {
         name: "skeleton",
         preview: (

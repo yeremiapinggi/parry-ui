@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status",
+  "title": "Status",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/status.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\nconst statuses = {\n  online: { label: \"Online\", dot: \"bg-success\" },\n  degraded: { label: \"Degraded\", dot: \"bg-warning\" },\n  maintenance: { label: \"Maintenance\", dot: \"bg-info\" },\n  offline: { label: \"Offline\", dot: \"bg-destructive\" },\n} as const\n\ntype StatusValue = keyof typeof statuses\n\nfunction Status({\n  status,\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"span\"> & { status: StatusValue }) {\n  const { label, dot } = statuses[status]\n\n  return (\n    <span\n      data-slot=\"status\"\n      data-status={status}\n      className={cn(\"inline-flex items-center gap-2 rounded-full border bg-background px-2.5 py-0.5 text-xs font-medium\", className)}\n      {...props}\n    >\n      <span className=\"relative flex size-2\">\n        {status === \"online\" && <span className={cn(\"absolute inset-0 rounded-full opacity-75 motion-safe:animate-ping\", dot)} />}\n        <span className={cn(\"relative size-2 rounded-full\", dot)} />\n      </span>\n      {children ?? label}\n    </span>\n  )\n}\n\nexport { Status, type StatusValue }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

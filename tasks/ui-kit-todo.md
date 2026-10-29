@@ -38,7 +38,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] **Checkpoint B: all form controls reviewed, existing templates still build**
 
 ## Phase 4: Feedback
-- [ ] T12 progress, empty, banner, announcement, status. (M)
+- [x] T12 progress (fixed: shadcn's version didn't pass `value` to Radix, so `aria-valuenow` was missing), empty, banner, announcement, status. Sheet: 4/20, 2/22, 3/4, 3/6, 4/5. (M)
 
 ## Phase 5: Overlay
 - [ ] T13 alert-dialog, sheet, drawer (dep `vaul`). (S)

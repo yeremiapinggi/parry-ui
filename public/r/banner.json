@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "banner",
+  "title": "Banner",
+  "dependencies": [
+    "class-variance-authority",
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/banner.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { XIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\n\nconst bannerVariants = cva(\n  \"flex w-full items-center gap-3 px-4 py-2 text-sm [&>svg]:size-4 [&>svg]:shrink-0\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground\",\n        info: \"bg-info-soft text-info\",\n        success: \"bg-success-soft text-success\",\n        warning: \"bg-warning-soft text-warning\",\n        destructive: \"bg-destructive-soft text-destructive\",\n      },\n      inset: {\n        true: \"rounded-lg\",\n        false: \"\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      inset: false,\n    },\n  }\n)\n\n// Page-level message strip. Pass `open` + `onOpenChange` to control dismissal, or leave both out.\nfunction Banner({\n  variant,\n  inset,\n  open: openProp,\n  onOpenChange,\n  dismissible = true,\n  action,\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  VariantProps<typeof bannerVariants> & {\n    open?: boolean\n    onOpenChange?: (open: boolean) => void\n    dismissible?: boolean\n    action?: React.ReactNode\n  }) {\n  const [openState, setOpenState] = React.useState(true)\n  const open = openProp ?? openState\n\n  if (!open) return null\n\n  return (\n    <div data-slot=\"banner\" role=\"status\" className={cn(bannerVariants({ variant, inset }), className)} {...props}>\n      <div className=\"flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1\">{children}</div>\n      {action}\n      {dismissible && (\n        <Button\n          variant=\"ghost\"\n          size=\"icon-xs\"\n          aria-label=\"Dismiss\"\n          className=\"text-current hover:bg-current/10 hover:text-current\"\n          onClick={() => {\n            setOpenState(false)\n            onOpenChange?.(false)\n          }}\n        >\n          <XIcon />\n        </Button>\n      )}\n    </div>\n  )\n}\n\nexport { Banner, bannerVariants }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

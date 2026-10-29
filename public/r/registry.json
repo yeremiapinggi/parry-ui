@@ -970,6 +970,84 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/empty.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "banner",
+      "type": "registry:ui",
+      "title": "Banner",
+      "dependencies": [
+        "class-variance-authority",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/banner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "announcement",
+      "type": "registry:ui",
+      "title": "Announcement",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/announcement.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "status",
+      "type": "registry:ui",
+      "title": "Status",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/status.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

@@ -3,12 +3,14 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
+import { Announcement, AnnouncementTag, AnnouncementTitle } from "@/components/ui/announcement"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
+import { Banner } from "@/components/ui/banner"
 import { BorderButton } from "@/components/ui/border-button"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -21,6 +23,7 @@ import { Combobox } from "@/components/ui/combobox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Dropzone } from "@/components/ui/dropzone"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
@@ -33,6 +36,7 @@ import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
+import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Rating } from "@/components/ui/rating"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
@@ -41,6 +45,7 @@ import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
+import { Status } from "@/components/ui/status"
 import { Switch } from "@/components/ui/switch"
 import { TagsInput } from "@/components/ui/tags-input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -582,6 +587,76 @@ export function FileUploadCatalogPreview() {
   return (
     <div className="w-full max-w-64">
       <FileUpload value={files} onValueChange={setFiles} accept=".pdf,.csv,image/*" maxSize={10 * 1024 * 1024} maxFiles={3} description="PDF, CSV or images, up to 3 files" />
+    </div>
+  )
+}
+
+export function ProgressCatalogPreview() {
+  return (
+    <div className="flex w-full max-w-60 flex-col gap-4 text-sm">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between">
+          <span id="catalog-progress-import">Importing contacts</span>
+          <span className="text-muted-foreground tabular-nums">64%</span>
+        </div>
+        <Progress value={64} aria-labelledby="catalog-progress-import" />
+      </div>
+      <Progress value={35} aria-label="Storage used" className="h-2 [&>[data-slot=progress-indicator]]:bg-success" />
+    </div>
+  )
+}
+
+export function EmptyCatalogPreview() {
+  return (
+    <Empty className="border border-dashed p-6">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <SearchXIcon />
+        </EmptyMedia>
+        <EmptyTitle>No conversations found</EmptyTitle>
+        <EmptyDescription>Try another keyword or clear the filters.</EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="outline" size="sm">Clear filters</Button>
+      </EmptyContent>
+    </Empty>
+  )
+}
+
+export function BannerCatalogPreview() {
+  return (
+    <div className="flex w-full flex-col gap-2">
+      <Banner action={<Button size="xs" variant="secondary">Upgrade</Button>}>
+        Your trial ends in 3 days.
+      </Banner>
+      <Banner variant="info" inset>
+        <InfoIcon />
+        Scheduled maintenance on Sunday, 02:00 WIB.
+      </Banner>
+    </div>
+  )
+}
+
+export function AnnouncementCatalogPreview() {
+  return (
+    <Announcement asChild>
+      <a href="#announcement">
+        <AnnouncementTag>New</AnnouncementTag>
+        <AnnouncementTitle>
+          Developer Portal is live <ArrowRightIcon />
+        </AnnouncementTitle>
+      </a>
+    </Announcement>
+  )
+}
+
+export function StatusCatalogPreview() {
+  return (
+    <div className="flex flex-wrap justify-center gap-2">
+      <Status status="online">API online</Status>
+      <Status status="degraded" />
+      <Status status="maintenance" />
+      <Status status="offline" />
     </div>
   )
 }
