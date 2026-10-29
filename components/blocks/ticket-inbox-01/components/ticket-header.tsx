@@ -3,7 +3,6 @@
 import {
   BanIcon,
   BookmarkIcon,
-  ChevronDownIcon,
   CircleCheckIcon,
   CopyIcon,
   EllipsisIcon,
@@ -16,10 +15,8 @@ import {
   XIcon,
 } from "lucide-react"
 
-import { cn } from "cn"
-
 import type { Sentiment, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
-import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
+import { sentimentMeta, shortcuts } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Button } from "@/components/ui/button"
 import { DialogClose, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -29,8 +26,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -82,28 +77,6 @@ export function TicketHeader({
           Ticket <span className="font-mono">#{t.id}</span>
         </DialogTitle>
 
-        <DropdownMenu>
-          <Hint label="Change status">
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1.5" aria-label={`Status: ${statusMeta[status].label}`}>
-                <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[status].dot)} />
-                {statusMeta[status].label}
-                <ChevronDownIcon />
-              </Button>
-            </DropdownMenuTrigger>
-          </Hint>
-          <DropdownMenuContent align="start" className="w-44">
-            <DropdownMenuLabel>Status</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={status} onValueChange={(v) => onStatusChange(v as TicketStatus)}>
-              {(Object.keys(statusMeta) as TicketStatus[]).map((s) => (
-                <DropdownMenuRadioItem key={s} value={s}>
-                  <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[s].dot)} />
-                  {statusMeta[s].label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         <div className="ml-auto flex items-center gap-1.5">
 

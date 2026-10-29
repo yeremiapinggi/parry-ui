@@ -112,6 +112,10 @@ above the composer text box (the From picker when a channel has several accounts
 Review 2026-10-30 (8): assignment moved from the header into the sidebar ticket info (Alt+A opens the details Sheet
 below 1280 first); composer gets an emoji picker (DS gap: no emoji picker, composed from Popover + Input + Buttons);
 quick-reply popover redone: header with count, items with icon / title / two-line preview / slash code, keyboard footer.
+Review 2026-10-30 (9): status selector moved from the header into the sidebar ticket info (header keeps Close/Reopen);
+Custom fields is its own accordion section; quick-reply popover made compact (w-80, title + /code row, one-line
+preview); Contact can add extra data (email, phone, WhatsApp, company, address, birthday, customer ID; session-local)
+and no longer repeats an identity that equals the email or phone.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

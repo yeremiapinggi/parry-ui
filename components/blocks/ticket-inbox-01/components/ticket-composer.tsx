@@ -308,18 +308,14 @@ export function TicketComposer({
             <PopoverContent
               align="start"
               side="top"
-              className="w-[26rem] gap-0 overflow-hidden p-0"
+              className="w-80 gap-0 overflow-hidden p-0"
               onCloseAutoFocus={(e) => (e.preventDefault(), textareaRef.current?.focus())}
             >
               <Command>
-                <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
-                  <p className="text-sm font-medium">Quick replies</p>
-                  <span className="text-xs text-muted-foreground tabular-nums">{quickReplies.length} templates</span>
-                </div>
-                <CommandInput placeholder="Search by name, text or /code…" />
-                <CommandList className="max-h-72">
+                <CommandInput placeholder="Search quick replies or /code…" />
+                <CommandList className="max-h-60">
                   <CommandEmpty>No template found.</CommandEmpty>
-                  <CommandGroup>
+                  <CommandGroup heading={`Quick replies · ${quickReplies.length}`}>
                     {quickReplies.map((t) => (
                       <CommandItem
                         key={t.id}
@@ -328,32 +324,17 @@ export function TicketComposer({
                           insertAtCursor(draft ? `\n${t.body}` : t.body)
                           setTemplatesOpen(false)
                         }}
-                        className="items-start gap-3 px-2.5 py-2"
+                        className="flex-col items-stretch gap-0 py-1.5"
                       >
-                        <span aria-hidden="true" className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md border bg-background text-muted-foreground">
-                          <ZapIcon className="size-3.5" />
+                        <span className="flex items-baseline gap-2">
+                          <span className="truncate text-sm font-medium">{t.title}</span>
+                          <CommandShortcut className="font-mono tracking-normal">/{t.shortcut}</CommandShortcut>
                         </span>
-                        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                          <span className="text-sm font-medium">{t.title}</span>
-                          <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{t.body}</span>
-                        </span>
-                        <CommandShortcut className="mt-1 font-mono tracking-normal">/{t.shortcut}</CommandShortcut>
+                        <span className="truncate text-xs text-muted-foreground">{t.body}</span>
                       </CommandItem>
                     ))}
                   </CommandGroup>
                 </CommandList>
-                <div className="flex items-center gap-3 border-t px-3 py-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Kbd>↑</Kbd>
-                    <Kbd>↓</Kbd> navigate
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Kbd>Enter</Kbd> insert
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Kbd>Esc</Kbd> close
-                  </span>
-                </div>
               </Command>
             </PopoverContent>
           </Popover>

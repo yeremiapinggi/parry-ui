@@ -104,6 +104,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
     <TicketSidebar
       ticket={ticket}
       status={status}
+      onStatusChange={changeStatus}
       assignee={assignee}
       onAssign={assign}
       assignOpen={assignOpen}

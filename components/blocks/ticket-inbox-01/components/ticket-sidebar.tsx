@@ -1,16 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import {
   ArrowUpRightIcon,
+  Building2Icon,
+  CakeIcon,
   ChevronDownIcon,
   CircleDotIcon,
   GitMergeIcon,
+  IdCardIcon,
   MailIcon,
+  MapPinIcon,
+  MessageCircleIcon,
   PhoneIcon,
   PlusIcon,
   ShieldAlertIcon,
   StickyNoteIcon,
   UserRoundXIcon,
+  XIcon,
 } from "lucide-react"
 
 import { cn } from "cn"
@@ -36,6 +43,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import { Kbd } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -147,6 +155,147 @@ function AssigneeMenu({
   )
 }
 
+// One status control for the whole lifecycle (Open, Pending, Closed, Spam, Other).
+function StatusMenu({ status, onChange }: { status: TicketStatus; onChange: (s: TicketStatus) => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="h-7 gap-1.5 px-2" aria-label={`Status: ${statusMeta[status].label}, change`}>
+          <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[status].dot)} />
+          {statusMeta[status].label}
+          <ChevronDownIcon className="text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-44">
+        <DropdownMenuLabel>Status</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={status} onValueChange={(v) => onChange(v as TicketStatus)}>
+          {(Object.keys(statusMeta) as TicketStatus[]).map((s) => (
+            <DropdownMenuRadioItem key={s} value={s}>
+              <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[s].dot)} />
+              {statusMeta[s].label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+const contactFieldTypes: { id: string; label: string; icon: typeof MailIcon }[] = [
+  { id: "email", label: "Email", icon: MailIcon },
+  { id: "phone", label: "Phone", icon: PhoneIcon },
+  { id: "whatsapp", label: "WhatsApp", icon: MessageCircleIcon },
+  { id: "company", label: "Company", icon: Building2Icon },
+  { id: "address", label: "Address", icon: MapPinIcon },
+  { id: "birthday", label: "Birthday", icon: CakeIcon },
+  { id: "customer-id", label: "Customer ID", icon: IdCardIcon },
+]
+
+/**
+ * Channel identities, email and phone, plus contact data the agent adds during the session (local state only).
+ * Identities that repeat the email or phone are skipped so each value shows once.
+ */
+function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
+  const [extra, setExtra] = useState<{ type: string; value: string }[]>([])
+  const [adding, setAdding] = useState(false)
+  const [type, setType] = useState(contactFieldTypes[3].id)
+  const [value, setValue] = useState("")
+  const identities = c.identities.filter((id) => id.handle !== c.email && id.handle !== c.phone)
+  const meta = (id: string) => contactFieldTypes.find((f) => f.id === id)!
+
+  const save = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!value.trim()) return
+    setExtra((x) => [...x, { type, value: value.trim() }])
+    setValue("")
+    setAdding(false)
+  }
+
+  return (
+    <>
+      <ul aria-label="Contact information" className="flex flex-col gap-1.5 text-sm">
+        {identities.map((id) => (
+          <li key={id.handle} className="flex items-center gap-2">
+            <ChannelIcon channel={id.channel} />
+            <span className="sr-only">{channelMeta[id.channel].label}:</span>
+            <span className="truncate">{id.handle}</span>
+          </li>
+        ))}
+        {c.email && (
+          <li className="flex items-center gap-2">
+            <MailIcon aria-label="Email" className="size-4 shrink-0 text-muted-foreground" />
+            <a href={`mailto:${c.email}`} className="truncate text-link hover:underline">
+              {c.email}
+            </a>
+          </li>
+        )}
+        {c.phone && (
+          <li className="flex items-center gap-2">
+            <PhoneIcon aria-label="Phone" className="size-4 shrink-0 text-muted-foreground" />
+            <span className="tabular-nums">{c.phone}</span>
+          </li>
+        )}
+        {extra.map((f, i) => {
+          const M = meta(f.type)
+          return (
+            <li key={i} className="group/field flex items-center gap-2">
+              <M.icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+              <span className="min-w-0 flex-1 truncate">
+                <span className="sr-only">{M.label}: </span>
+                {f.value}
+              </span>
+              <span className="text-xs text-muted-foreground">{M.label}</span>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                aria-label={`Remove ${M.label} ${f.value}`}
+                className="text-muted-foreground"
+                onClick={() => setExtra((x) => x.filter((_, j) => j !== i))}
+              >
+                <XIcon />
+              </Button>
+            </li>
+          )
+        })}
+      </ul>
+
+      {adding ? (
+        <form onSubmit={save} aria-label="Add contact information" className="flex flex-col gap-2 rounded-lg border bg-background p-2">
+          <div className="flex gap-2">
+            <Select value={type} onValueChange={setType}>
+              <SelectTrigger size="sm" aria-label="Field type" className="w-32 shrink-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {contactFieldTypes.map((f) => (
+                  <SelectItem key={f.id} value={f.id}>
+                    <f.icon />
+                    {f.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input autoFocus aria-label={`${meta(type).label} value`} placeholder={meta(type).label} value={value} onChange={(e) => setValue(e.target.value)} className="h-8" />
+          </div>
+          <div className="flex justify-end gap-1.5">
+            <Button type="button" variant="ghost" size="sm" onClick={() => (setAdding(false), setValue(""))}>
+              Cancel
+            </Button>
+            <Button type="submit" size="sm" disabled={!value.trim()}>
+              Save
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <Button variant="ghost" size="xs" className="self-start text-muted-foreground" onClick={() => setAdding(true)}>
+          <PlusIcon />
+          Add contact info
+        </Button>
+      )}
+    </>
+  )
+}
+
 // Activity log = lifecycle events from the thread (system events and escalations), newest first.
 const activityOf = (thread: ThreadItem[]) =>
   thread.filter((i) => i.kind === "system" || i.kind === "escalation").sort((a, b) => byTime(b, a))
@@ -154,6 +303,7 @@ const activityOf = (thread: ThreadItem[]) =>
 export function TicketSidebar({
   ticket: t,
   status,
+  onStatusChange,
   assignee,
   onAssign,
   assignOpen,
@@ -166,6 +316,7 @@ export function TicketSidebar({
 }: {
   ticket: Ticket
   status: TicketStatus
+  onStatusChange: (s: TicketStatus) => void
   assignee: string | null
   onAssign: (agent: string | null) => void
   assignOpen: boolean
@@ -190,6 +341,7 @@ export function TicketSidebar({
     )
   // Always-visible ticket summary (kept out of the header so the header stays clean).
   const summary: [string, React.ReactNode][] = [
+    ["Status", <StatusMenu key="st" status={status} onChange={onStatusChange} />],
     ["Assignee", <AssigneeMenu key="as" assignee={assignee} onAssign={onAssign} open={assignOpen} onOpenChange={onAssignOpenChange} />],
     [
       "Sentiment",
@@ -230,29 +382,7 @@ export function TicketSidebar({
 
       <Accordion type="multiple" defaultValue={["contact", "details", "notes"]}>
         <Section value="contact" title="Contact">
-          <ul aria-label="Channel identities" className="flex flex-col gap-1.5 text-sm">
-            {c.identities.map((id) => (
-              <li key={id.handle} className="flex items-center gap-2">
-                <ChannelIcon channel={id.channel} />
-                <span className="sr-only">{channelMeta[id.channel].label}:</span>
-                <span className="truncate">{id.handle}</span>
-              </li>
-            ))}
-            {c.email && (
-              <li className="flex items-center gap-2">
-                <MailIcon aria-label="Email" className="size-4 text-muted-foreground" />
-                <a href={`mailto:${c.email}`} className="truncate text-link hover:underline">
-                  {c.email}
-                </a>
-              </li>
-            )}
-            {c.phone && (
-              <li className="flex items-center gap-2">
-                <PhoneIcon aria-label="Phone" className="size-4 text-muted-foreground" />
-                <span className="tabular-nums">{c.phone}</span>
-              </li>
-            )}
-          </ul>
+          <ContactInfo contact={c} />
           <div className="flex flex-wrap items-center gap-1.5">
             {c.tags.map((tag) => (
               <Badge key={tag} variant="secondary">
@@ -297,7 +427,9 @@ export function TicketSidebar({
               })}
             </ToggleGroup>
           </div>
-          <p className="pt-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">Custom fields</p>
+        </Section>
+
+        <Section value="custom-fields" title="Custom fields" count={customFields.length}>
           {customFields.map((f) => (
             <Field key={f.id} {...f} />
           ))}
