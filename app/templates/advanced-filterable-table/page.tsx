@@ -72,7 +72,7 @@ export default function AdvancedFilterableTablePage() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link href="/templates" className="hover:text-foreground">Templates</Link>
             <span aria-hidden="true">/</span>
-            <span>Tables &amp; Data Exploration</span>
+            <span>Data &amp; Tables</span>
           </div>
           <Badge variant="secondary">Page template</Badge>
           <h1 className="font-heading text-4xl font-bold tracking-tight text-balance">Advanced Filterable Table</h1>

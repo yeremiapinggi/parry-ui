@@ -54,7 +54,7 @@ import {
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-type TemplateCategory = "Table & Conversation" | "Table & Data" | "Dashboard" | "Analytics & Workflow" | "Forms" | "Settings" | "AI" | "AI & Collaboration" | "Detail & Content" | "Integration" | "Layouts" | "Workflow" | "Monitoring" | "Developer Tools"
+type TemplateCategory = "Dashboards" | "Data & Tables" | "Forms & Settings" | "Workspaces" | "Integrations" | "Layouts & Details" | "Workflows"
 type CategoryFilter = "All" | TemplateCategory
 
 type Template = {
@@ -70,166 +70,174 @@ const templates: Template[] = [
     slug: "monitoring-feed",
     name: "Monitoring Feed",
     description: "A content monitoring workspace for tracking incoming items, reviewing details, and managing follow-up actions.",
-    category: "Monitoring",
+    category: "Workspaces",
     reference: "Parry UI · Content monitoring",
   },
   {
     slug: "activity-timeline",
     name: "Activity Timeline",
     description: "A chronological activity timeline for tracking user actions, status changes, and entity history.",
-    category: "Detail & Content",
+    category: "Layouts & Details",
     reference: "Parry UI · Customer activity",
   },
   {
     slug: "tabbed-detail-workspace",
     name: "Tabbed Detail Workspace",
     description: "A multi-tab workspace for viewing and managing complex record information, configurations, and related activities.",
-    category: "Detail & Content",
+    category: "Layouts & Details",
     reference: "Parry UI · Workspace management",
   },
   {
     slug: "record-detail-page",
     name: "Record Detail Page",
     description: "A structured detail page for viewing record information, related data, activity history, and contextual actions.",
-    category: "Detail & Content",
+    category: "Layouts & Details",
     reference: "Parry UI · Record management",
   },
   {
     slug: "data-management-list",
     name: "Data Management List",
     description: "A reusable record management template for creating, organizing, updating, and deleting structured business data.",
-    category: "Table & Conversation",
+    category: "Data & Tables",
     reference: "Parry UI · Data management",
   },
   {
     slug: "conversation-table",
     name: "Conversation Table",
     description: "A conversation management table for monitoring, filtering, assigning, and managing customer conversations.",
-    category: "Table & Conversation",
+    category: "Data & Tables",
     reference: "Parry UI · Contact center",
   },
   {
     slug: "conversation-workspace",
     name: "Conversation Workspace",
     description: "An interactive workspace for managing customer conversations, replying to messages, and handling conversation workflows.",
-    category: "Table & Conversation",
+    category: "Workspaces",
     reference: "Parry UI · Contact center",
   },
   {
     slug: "ai-chat-workspace",
     name: "AI Chat Workspace",
     description: "An interactive AI chat workspace with agent selection, conversation history, and AI response states.",
-    category: "AI & Collaboration",
+    category: "Workspaces",
     reference: "Sociomile Agentics · AI collaboration",
   },
   {
     slug: "analytics-dashboard",
     name: "Analytics Dashboard",
     description: "A data-driven dashboard for monitoring KPIs, trends, and performance breakdowns.",
-    category: "Dashboard",
+    category: "Dashboards",
     reference: "Parry UI · Product analytics",
   },
   {
     slug: "pipeline-performance-workspace",
     name: "Pipeline Performance Workspace",
     description: "An analytical workspace for tracking pipeline conversion, stage performance, deal aging, and revenue forecasts.",
-    category: "Analytics & Workflow",
+    category: "Dashboards",
     reference: "Parry UI · Sales performance",
   },
   {
     slug: "operational-dashboard",
     name: "Operational Dashboard",
     description: "Monitor operational workloads, service health, SLA risks, and issues requiring attention.",
-    category: "Dashboard",
+    category: "Dashboards",
     reference: "Parry UI · Operations",
   },
   {
     slug: "create-edit-form",
     name: "Create / Edit Form",
     description: "A reusable form for creating and editing structured business records.",
-    category: "Forms",
+    category: "Forms & Settings",
     reference: "Parry UI · Record management",
   },
   {
     slug: "multi-step-form-wizard",
     name: "Multi-Step Form Wizard",
     description: "A guided multi-step form for completing complex configurations with validation and progress tracking.",
-    category: "Forms",
+    category: "Forms & Settings",
     reference: "Parry UI · Integration setup",
   },
   {
     slug: "bulk-import-wizard",
     name: "Bulk Import Wizard",
     description: "A guided workflow for importing bulk records with column mapping, validation, and import results.",
-    category: "Forms",
+    category: "Forms & Settings",
     reference: "Parry UI · Data import",
   },
   {
     slug: "integration-connection",
     name: "Integration Connection",
     description: "Configure, test, and manage external service connections and authentication.",
-    category: "Integration",
+    category: "Integrations",
     reference: "Parry UI · Integration management",
   },
   {
     slug: "settings-panels",
     name: "Settings Panels",
     description: "A section-based settings workspace for managing complex application configurations.",
-    category: "Settings",
+    category: "Forms & Settings",
     reference: "Parry UI · Workspace settings",
   },
   {
     slug: "settings-form",
     name: "Settings Form",
     description: "A single-page settings form for managing preferences and configuration.",
-    category: "Settings",
+    category: "Forms & Settings",
     reference: "Parry UI · Workspace settings",
   },
   {
     slug: "settings-dialog",
     name: "Settings Dialog",
     description: "A contextual settings dialog for managing preferences without leaving the current page.",
-    category: "Settings",
+    category: "Forms & Settings",
     reference: "Parry UI · Notification preferences",
   },
   {
     slug: "advanced-filterable-table",
     name: "Advanced Filterable Table",
     description: "Explore complex datasets with advanced filtering, saved views, column customization, grouping, and record inspection.",
-    category: "Table & Conversation",
+    category: "Data & Tables",
     reference: "Parry UI · Data exploration",
   },
   {
     slug: "ranking-analytics-table",
     name: "Ranking & Analytics Table",
     description: "A ranked analytics table for comparing entities, tracking performance changes, and exploring metric details.",
-    category: "Table & Data",
+    category: "Data & Tables",
     reference: "Parry UI · Social analytics",
   },
   {
     slug: "application-shell",
     name: "Application Shell",
     description: "A reusable application framework with sidebar, top navigation, and hybrid navigation layouts.",
-    category: "Layouts",
+    category: "Layouts & Details",
     reference: "Parry UI · Application architecture",
   },
   {
     slug: "kanban-pipeline-board",
     name: "Kanban / Pipeline Board",
     description: "A flexible drag-and-drop board for managing pipelines, tasks, and stage-based workflows.",
-    category: "Workflow",
+    category: "Workflows",
     reference: "Parry UI · Workflow management",
   },
   {
     slug: "developer-portal-workspace",
     name: "Developer Portal Workspace",
     description: "An Ivosights developer portal for product API traffic, application environments, endpoint requests, and daily rate limits.",
-    category: "Developer Tools",
+    category: "Integrations",
     reference: "Parry UI · API platform",
   },
 ]
 
-const availableCategories = Array.from(new Set(templates.map(({ category }) => category)))
+const availableCategories: TemplateCategory[] = [
+  "Dashboards",
+  "Data & Tables",
+  "Forms & Settings",
+  "Workspaces",
+  "Integrations",
+  "Layouts & Details",
+  "Workflows",
+]
 
 const thumbnailRows = [
   { name: "Alya Pratama", email: "alya.pratama@northstar.co", company: "Northstar Labs", status: "Active" },
@@ -484,18 +492,20 @@ export function TemplatesGallery() {
       <header className="flex flex-col items-center gap-3 text-center">
         <h1 className="font-heading text-4xl font-bold tracking-tight text-balance sm:text-5xl">Templates</h1>
         <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">Reusable page templates for enterprise SaaS applications.</p>
-        <ToggleGroup
-          type="single"
-          value={activeCategory}
-          onValueChange={(value) => { if (value) setActiveCategory(value as CategoryFilter) }}
-          variant="outline"
-          size="sm"
-          aria-label="Filter templates by category"
-          className="mt-3 max-w-full flex-wrap justify-center"
-        >
-          <ToggleGroupItem value="All">All</ToggleGroupItem>
-          {availableCategories.map((category) => <ToggleGroupItem key={category} value={category}>{category}</ToggleGroupItem>)}
-        </ToggleGroup>
+        <div className="mt-3 w-full max-w-full overflow-x-auto overscroll-x-contain">
+          <ToggleGroup
+            type="single"
+            value={activeCategory}
+            onValueChange={(value) => { if (value) setActiveCategory(value as CategoryFilter) }}
+            variant="outline"
+            size="sm"
+            aria-label="Filter templates by category"
+            className="mx-auto w-max min-w-full flex-nowrap justify-center px-1 py-1"
+          >
+            <ToggleGroupItem value="All">All</ToggleGroupItem>
+            {availableCategories.map((category) => <ToggleGroupItem key={category} value={category}>{category}</ToggleGroupItem>)}
+          </ToggleGroup>
+        </div>
       </header>
 
       <section aria-label="Template gallery" className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -533,6 +543,7 @@ export function TemplatesGallery() {
                 </Link>
               </CardTitle>
               <CardDescription className="min-h-10 line-clamp-2 text-[13px] leading-5">{template.description}</CardDescription>
+              <p className="text-xs leading-4 text-muted-foreground">{template.category}</p>
               <Button asChild size="sm" variant="ghost" className="hidden min-h-11 self-start justify-self-start px-3 text-xs [@media(hover:none)]:inline-flex">
                 <Link href={`/templates/${template.slug}`}>
                   View Docs <ArrowUpRightIcon aria-hidden="true" className="size-3.5" />

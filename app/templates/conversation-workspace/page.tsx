@@ -61,7 +61,7 @@ export default function ConversationWorkspacePage() {
   return <div className="mx-auto grid w-full max-w-[1600px] gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">
     <article className="flex min-w-0 flex-col gap-12 py-10">
       <header className="flex flex-col items-start gap-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground"><Link href="/templates" className="hover:text-foreground">Templates</Link><span aria-hidden="true">/</span><span>Conversation &amp; Collaboration</span></div>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground"><Link href="/templates" className="hover:text-foreground">Templates</Link><span aria-hidden="true">/</span><span>Workspaces</span></div>
         <Badge variant="secondary">Page template</Badge>
         <h1 className="font-heading text-4xl font-bold tracking-tight text-balance">Conversation Workspace</h1>
         <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">An interactive workspace for managing customer conversations, replying to messages, and handling conversation workflows.</p>
