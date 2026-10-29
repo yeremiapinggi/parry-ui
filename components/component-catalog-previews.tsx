@@ -44,9 +44,9 @@ export function ChartCatalogPreview() {
 export function PopoverCatalogPreview() {
   return (
     <Popover>
-      <div className="w-full max-w-72">
+      <div className="w-fit max-w-full">
         <PopoverTrigger asChild>
-          <Button type="button" variant="outline" controlSize="sm" className="w-full">
+          <Button type="button" variant="outline" controlSize="sm" className="w-fit">
             Filter status <ChevronDownIcon data-icon="inline-end" />
           </Button>
         </PopoverTrigger>
