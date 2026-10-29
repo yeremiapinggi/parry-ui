@@ -6,14 +6,14 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 **Description:** Add `classic`, `nightshift`, `lagoon`, `contrast` as `[data-theme="…"]` blocks in `app/globals.css`, each defining every token `:root` defines. Extend the contrast script to check them.
 
 **Acceptance criteria:**
-- [ ] Each preset sets all `:root` tokens (same key set — scripted diff, not eyeballed), using the spec's key hexes: classic bg `#F1F3F6` card `#FFFFFF` primary `#1A73D9` sidebar `#FFFFFF`; nightshift bg `#0D1117` card `#151B23` primary `#4C9CFF` sidebar `#0A0E13` fg `#E2E8EF`; lagoon bg `#EDF3F2` card `#FFFFFF` primary `#0F7C72` sidebar `#0E3B3A` sidebar-fg `#E5F2F0` radius 14px; contrast bg `#FFFFFF` fg `#000000` primary `#0046B8` border `#000000` radius 4px
-- [ ] Contrast preset borders render 2px (scoped rule), or the fallback is logged as a DS gap
-- [ ] Any brand hex darkened for AA carries a one-line comment, as existing tokens do
-- [ ] `:root` / `.dark` unchanged; `npm run registry:build` output for `parry-theme` unchanged
+- [x] Each preset sets all `:root` tokens (same key set — scripted diff, not eyeballed), using the spec's key hexes: classic bg `#F1F3F6` card `#FFFFFF` primary `#1A73D9` sidebar `#FFFFFF`; nightshift bg `#0D1117` card `#151B23` primary `#4C9CFF` sidebar `#0A0E13` fg `#E2E8EF`; lagoon bg `#EDF3F2` card `#FFFFFF` primary `#0F7C72` sidebar `#0E3B3A` sidebar-fg `#E5F2F0` radius 14px; contrast bg `#FFFFFF` fg `#000000` primary `#0046B8` border `#000000` radius 4px
+- [x] Contrast preset borders render 2px (scoped rule), or the fallback is logged as a DS gap
+- [x] Any brand hex darkened for AA carries a one-line comment, as existing tokens do
+- [x] `:root` / `.dark` unchanged; `npm run registry:build` output for `parry-theme` unchanged
 
 **Verification:**
-- [ ] `npm run check:contrast` passes for `:root`, `.dark` and all 4 presets
-- [ ] `git diff registry.json` empty after `node scripts/sync-theme.mjs`
+- [x] `npm run check:contrast` passes for `:root`, `.dark` and all 4 presets
+- [x] `git diff registry.json` empty after `node scripts/sync-theme.mjs`
 
 **Dependencies:** None
 **Files:** `app/globals.css`, `scripts/check-contrast.mjs`
@@ -23,42 +23,42 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 **Description:** Full-screen route `/blocks/[id]?theme=` rendering a block with site chrome hidden; shared data + channel map; the AppHeader used by every block; the hex/import guard.
 
 **Acceptance criteria:**
-- [ ] `app/blocks/[id]/page.tsx` with `generateStaticParams` from `components/blocks/registry.ts`; unknown id → `notFound()`
-- [ ] `?theme=` sets `data-theme` on `<html>` (default `classic`), `.dark` only for nightshift; portaled overlays follow the theme
-- [ ] `SiteHeader` / `SiteFooter` render nothing on `/blocks/<id>`
-- [ ] `components/blocks/_data/{tickets,team,channels,kpis,notifications}.ts` typed; obviously sample (Indonesian names, `#3xx` numbers)
-- [ ] `components/blocks/channel-meta.ts`: id → label, lucide icon, brand colour (the only file with hex)
-- [ ] `_parts/app-header.tsx`: logo · nav Ticket/Dashboard/Report/Setting (active from prop) · search Input with `/` Kbd hint opening a `CommandDialog` with the 9 "Search by" scopes · `AgentStatus` DropdownMenu (Available/Busy/Break/Offline with dot) · Notifications Popover · Help menu (Contact Us, Manual Book) · theme preset menu · Avatar menu (Setting, Change Password, Logout)
-- [ ] Every icon-only button has `aria-label`; `/` focuses search from anywhere except text fields
-- [ ] `scripts/check-blocks.mjs` + `npm run check:blocks`: fails on hex, `[#`, `rgb(`, palette colour classes, and non-allowlisted imports under `components/blocks/**` (except `channel-meta.ts`)
-- [ ] ticket-inbox-01 stub exports `meta = { id, title, description, category: "Main pages" }` and renders the header
+- [x] `app/blocks/[id]/page.tsx` with `generateStaticParams` from `components/blocks/registry.ts`; unknown id → `notFound()`
+- [x] `?theme=` sets `data-theme` on `<html>` (default `classic`), `.dark` only for nightshift; portaled overlays follow the theme
+- [x] `SiteHeader` / `SiteFooter` render nothing on `/blocks/<id>`
+- [x] `components/blocks/_data/{tickets,team,channels,kpis,notifications}.ts` typed; obviously sample (Indonesian names, `#3xx` numbers)
+- [x] `components/blocks/channel-meta.ts`: id → label, lucide icon, brand colour (the only file with hex)
+- [x] `_parts/app-header.tsx`: logo · nav Ticket/Dashboard/Report/Setting (active from prop) · search Input with `/` Kbd hint opening a `CommandDialog` with the 9 "Search by" scopes · `AgentStatus` DropdownMenu (Available/Busy/Break/Offline with dot) · Notifications Popover · Help menu (Contact Us, Manual Book) · theme preset menu · Avatar menu (Setting, Change Password, Logout)
+- [x] Every icon-only button has `aria-label`; `/` focuses search from anywhere except text fields
+- [x] `scripts/check-blocks.mjs` + `npm run check:blocks`: fails on hex, `[#`, `rgb(`, palette colour classes, and non-allowlisted imports under `components/blocks/**` (except `channel-meta.ts`)
+- [x] ticket-inbox-01 stub exports `meta = { id, title, description, category: "Main pages" }` and renders the header
 
 **Verification:**
-- [ ] Browser: `/blocks/ticket-inbox-01?theme=` each of 4 → header readable, menus open in theme, no site chrome
-- [ ] `npm run check:blocks`, `npx tsc --noEmit`, `npm run lint` pass
-- [ ] Guard self-check: temporarily add `text-blue-600` to a block → script fails
+- [x] Browser: `/blocks/ticket-inbox-01?theme=` each of 4 → header readable, menus open in theme, no site chrome
+- [x] `npm run check:blocks`, `npx tsc --noEmit`, `npm run lint` pass
+- [x] Guard self-check: temporarily add `text-blue-600` to a block → script fails
 
 **Dependencies:** Task 1
 **Files:** `app/blocks/[id]/page.tsx`, `components/blocks/{registry.ts,channel-meta.ts,_data/*,_parts/app-header.tsx,_parts/agent-status.tsx,ticket-inbox-01/page.tsx}`, `components/site-header.tsx`, `components/site-footer.tsx`, `scripts/check-blocks.mjs`, `package.json`
 **Scope:** M
 
 ### Checkpoint: Foundation
-- [ ] Header works in 4 themes; all checks green; commit
+- [x] Header works in 4 themes; all checks green; commit
 
 ## Task 3: Inbox — queue rail + ticket list
 **Description:** Left two panes of ticket-inbox-01.
 
 **Acceptance criteria:**
-- [ ] `_parts/queue-rail.tsx` (composed, sidebar tokens): Views with tabular-number Badges (My tickets, Unreplied, Progress active, Pending, Escalated, Out SLA, Bookmark, Closed, All); Channels with + action, icon, count, disconnected one muted; "Team Yp Corp" with online/total and agents' presence dot + load
-- [ ] List header: view title + ToggleGroup Conversation | Ticket
-- [ ] `_parts/filter-chips.tsx`: removable chips (Date range, Assignee, Sort, Sentiment, Channel type, Lock), "+ Add filter" Popover listing removed ones; no custom filters
-- [ ] Bulk bar: "Select all · N shown" ↔ grouped actions (Assign / Status / Sentiment / More with the spec's items) when ≥1 selected
-- [ ] `_parts/ticket-row.tsx`: ~64px, checkbox · name · mono `#380` · relative time; truncated preview; badges channel, source account, state (Replied/Unreplied/Pending/`Out SLA · 2h` destructive), reply count; kebab menu = bulk actions; selected = `bg-accent` + left primary bar; row is a button
-- [ ] Selecting a view with 0 tickets shows `Empty`
+- [x] `_parts/queue-rail.tsx` (composed, sidebar tokens): Views with tabular-number Badges (My tickets, Unreplied, Progress active, Pending, Escalated, Out SLA, Bookmark, Closed, All); Channels with + action, icon, count, disconnected one muted; "Team Yp Corp" with online/total and agents' presence dot + load
+- [x] List header: view title + ToggleGroup Conversation | Ticket
+- [x] `_parts/filter-chips.tsx`: removable chips (Date range, Assignee, Sort, Sentiment, Channel type, Lock), "+ Add filter" Popover listing removed ones; no custom filters
+- [x] Bulk bar: "Select all · N shown" ↔ grouped actions (Assign / Status / Sentiment / More with the spec's items) when ≥1 selected
+- [x] `_parts/ticket-row.tsx`: ~64px, checkbox · name · mono `#380` · relative time; truncated preview; badges channel, source account, state (Replied/Unreplied/Pending/`Out SLA · 2h` destructive), reply count; kebab menu = bulk actions; selected = `bg-accent` + left primary bar; row is a button
+- [x] Selecting a view with 0 tickets shows `Empty`
 
 **Verification:**
-- [ ] Browser 1440: select/unselect rows, remove + re-add a chip, switch to an empty view
-- [ ] `check:blocks`, tsc, lint pass
+- [x] Browser 1440: select/unselect rows, remove + re-add a chip, switch to an empty view
+- [x] `check:blocks`, tsc, lint pass
 
 **Dependencies:** Task 2
 **Files:** `components/blocks/ticket-inbox-01/{page.tsx,components/ticket-list.tsx,components/bulk-bar.tsx}`, `components/blocks/_parts/{queue-rail,filter-chips,ticket-row}.tsx`
@@ -66,11 +66,11 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 4: Inbox — conversation pane
 **Acceptance criteria:**
-- [ ] Header: Avatar, name, "Webchat · Pingot Chat · opened 24 Sep 2026, 17:04"; Assign (outline), Pending (outline), Close ticket (primary)
-- [ ] Thread in ScrollArea: day separator, inbound `bg-muted`, outbound `bg-primary text-primary-foreground` with agent + time, centred system events — via `_parts/message-bubble.tsx`
-- [ ] Composer Card: Textarea, attach, emoji (lucide icon, no emoji glyph), Note/Template switch, Send primary
-- [ ] Locked-by-other-agent ticket disables the composer with a visible reason
-- [ ] Thread follows the selected ticket from Task 3
+- [x] Header: Avatar, name, "Webchat · Pingot Chat · opened 24 Sep 2026, 17:04"; Assign (outline), Pending (outline), Close ticket (primary)
+- [x] Thread in ScrollArea: day separator, inbound `bg-muted`, outbound `bg-primary text-primary-foreground` with agent + time, centred system events — via `_parts/message-bubble.tsx`
+- [x] Composer Card: Textarea, attach, emoji (lucide icon, no emoji glyph), Note/Template switch, Send primary
+- [x] Locked-by-other-agent ticket disables the composer with a visible reason
+- [x] Thread follows the selected ticket from Task 3
 
 **Verification:** Browser: switch tickets incl. a locked one; `check:blocks`, tsc, lint
 **Dependencies:** Task 3
@@ -79,10 +79,10 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 5: Inbox — context panel
 **Acceptance criteria:**
-- [ ] "Team today" 2×2 `KpiTile` (wrapper over `Stat`): ART 11s, TR 2, ARR 100%, Target 0 — uppercase muted label, mono tabular value
-- [ ] "Ticket #380" key/value: Assignee, Group, Lock, Age (follows selection)
-- [ ] Sentiment ToggleGroup Positive/Neutral/Negative
-- [ ] Selects: Caller case (Customer, Dealer, KTB), Warranty (Active, Expired), Category, Sub category 1–3; Escalation: Group escalation + Email group — all labelled
+- [x] "Team today" 2×2 `KpiTile` (wrapper over `Stat`): ART 11s, TR 2, ARR 100%, Target 0 — uppercase muted label, mono tabular value
+- [x] "Ticket #380" key/value: Assignee, Group, Lock, Age (follows selection)
+- [x] Sentiment ToggleGroup Positive/Neutral/Negative
+- [x] Selects: Caller case (Customer, Dealer, KTB), Warranty (Active, Expired), Category, Sub category 1–3; Escalation: Group escalation + Email group — all labelled
 
 **Verification:** Browser 1440 four panes at 232 / 360 / 1fr / 280; `check:blocks`, tsc, lint
 **Dependencies:** Task 4
@@ -91,21 +91,21 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 6: Inbox — responsive + keyboard
 **Acceptance criteria:**
-- [ ] ≥1280: four panes · 1024–1279: context in a `Sheet` opened from a labelled header button · 768–1023: rail icon-only with Tooltips · <768: list ↔ conversation stack with back button
-- [ ] No horizontal page scroll at 1440, 1024, 390
-- [ ] Tab order header → rail → list → composer; ↑/↓ moves ticket selection within the list; `/` focuses search; focus ring visible everywhere
+- [x] ≥1280: four panes · 1024–1279: context in a `Sheet` opened from a labelled header button · 768–1023: rail icon-only with Tooltips · <768: list ↔ conversation stack with back button
+- [x] No horizontal page scroll at 1440, 1024, 390
+- [x] Tab order header → rail → list → composer; ↑/↓ moves ticket selection within the list; `/` focuses search; focus ring visible everywhere
 
 **Verification:**
-- [ ] Browser `resize_window` 1440 / 1024 / 390: `document.documentElement.scrollWidth <= innerWidth`
-- [ ] Keyboard walk recorded in the checkpoint notes
-- [ ] `check:blocks`, tsc, lint
+- [x] Browser `resize_window` 1440 / 1024 / 390: `document.documentElement.scrollWidth <= innerWidth`
+- [x] Keyboard walk recorded in the checkpoint notes
+- [x] `check:blocks`, tsc, lint
 
 **Dependencies:** Task 5
 **Files:** `components/blocks/ticket-inbox-01/**`, `components/blocks/_parts/queue-rail.tsx`
 **Scope:** M
 
 ### Checkpoint A — STOP for user review
-- [ ] Screenshots: 4 themes × 1440, plus 1024 and 390 in classic
+- [x] Screenshots: 4 themes × 1440, plus 1024 and 390 in classic
 - [ ] Interim DS gaps list
 - [ ] Wait for user approval before Task 7
 
