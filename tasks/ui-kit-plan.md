@@ -77,7 +77,7 @@ Detail (komponen, acceptance criteria, verifikasi, file) ada di `tasks/ui-kit-to
    ditandai **Selesai**, sisanya **Review** dengan Catatan "primitive @parry/<name> tersedia; varian belum dibuat 1:1".
    Alternatif: tandai semua varian komponen itu Selesai, atau hanya varian yang benar-benar dibuat.
 2. **Kolom PIC** diisi apa? Usulan: `Claude` + kolom Catatan berisi path file.
-3. **Komponen berat Phase 9** (Editor, Sandbox, Video Player, Emoji Picker, Gantt, Kanban, Image Crop): tetap dikerjakan,
+3. ~~**Komponen berat Phase 9**~~ **Diputuskan 2026-10-29: hanya yang ringan** (code-block, snippet, qr-code, credit-card, logo, image-zoom). Editor, Sandbox, Video Player, Emoji Picker, Gantt, Kanban, Image Crop di luar cakupan; di sheet tetap Belum dengan catatan. **Komponen berat Phase 9** (Editor, Sandbox, Video Player, Emoji Picker, Gantt, Kanban, Image Crop): tetap dikerjakan,
    atau tandai "Di luar cakupan" di Catatan?
 4. Plan lama `tasks/plan.md` / `tasks/todo.md` masih punya checkpoint review terbuka; plan ini disimpan terpisah
    (`ui-kit-plan.md` / `ui-kit-todo.md`) mengikuti pola `auth-*` dan `developer-portal-*`.

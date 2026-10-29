@@ -34,7 +34,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T9 command (dep `cmdk`), combobox (single, grouped, reselect clears), autocomplete (free text + suggestions). Multi-select combobox not built yet. Sheet: 1/21, 4/42, 4/15. (M)
 - [x] T10 choicebox, rating (form-star-rating = rating inside Field, no separate file), tags-input, color-picker (native color input + swatches + hex). Sheet: 2/5, 5/15, 2/7, 2/6, 2/4. (M)
 - [x] T11 file-upload, dropzone (no deps; validates type/size for dropped files too). Sheet: 4/45, 3/5. (M)
-- [ ] T11b image-crop (dep `react-image-crop`) — deferred until Open Question #3 is answered; sheet rows stay Belum with a note.
+- [x] T11b image-crop — out of scope (decision 2026-10-29); sheet rows stay Belum with a note.
 - [ ] **Checkpoint B: all form controls reviewed, existing templates still build**
 
 ## Phase 4: Feedback
@@ -55,14 +55,14 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T19 data-table (`@tanstack/react-table` **v9**: `tableFeatures` + `useTable`, not v8's `useReactTable`), data-toolbar (search + column visibility), filter-panel (faceted checkboxes). The template filter builder was too coupled to its lib types to extract. Sheet: 3/16, 2/3, 2/2.
 - [x] T20 list-panel, tree (nested disclosure buttons, not a roving-focus `role=tree`), timeline, comparison (native range input drives the divider). Sheet: 5/66, 4/6, 1/1, 2/4. (M)
 - [x] T21a contribution-graph (UTC dates, ramp reversed in dark mode). Sheet: 1/4.
-- [ ] T21b gantt, kanban — deferred until Open Question #3 is answered; sheet rows stay Belum with a note.
+- [x] T21b gantt, kanban — out of scope (decision 2026-10-29); sheet rows stay Belum with a note.
 
 ## Phase 8: Layout
 - [x] T22 bento (BentoGrid + BentoTile; the 230 sheet variants are full marketing layouts, all Review), deck, carousel (dep `embla-carousel-react`; fixed shadcn's setState-in-effect lint error and missing `reInit` cleanup), marquee (Web Animations API, `contain: inline-size`), reel. Also `min-w-0` on /components grid cards: the marquee track had widened the whole grid to 1159px at 375px. Sheet: 0/230, 2/6, 1/4, 5/6, 3/4. (M)
 - [ ] **Checkpoint D: data display + layout reviewed, bundle size checked in `npm run build` output**
 
-## Phase 9: Media & Dev (heavy, optional per Open Question #3)
-- [ ] T23 code-block, snippet, sandbox, editor. (L)
-- [ ] T24 qr-code, credit-card, logo, emoji-picker. (M)
-- [ ] T25 image-zoom, video-player. (S)
+## Phase 9: Media & Dev (light components only, decision 2026-10-29)
+- [ ] T23 code-block, snippet. Sandbox and editor out of scope. (S)
+- [ ] T24 qr-code, credit-card, logo. Emoji picker out of scope. (M)
+- [ ] T25 image-zoom. Video player out of scope. (S)
 - [ ] **Checkpoint E: 111/111 components present or explicitly marked out of scope in the sheet; README component list updated**
