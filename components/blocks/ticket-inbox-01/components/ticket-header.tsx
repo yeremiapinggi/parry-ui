@@ -21,12 +21,8 @@ import { cn } from "cn"
 
 import { team } from "@/components/blocks/_data/team"
 import type { Sentiment, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
-import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
-import { age, shortDateTime } from "@/components/blocks/_parts/time"
-import { channelMeta } from "@/components/blocks/channel-meta"
 import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DialogClose, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -97,11 +93,9 @@ export function TicketHeader({
   onOpenDetails: () => void
 }) {
   const closed = status === "closed"
-  const S = sentimentMeta[sentiment]
-  const outSla = t.state === "out-sla" && !closed
 
   return (
-    <header className="flex flex-col gap-2 border-b bg-card px-4 py-3 text-card-foreground md:px-6">
+    <header className="border-b bg-card px-4 py-2.5 text-card-foreground md:px-6">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <DialogTitle className="font-heading text-lg font-semibold">
           Ticket <span className="font-mono">#{t.id}</span>
@@ -129,11 +123,6 @@ export function TicketHeader({
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <ChannelIcon channel={t.channel} />
-          {channelMeta[t.channel].typeLabel} · {t.account}
-        </span>
 
         <div className="ml-auto flex items-center gap-1.5">
           <DropdownMenu open={assignOpen} onOpenChange={onAssignOpenChange}>
@@ -250,49 +239,6 @@ export function TicketHeader({
         </div>
       </div>
 
-      <dl className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <dt className="sr-only">Customer</dt>
-          <dd className="font-medium text-foreground">{t.customer}</dd>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <dt className="sr-only">Sentiment</dt>
-          <dd>
-            <Badge variant="outline" className={cn("gap-1", S.tone)}>
-              <S.icon />
-              {S.label}
-            </Badge>
-          </dd>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <dt>Priority</dt>
-          <dd>
-            <Badge variant={t.priority === "Urgent" ? "destructive" : "secondary"}>{t.priority}</Badge>
-          </dd>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <dt>Created</dt>
-          <dd className="text-foreground tabular-nums">{shortDateTime(t.createdAt)}</dd>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <dt>Age</dt>
-          <dd className="text-foreground tabular-nums">{age(t.createdAt)}</dd>
-        </div>
-        {!closed && (
-          <div className="flex items-center gap-1.5">
-            <dt className="sr-only">SLA</dt>
-            <dd>
-              {outSla ? (
-                <Badge variant="destructive">Out SLA · {t.slaOverdue}</Badge>
-              ) : (
-                <Badge variant="outline" className="text-success">
-                  Within SLA
-                </Badge>
-              )}
-            </dd>
-          </div>
-        )}
-      </dl>
     </header>
   )
 }

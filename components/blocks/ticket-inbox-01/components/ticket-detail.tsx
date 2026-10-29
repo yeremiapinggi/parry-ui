@@ -85,7 +85,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
   })
 
   const sidebar = (
-    <TicketSidebar ticket={ticket} thread={thread} sentiment={sentiment} onSentimentChange={changeSentiment} onAddNote={() => focusComposer("note")} className="min-h-0 flex-1" />
+    <TicketSidebar ticket={ticket} status={status} thread={thread} sentiment={sentiment} onSentimentChange={changeSentiment} onAddNote={() => focusComposer("note")} className="min-h-0 flex-1" />
   )
 
   return (

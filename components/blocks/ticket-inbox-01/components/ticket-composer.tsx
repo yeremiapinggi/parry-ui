@@ -21,6 +21,8 @@ import { cn } from "cn"
 
 import { channels } from "@/components/blocks/_data/channels"
 import { quickReplies, type Ticket } from "@/components/blocks/_data/tickets"
+import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
+import { channelMeta } from "@/components/blocks/channel-meta"
 import { escalationGroups, shortcuts } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
@@ -150,20 +152,30 @@ export function TicketComposer({
           ))}
         </ToggleGroup>
 
-        {mode === "reply" && accounts.length > 1 && (
-          <Select value={account} onValueChange={setAccount}>
-            <SelectTrigger size="sm" aria-label="Send from account" className="h-7 max-w-56">
-              <span className="text-muted-foreground">From</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {accounts.map((a) => (
-                <SelectItem key={a} value={a}>
-                  {a}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        {mode === "reply" && (
+          // Channel and sending account sit right above the text box; a picker only when there is a choice.
+          <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            via
+            <ChannelIcon channel={ticket.channel} className="size-4 [&_svg]:size-2.5" />
+            <span className="font-medium text-foreground">{channelMeta[ticket.channel].typeLabel}</span>
+            ·
+            {accounts.length > 1 ? (
+              <Select value={account} onValueChange={setAccount}>
+                <SelectTrigger size="sm" aria-label="Send from account" className="h-7 max-w-56 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {accounts.map((a) => (
+                    <SelectItem key={a} value={a}>
+                      {a}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <span className="truncate">{account}</span>
+            )}
+          </span>
         )}
         {mode === "escalate" && (
           <Select value={to} onValueChange={setTo}>

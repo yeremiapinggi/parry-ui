@@ -4,10 +4,10 @@ import { ArrowUpRightIcon, CircleDotIcon, GitMergeIcon, MailIcon, PhoneIcon, Plu
 
 import { cn } from "cn"
 
-import type { Sentiment, ThreadItem, Ticket } from "@/components/blocks/_data/tickets"
+import type { Sentiment, ThreadItem, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { Stamp } from "@/components/blocks/_parts/message-bubble"
-import { byTime, clock, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
+import { age, byTime, clock, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
 import { channelMeta } from "@/components/blocks/channel-meta"
 import { sentimentMeta, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -72,6 +72,7 @@ const activityOf = (thread: ThreadItem[]) =>
 
 export function TicketSidebar({
   ticket: t,
+  status,
   thread,
   sentiment,
   onSentimentChange,
@@ -79,6 +80,7 @@ export function TicketSidebar({
   className,
 }: {
   ticket: Ticket
+  status: TicketStatus
   thread: ThreadItem[]
   sentiment: Sentiment
   onSentimentChange: (s: Sentiment) => void
@@ -88,6 +90,30 @@ export function TicketSidebar({
   const notes = thread.filter((i) => i.kind === "note").sort((a, b) => byTime(b, a))
   const activity = activityOf(thread)
   const c = t.contact
+  const S = sentimentMeta[sentiment]
+  const sla =
+    status === "closed" ? null : t.state === "out-sla" ? (
+      <Badge variant="destructive">Out SLA · {t.slaOverdue}</Badge>
+    ) : (
+      <Badge variant="outline" className="text-success">
+        Within SLA
+      </Badge>
+    )
+  // Always-visible ticket summary (kept out of the header so the header stays clean).
+  const summary: [string, React.ReactNode][] = [
+    [
+      "Sentiment",
+      <Badge key="s" variant="outline" className={cn("gap-1", S.tone)}>
+        <S.icon />
+        {S.label}
+      </Badge>,
+    ],
+    ["Priority", <Badge key="p" variant={t.priority === "Urgent" ? "destructive" : "secondary"}>{t.priority}</Badge>],
+    ["Created", <span key="c" className="tabular-nums">{shortDateTime(t.createdAt)}</span>],
+    ["Age", <span key="a" className="tabular-nums">{age(t.createdAt)}</span>],
+    ...(sla ? ([["SLA", sla]] as [string, React.ReactNode][]) : []),
+    ["Group", t.group],
+  ]
 
   return (
     <ScrollArea className={cn("bg-card text-card-foreground [&_[data-slot=scroll-area-viewport]>div]:block!", className)}>
@@ -98,10 +124,19 @@ export function TicketSidebar({
         <div className="flex min-w-0 flex-col">
           <h3 className="truncate font-heading font-semibold">{t.customer}</h3>
           <p className="text-xs text-muted-foreground">
-            {t.history.length + 1} tickets · via {channelMeta[t.channel].typeLabel}
+            {t.history.length + 1} {t.history.length ? "tickets" : "ticket"} · via {channelMeta[t.channel].typeLabel}
           </p>
         </div>
       </div>
+
+      <dl aria-label={`Ticket #${t.id} info`} className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b px-4 py-3 text-sm">
+        {summary.map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="text-xs text-muted-foreground">{k}</dt>
+            <dd className="min-w-0 truncate">{v}</dd>
+          </div>
+        ))}
+      </dl>
 
       <Accordion type="multiple" defaultValue={["contact", "details", "notes"]}>
         <Section value="contact" title="Contact">

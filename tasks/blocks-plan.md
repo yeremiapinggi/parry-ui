@@ -106,6 +106,9 @@ Closed and locked tickets dim the composer behind a banner. The sidebar covers C
 (replacing "Ticket Note"), Customer history and Activity log. Shortcuts: Alt+1/2/3, Alt+C, Alt+A, Ctrl+Enter.
 New DS gaps: no rich-text editor (escalation formatting buttons are visual only); a TooltipTrigger wrapped around a
 ToggleGroupItem overwrites its data-state, so tooltips go on the item's label.
+Review 2026-10-30 (7): header trimmed to ticket number, status and actions. Ticket info (sentiment, priority, created, age,
+SLA, group) moved to an always-visible summary at the top of the sidebar; channel and account moved to a "via …" line
+above the composer text box (the From picker when a channel has several accounts).
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)
