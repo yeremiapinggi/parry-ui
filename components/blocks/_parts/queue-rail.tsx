@@ -41,7 +41,7 @@ const viewIcons: Record<ViewId, LucideIcon> = {
   all: InboxIcon,
 }
 
-// Composed stand-in for a Sidebar primitive (the DS has none). Below lg it collapses to icons with tooltips.
+// Composed stand-in for a Sidebar primitive (the DS has none). Narrower than 10rem (a container query) it collapses to icons with tooltips.
 export function QueueRail({
   selected,
   onSelect,
@@ -55,7 +55,7 @@ export function QueueRail({
 }) {
   const online = team.filter((a) => a.presence !== "offline").length
   return (
-    <nav aria-label="Ticket queues" className={cn("flex min-h-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground", className)}>
+    <nav aria-label="Ticket queues" className={cn("@container flex min-h-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground", className)}>
       <ScrollArea className="min-h-0 flex-1 [&_[data-slot=scroll-area-viewport]>div]:block!">
         <div className="flex flex-col gap-4 p-2">
           <RailGroup title="Views">
@@ -96,16 +96,16 @@ export function QueueRail({
           <RailGroup
             title={`Team ${teamName}`}
             action={
-              <span className="text-xs tabular-nums max-lg:hidden" aria-label={`${online} of ${team.length} online`}>
+              <span className="text-xs tabular-nums @max-[10rem]:hidden" aria-label={`${online} of ${team.length} online`}>
                 {online}/{team.length}
               </span>
             }
           >
             {team.map((a) => (
-              <li key={a.id} className="flex h-8 items-center gap-2 px-2 text-sm max-lg:justify-center" title={a.name}>
+              <li key={a.id} className="flex h-8 items-center gap-2 px-2 text-sm @max-[10rem]:justify-center" title={a.name}>
                 <PresenceDot presence={a.presence} />
-                <span className="flex-1 truncate max-lg:sr-only">{a.name}</span>
-                <span className="text-xs tabular-nums max-lg:hidden" aria-label={`${a.load} open tickets`}>
+                <span className="flex-1 truncate @max-[10rem]:sr-only">{a.name}</span>
+                <span className="text-xs tabular-nums @max-[10rem]:hidden" aria-label={`${a.load} open tickets`}>
                   {a.load}
                 </span>
               </li>
@@ -126,8 +126,8 @@ function RailIcon({ icon: Icon }: { icon: LucideIcon }) {
 function RailGroup({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-0.5">
-      <div className="flex h-7 items-center justify-between px-2 max-lg:justify-center">
-        <h3 className="text-xs font-semibold tracking-wide uppercase max-lg:sr-only">{title}</h3>
+      <div className="flex h-7 items-center justify-between px-2 @max-[10rem]:justify-center">
+        <h3 className="text-xs font-semibold tracking-wide uppercase @max-[10rem]:sr-only">{title}</h3>
         {action}
       </div>
       <ul className="flex flex-col gap-0.5">{children}</ul>
@@ -163,17 +163,17 @@ function RailItem({
             disabled={disabled}
             onClick={onClick}
             className={cn(
-              "h-8 w-full justify-start gap-2 px-2 font-normal max-lg:justify-center",
+              "h-8 w-full justify-start gap-2 px-2 font-normal @max-[10rem]:justify-center",
               railHover,
               active && "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
             )}
           >
             {icon}
-            <span className="flex-1 truncate text-left max-lg:sr-only">
+            <span className="flex-1 truncate text-left @max-[10rem]:sr-only">
               {label}
               {hint && <span className="ml-1.5 text-xs">· {hint}</span>}
             </span>
-            <Badge variant="secondary" className="h-5 min-w-6 px-1.5 tabular-nums max-lg:hidden">
+            <Badge variant="secondary" className="h-5 min-w-6 px-1.5 tabular-nums @max-[10rem]:hidden">
               {count}
             </Badge>
           </Button>

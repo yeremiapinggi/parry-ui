@@ -91,6 +91,7 @@ for (const [selector, dark] of [[":root", false], [".dark", true]]) {
 // Block presets define every token, so they get the full pair list; nightshift also sets .dark.
 for (const name of ["classic", "nightshift", "lagoon", "contrast"]) {
   const t = tokens(`[data-theme="${name}"]`)
-  check(name, t, pairs(t, name === "nightshift"))
+  // Selected ticket rows (bg-accent) keep secondary text in muted-foreground
+  check(name, t, [...pairs(t, name === "nightshift"), ["muted-foreground", "accent", 4.5]])
 }
 process.exit(failed ? 1 : 0)

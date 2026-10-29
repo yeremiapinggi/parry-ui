@@ -26,12 +26,14 @@ const filters: FilterChip[] = [
 
 export function TicketList({
   title,
+  leading,
   tickets,
   selectedId,
   onSelect,
   className,
 }: {
   title: string
+  leading?: React.ReactNode
   tickets: Ticket[]
   selectedId?: number
   onSelect: (id: number) => void
@@ -59,7 +61,10 @@ export function TicketList({
     <section aria-label={`${title} tickets`} className={cn("flex min-h-0 flex-col border-r bg-card text-card-foreground", className)}>
       <header className="flex flex-col gap-2 border-b px-3 py-2.5">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="truncate font-heading text-base font-semibold">{title}</h2>
+          <div className="flex min-w-0 items-center gap-1">
+            {leading}
+            <h2 className="truncate font-heading text-base font-semibold">{title}</h2>
+          </div>
           <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={mode} onValueChange={(v) => v && setMode(v)} aria-label="List mode">
             <ToggleGroupItem value="conversation">Conversation</ToggleGroupItem>
             <ToggleGroupItem value="ticket">Ticket</ToggleGroupItem>

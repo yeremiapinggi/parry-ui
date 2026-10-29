@@ -48,13 +48,13 @@ export function Conversation({
         <Avatar>
           <AvatarFallback>{t.initials}</AvatarFallback>
         </Avatar>
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-w-40 flex-1 flex-col">
           <h2 className="truncate font-heading text-base font-semibold">{t.customer}</h2>
           <p className="truncate text-xs text-muted-foreground">
             {channelMeta[t.channel].typeLabel} · {t.account} · opened {t.openedAt}
           </p>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="ml-auto flex items-center gap-1.5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" disabled={Boolean(lockedBy)}>
