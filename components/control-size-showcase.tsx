@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "lucide-react"
 import { WorkspaceSwitcher, demoWorkspaces } from "@/components/application-shell-navigation"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { controlIconSizeClasses, type ControlSize } from "@/components/ui/control-size"
 
 const sizeRows: { size: ControlSize; label: string }[] = [
@@ -17,6 +17,7 @@ const sizeRows: { size: ControlSize; label: string }[] = [
 
 export function ControlSizeShowcase() {
   const [workspace, setWorkspace] = useState<string>(demoWorkspaces[0])
+  const [showcasePopoverOpen, setShowcasePopoverOpen] = useState(true)
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-8">
@@ -54,8 +55,10 @@ export function ControlSizeShowcase() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
+                <SelectGroup>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
           </StateTile>
@@ -80,12 +83,14 @@ export function ControlSizeShowcase() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="invalid">Invalid value</SelectItem>
+                <SelectGroup>
+                  <SelectItem value="invalid">Invalid value</SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
           </StateTile>
           <StateTile label="Open">
-            <Popover defaultOpen>
+            <Popover open={showcasePopoverOpen} onOpenChange={setShowcasePopoverOpen}>
               <PopoverTrigger controlSize="md" aria-label="Open state preview" className="w-full">
                 <span>Open details</span>
                 <ChevronDownIcon aria-hidden="true" className={controlIconSizeClasses.md} />
@@ -135,8 +140,10 @@ function SizeRow({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="pending">Pending</SelectItem>
+          <SelectGroup>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+          </SelectGroup>
         </SelectContent>
       </Select>
       <Popover>
