@@ -1,4 +1,4 @@
-import { AppHeader } from "@/components/blocks/_parts/app-header"
+import { Inbox } from "@/components/blocks/ticket-inbox-01/components/inbox"
 
 export const meta = {
   id: "ticket-inbox-01",
@@ -8,9 +8,5 @@ export const meta = {
 } as const
 
 export default function TicketInbox01() {
-  return (
-    <div className="flex h-dvh flex-col bg-background text-foreground">
-      <AppHeader active="ticket" />
-    </div>
-  )
+  return <Inbox />
 }
