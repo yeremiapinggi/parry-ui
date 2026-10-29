@@ -43,7 +43,7 @@ import { PipelinePerformanceThumbnail, PipelinePerformanceWorkspace } from "@/co
 import { DeveloperPortalWorkspace, DeveloperPortalWorkspaceThumbnail } from "@/components/developer-portal-workspace"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -498,37 +498,47 @@ export function TemplatesGallery() {
         </ToggleGroup>
       </header>
 
-      <section aria-label="Template gallery" className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <section aria-label="Template gallery" className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filteredTemplates.map((template) => (
-          <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
-            <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
-              {template.slug === "activity-timeline" ? <ActivityTimelineThumbnail /> : template.slug === "monitoring-feed" ? <MonitoringFeedThumbnail /> : template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "application-shell" ? <ApplicationShellThumbnail /> : template.slug === "developer-portal-workspace" ? <DeveloperPortalWorkspaceThumbnail /> : template.slug === "pipeline-performance-workspace" ? <PipelinePerformanceThumbnail /> : template.slug === "kanban-pipeline-board" ? <KanbanPipelineBoardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "ranking-analytics-table" ? <RankingAnalyticsTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "bulk-import-wizard" ? <BulkImportWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "ai-chat-workspace" ? <AiChatWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : <TemplateThumbnail />}
-              <div className="template-preview-overlay pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
-                <div className="flex max-w-sm flex-col gap-1.5">
-                  <p className="font-heading text-lg font-semibold">{template.name}</p>
-                  <p className="text-sm leading-relaxed text-white/85">{template.description}</p>
-                </div>
-                <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2">
+          <Card key={template.slug} className="group h-full gap-0 overflow-hidden py-0 transition-shadow hover:shadow-md">
+            <div className="group/preview relative aspect-[16/10] overflow-hidden bg-muted">
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                {template.slug === "activity-timeline" ? <ActivityTimelineThumbnail /> : template.slug === "monitoring-feed" ? <MonitoringFeedThumbnail /> : template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "application-shell" ? <ApplicationShellThumbnail /> : template.slug === "developer-portal-workspace" ? <DeveloperPortalWorkspaceThumbnail /> : template.slug === "pipeline-performance-workspace" ? <PipelinePerformanceThumbnail /> : template.slug === "kanban-pipeline-board" ? <KanbanPipelineBoardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "ranking-analytics-table" ? <RankingAnalyticsTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "bulk-import-wizard" ? <BulkImportWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "ai-chat-workspace" ? <AiChatWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : <TemplateThumbnail />}
+              </div>
+              <DialogTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={`Preview ${template.name}`}
+                  onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }}
+                  className="absolute inset-0 z-0 block w-full cursor-zoom-in touch-pan-y bg-transparent p-0 text-left outline-none transition-opacity active:opacity-95 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                />
+              </DialogTrigger>
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-end p-3 opacity-0 transition-opacity duration-150 [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-hover/preview:opacity-100 [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:opacity-100 [@media(hover:none)]:hidden">
+                <div className="pointer-events-none flex items-center gap-1 rounded-lg border border-border/80 bg-background/90 p-1 shadow-sm backdrop-blur-sm [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:none)]:hidden">
                   <DialogTrigger asChild>
-                    <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary">Preview</Button>
+                    <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary" className="min-h-8 text-xs [@media(hover:none)]:min-h-11">Preview</Button>
                   </DialogTrigger>
-                  <Button asChild size="sm" variant="outline" className="border-white/50 bg-transparent text-white hover:bg-white/15 hover:text-white">
-                    <Link href={`/templates/${template.slug}`}>View Documentation</Link>
+                  <Button asChild size="sm" variant="outline" className="min-h-8 text-xs [@media(hover:none)]:min-h-11">
+                    <Link href={`/templates/${template.slug}`} aria-label={`View documentation for ${template.name}`}>
+                      Docs <ArrowUpRightIcon aria-hidden="true" className="size-3.5" />
+                    </Link>
                   </Button>
                 </div>
               </div>
             </div>
-            <CardHeader className="gap-2 px-5 py-4">
-              <div className="flex items-start justify-between gap-3">
-                <CardTitle className="font-heading text-lg leading-snug">{template.name}</CardTitle>
-                <Badge variant="secondary">{template.category}</Badge>
-              </div>
-              <CardDescription className="min-h-12 leading-relaxed">{template.description}</CardDescription>
+            <CardHeader className="gap-2 px-4 py-4">
+              <CardTitle className="line-clamp-1 text-sm font-semibold leading-5">
+                <Link href={`/templates/${template.slug}`} className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50">
+                  {template.name}
+                </Link>
+              </CardTitle>
+              <CardDescription className="min-h-10 line-clamp-2 text-[13px] leading-5">{template.description}</CardDescription>
+              <Button asChild size="sm" variant="ghost" className="hidden min-h-11 self-start justify-self-start px-3 text-xs [@media(hover:none)]:inline-flex">
+                <Link href={`/templates/${template.slug}`}>
+                  View Docs <ArrowUpRightIcon aria-hidden="true" className="size-3.5" />
+                </Link>
+              </Button>
             </CardHeader>
-            <CardContent className="flex items-center justify-between border-t px-5 py-3 text-sm text-muted-foreground">
-              <span>{template.reference}</span>
-              <ArrowUpRightIcon aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </CardContent>
           </Card>
         ))}
       </section>
