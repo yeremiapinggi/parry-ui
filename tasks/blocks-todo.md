@@ -106,8 +106,8 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ### Checkpoint A — STOP for user review
 - [x] Screenshots: 4 themes × 1440, plus 1024 and 390 in classic
-- [ ] Interim DS gaps list
-- [ ] Wait for user approval before Task 7
+- [x] Interim DS gaps list
+- [x] Wait for user approval before Task 7 (approved 2026-10-30 after review rounds)
 
 ## Task 7: dashboard-01
 **Acceptance criteria:**
