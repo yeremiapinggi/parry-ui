@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 
 export const metadata: Metadata = {
   title: "Developer Portal Workspace · Templates · Parry UI",
-  description: "A developer workspace for managing API applications, credentials, webhooks, usage, and request logs.",
+  description: "An Ivosights developer portal workspace for API applications, endpoint traffic, webhooks, and daily rate limits.",
 }
 
 const toc = [
@@ -25,30 +25,32 @@ const toc = [
 const headingClass = "scroll-mt-24 font-heading text-2xl font-semibold tracking-tight"
 
 const anatomy = [
-  { title: "Application shell", text: "A branded sidebar hosts Overview, Apps, Webhooks, Usage, and Logs. Workspace selection, documentation, theme switching, collapse behavior, the mobile navigation drawer, and account identity are part of the shared shell." },
-  { title: "Overview and usage", text: "A deterministic request dataset drives period totals, error rates, current-versus-previous trend lines, application and endpoint breakdowns, and HTTP status distribution. Date and app filters are applied before every usage calculation." },
+  { title: "Application shell", text: "A light, developer-focused workspace for IvosightsDev with Overview, Apps, Webhooks, Usage, and Logs. Workspace selection, documentation, collapse behavior, the mobile navigation drawer, and account identity are part of the shared shell." },
+  { title: "Overview and usage", text: "The overview pairs 30-day request, error-rate, and active-app metrics with an API usage trend, application summary, and a route-level request table for Sociomile, Ripple10, Cognivo, and Agentics." },
+  { title: "Daily rate limits", text: "Each app shows today’s request count against its environment quota: 50,000 requests per day for production and 10,000 for development, with a progress meter and remaining capacity." },
   { title: "App directory and details", text: "Applications can be searched, filtered by environment, created, edited, opened in a detail drawer, or deleted with confirmation. Client IDs, masked demo secrets, redirect URIs, and app-linked webhook configuration are grouped in the details view." },
-  { title: "Webhook management", text: "Endpoint records contain an owning application, destination URL, subscribed events, enabled state, and last delivery result. Success and failure test actions update endpoint status and add a simulated request log." },
-  { title: "Request inspection", text: "Logs support search, app/status/date filtering, sortable columns, pagination, and a request detail drawer. Authorization and sensitive sample values are redacted in readable JSON metadata." },
+  { title: "Webhook and request inspection", text: "Webhook records show an owning application, event subscriptions, enabled state, and last delivery result. Logs support search, app/status/date filtering, sorting, pagination, and a detail drawer with redacted request metadata." },
 ]
 
 const features = [
-  "Responsive developer-tool shell",
+  "IvosightsDev developer workspace",
   "Collapsible desktop sidebar and mobile drawer",
-  "Overview KPIs with period comparison",
+  "Requests, error rate, and active-app KPIs",
   "7 / 30 / 90-day usage ranges",
+  "Sociomile, Ripple10, Cognivo, and Agentics routes",
+  "Endpoint requests, errors, methods, and share table",
+  "Environment-aware daily request quotas",
   "Application search and environment filters",
   "Create / edit / delete applications",
   "Masked demo credentials with copy and rotation",
   "Webhook subscriptions and test outcomes",
-  "Application, endpoint, and status breakdowns",
   "Searchable, sortable, paginated request logs",
   "Request detail drawer with redacted JSON",
-  "Light / dark theme control",
+  "Consistent light-theme workspace preview",
 ]
 
 const states = [
-  ["Default Overview", "The workspace opens with three fictional applications, API activity, and current-versus-previous period comparison."],
+  ["Default Overview", "The IvosightsDev workspace opens with three sample apps, product endpoint activity, current-versus-previous request trends, and daily quota meters."],
   ["Application Created / Empty List", "Create a demo app and it appears in the directory and overview. Deleting all apps presents an explicit empty state with a create action."],
   ["Credentials Hidden / Revealed", "The client secret is masked by default. Reveal, copy, and regenerate require deliberate actions; regeneration has a confirmation step."],
   ["Webhook Active / Disabled", "The endpoint switch changes enabled state. Success and failure simulations update the delivery status and show response details."],
@@ -67,17 +69,17 @@ export default function DeveloperPortalWorkspacePage() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground"><Link href="/templates" className="hover:text-foreground">Templates</Link><span aria-hidden="true">/</span><span>Developer Tools</span></div>
           <Badge variant="secondary">Page template</Badge>
           <h1 className="font-heading text-4xl font-bold tracking-tight text-balance">Developer Portal Workspace</h1>
-          <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">A developer workspace for managing API applications, credentials, webhooks, usage, and request logs.</p>
+          <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">An Ivosights developer portal for managing API applications, monitoring product endpoints, and keeping daily request usage within quota.</p>
         </header>
 
         <section id="overview" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="overview-heading">
           <h2 id="overview-heading" className={headingClass}>Overview</h2>
-          <p className="leading-relaxed text-muted-foreground">Developer Portal Workspace brings common API platform operations into one compact interface. Its fictional application, usage, webhook, and log data are coordinated in local component state for safe interaction in the preview. It does not connect to an API provider, persist credentials, or send webhook requests.</p>
-          <Card><CardHeader><CardTitle className="text-base">A shared demo workspace</CardTitle><CardDescription>Explore the complete navigation flow without real credentials or backend services.</CardDescription></CardHeader><CardContent className="flex flex-wrap gap-2">{["Overview", "Apps", "Webhooks", "Usage", "Logs", "Local-only state", "Demo credentials"].map((label) => <Badge key={label} variant="secondary">{label}</Badge>)}</CardContent></Card>
+          <p className="leading-relaxed text-muted-foreground">The IvosightsDev workspace brings product API operations into one compact interface. Its sociomile-demo, IvoDevJNE, and IvosightsDev applications use simulated traffic for Sociomile tickets, Ripple10 mentions, Cognivo insights, and Agentics runs. Preview data stays in local component state and does not connect to live services.</p>
+          <Card><CardHeader><CardTitle className="text-base">A product-aware developer workspace</CardTitle><CardDescription>Explore endpoint health, app environments, webhook activity, and daily request quotas without real credentials or backend services.</CardDescription></CardHeader><CardContent className="flex flex-wrap gap-2">{["Overview", "Apps", "Webhooks", "Usage", "Logs", "Endpoint analytics", "Daily rate limits", "Demo credentials"].map((label) => <Badge key={label} variant="secondary">{label}</Badge>)}</CardContent></Card>
         </section>
 
         <section id="live-preview" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="preview-heading">
-          <div className="flex flex-col gap-1"><h2 id="preview-heading" className={headingClass}>Live Preview</h2><p className="text-sm leading-relaxed text-muted-foreground">Navigate between sections, create apps, manage webhook settings, filter usage, and open request details. All controls operate on simulated local state.</p></div>
+          <div className="flex flex-col gap-1"><h2 id="preview-heading" className={headingClass}>Live Preview</h2><p className="text-sm leading-relaxed text-muted-foreground">Navigate between sections, create apps, manage webhook settings, filter usage, review endpoint traffic, and compare daily quota. All controls operate on simulated local state.</p></div>
           <div className="rounded-lg border bg-background p-2 sm:p-4"><DeveloperPortalWorkspace /></div>
         </section>
 
@@ -88,12 +90,12 @@ export default function DeveloperPortalWorkspacePage() {
 
         <section id="features-variants" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="features-heading">
           <h2 id="features-heading" className={headingClass}>Features &amp; Variants</h2>
-          <p className="leading-relaxed text-muted-foreground">The sample is configured for a fictional API platform. Adapt the labels, event catalog, credential shape, and status metrics to match an identity service, payment API, data platform, or internal developer portal.</p>
+          <p className="leading-relaxed text-muted-foreground">The sample uses Ivosights product routes and environment-aware app quotas. Endpoint names, webhook events, and demo data can be adapted to each API’s published contract.</p>
           <Card><CardHeader><CardTitle className="text-base">Included behavior</CardTitle><CardDescription>Every listed interaction remains local to the preview session.</CardDescription></CardHeader><CardContent className="flex flex-wrap gap-2">{features.map((feature) => <Badge key={feature} variant="secondary">{feature}</Badge>)}</CardContent></Card>
           <div className="grid gap-3 md:grid-cols-3">{[
-            { title: "Identity platform", text: "Replace application fields with OAuth client types, allowed grants, scopes, and redirect URI validation. Keep test credentials clearly separated from production secrets." },
-            { title: "Payments API", text: "Swap event names and endpoint breakdowns for payment, customer, and invoice resources. Use webhook delivery attempts and request IDs that match the payment platform’s conventions." },
-            { title: "Internal API catalog", text: "Use app ownership, environment, and endpoint metadata to support service teams. Add ownership and access policies before connecting real services." },
+            { title: "Sociomile", text: "Track ticket queues and app environments alongside request volume. Keep OAuth clients and production credentials scoped to the owning workspace." },
+            { title: "Ripple10 + Cognivo", text: "Review mention collection and insight-generation endpoints with response errors and request share visible at a glance." },
+            { title: "Agentics", text: "Monitor run submissions against development or production quotas, then trace individual request IDs in the log explorer." },
           ].map((item) => <Card key={item.title} className="gap-2 py-4"><CardHeader className="pb-0"><CardTitle className="text-base">{item.title}</CardTitle></CardHeader><CardContent><p className="text-sm leading-relaxed text-muted-foreground">{item.text}</p></CardContent></Card>)}</div>
         </section>
 

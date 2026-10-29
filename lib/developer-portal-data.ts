@@ -46,58 +46,59 @@ export type UsageFact = {
 
 export const initialDeveloperApps: DeveloperApp[] = [
   {
-    id: "app_8f31a2",
-    name: "Northstar Web",
+    id: "app_sociomile_demo",
+    name: "sociomile-demo",
     environment: "Production",
-    clientId: "demo_client_northstar_8f31a2",
-    clientSecret: "demo_secret_northstar_5c1d9e7a",
-    redirectUris: ["https://northstar.example.com/auth/callback", "https://app.northstar.example.com/oauth/return"],
+    clientId: "demo_client_sociomile_8f31a2",
+    clientSecret: "demo_secret_sociomile_5c1d9e7a",
+    redirectUris: ["https://demo.sociomile.ivosights.com/oauth/callback", "https://app.sociomile.ivosights.com/oauth/return"],
     createdAt: "2026-04-12",
   },
   {
-    id: "app_41bc09",
-    name: "Mobile SDK",
+    id: "app_ivodevjne",
+    name: "IvoDevJNE",
     environment: "Development",
-    clientId: "demo_client_mobile_41bc09",
-    clientSecret: "demo_secret_mobile_7b4f12c8",
-    redirectUris: ["http://localhost:3000/callback"],
+    clientId: "demo_client_ivodevjne_41bc09",
+    clientSecret: "demo_secret_ivodevjne_7b4f12c8",
+    redirectUris: ["http://localhost:3000/oauth/callback"],
     createdAt: "2026-06-28",
   },
   {
-    id: "app_763d10",
-    name: "Partner Sandbox",
+    id: "app_ivosightsdev",
+    name: "IvosightsDev",
     environment: "Development",
-    clientId: "demo_client_partner_763d10",
-    clientSecret: "demo_secret_partner_2a8e51f3",
-    redirectUris: ["https://partners.example.dev/oauth/callback"],
+    clientId: "demo_client_ivosightsdev_763d10",
+    clientSecret: "demo_secret_ivosightsdev_2a8e51f3",
+    redirectUris: ["https://developer.ivosights.com/oauth/callback"],
     createdAt: "2026-09-03",
   },
 ]
 
 export const availableWebhookEvents = [
-  "user.created",
-  "user.updated",
-  "payment.succeeded",
-  "payment.failed",
-  "invoice.created",
+  "ticket.created",
+  "ticket.updated",
+  "mention.received",
+  "insight.generated",
+  "agent.run.completed",
+  "agent.run.failed",
   "app.key_rotated",
 ]
 
 export const initialWebhooks: WebhookEndpoint[] = [
   {
     id: "wh_2048a",
-    appId: "app_8f31a2",
-    url: "https://northstar.example.com/hooks/events",
-    events: ["user.created", "payment.succeeded", "payment.failed"],
+    appId: "app_sociomile_demo",
+    url: "https://demo.sociomile.ivosights.com/webhooks/events",
+    events: ["ticket.created", "ticket.updated", "agent.run.completed"],
     enabled: true,
     lastDeliveryAt: "2026-10-29T09:42:00.000Z",
     lastDeliveryStatus: "Success",
   },
   {
     id: "wh_87bc1",
-    appId: "app_41bc09",
-    url: "https://api.example.dev/webhooks/platform",
-    events: ["user.updated", "invoice.created"],
+    appId: "app_ivodevjne",
+    url: "https://hooks.dev.ivosights.com/ripple10",
+    events: ["mention.received", "insight.generated"],
     enabled: false,
     lastDeliveryAt: "2026-10-28T15:18:00.000Z",
     lastDeliveryStatus: "Failed",
@@ -105,12 +106,17 @@ export const initialWebhooks: WebhookEndpoint[] = [
   },
 ]
 
-export const endpointNames = ["/v1/users", "/v1/payments", "/v1/invoices", "/v1/keys"]
+export const endpointNames = [
+  "/v1/sociomile/tickets",
+  "/v1/ripple10/mentions",
+  "/v1/cognivo/insights",
+  "/v1/agentics/runs",
+]
 
 const appRequestBases = [
-  [780, 620, 420, 190],
-  [380, 290, 180, 110],
-  [240, 180, 130, 80],
+  [3120, 2480, 1680, 760],
+  [1520, 1160, 720, 440],
+  [960, 720, 520, 320],
 ]
 const demoAnchor = new Date("2026-10-29T12:00:00.000Z")
 
@@ -145,18 +151,18 @@ export const usageFacts: UsageFact[] = Array.from({ length: 180 }, (_, dayIndex)
 }).flat()
 
 export const initialRequestLogs: RequestLog[] = [
-  { id: "log_001", timestamp: "2026-10-29T10:24:18.442Z", appId: "app_8f31a2", method: "GET", endpoint: "/v1/users", status: 200, responseTimeMs: 84, requestId: "req_7f8a2c19", requestBody: { query: { limit: 20, cursor: "[REDACTED]" } }, responseBody: { data: [{ id: "usr_2a91", name: "Jamie Chen" }], has_more: true } },
-  { id: "log_002", timestamp: "2026-10-29T10:23:51.108Z", appId: "app_41bc09", method: "POST", endpoint: "/v1/payments", status: 201, responseTimeMs: 212, requestId: "req_1c6b5e03", requestBody: { amount: 6400, currency: "usd", source: "[REDACTED]" }, responseBody: { id: "pay_demo_204", status: "succeeded" } },
-  { id: "log_003", timestamp: "2026-10-29T10:21:06.900Z", appId: "app_763d10", method: "GET", endpoint: "/v1/invoices", status: 200, responseTimeMs: 131, requestId: "req_829a41d0", requestBody: { query: { status: "open", limit: 10 } }, responseBody: { data: [{ id: "inv_demo_18", status: "open" }], has_more: false } },
-  { id: "log_004", timestamp: "2026-10-29T10:18:42.012Z", appId: "app_8f31a2", method: "PATCH", endpoint: "/v1/users/usr_2a91", status: 200, responseTimeMs: 96, requestId: "req_91c87f2a", requestBody: { email: "jamie@example.test", metadata: { plan: "growth" } }, responseBody: { id: "usr_2a91", updated: true } },
-  { id: "log_005", timestamp: "2026-10-29T10:16:03.553Z", appId: "app_41bc09", method: "POST", endpoint: "/v1/payments", status: 400, responseTimeMs: 47, requestId: "req_0f5e2a64", requestBody: { amount: 0, currency: "usd", source: "[REDACTED]" }, responseBody: { error: { type: "validation_error", code: "amount_invalid" } } },
-  { id: "log_006", timestamp: "2026-10-29T10:12:29.034Z", appId: "app_8f31a2", method: "GET", endpoint: "/v1/keys", status: 200, responseTimeMs: 63, requestId: "req_aa4d7b83", requestBody: { query: { environment: "production" } }, responseBody: { data: [{ id: "key_demo_1", label: "Primary" }] } },
-  { id: "log_007", timestamp: "2026-10-29T10:08:11.607Z", appId: "app_763d10", method: "DELETE", endpoint: "/v1/invoices/inv_demo_18", status: 204, responseTimeMs: 109, requestId: "req_6db72810", requestBody: { headers: { authorization: "Bearer [REDACTED]" } }, responseBody: { deleted: true } },
-  { id: "log_008", timestamp: "2026-10-29T10:02:49.440Z", appId: "app_41bc09", method: "GET", endpoint: "/v1/users", status: 429, responseTimeMs: 23, requestId: "req_b3fc1907", requestBody: { query: { limit: 100 } }, responseBody: { error: { type: "rate_limit_error", retry_after: 30 } } },
-  { id: "log_009", timestamp: "2026-10-29T09:58:30.224Z", appId: "app_8f31a2", method: "POST", endpoint: "/v1/invoices", status: 500, responseTimeMs: 1502, requestId: "req_72a1d46c", requestBody: { customer_id: "cus_demo_2", amount: 12900, currency: "usd" }, responseBody: { error: { type: "api_error", message: "Temporary processing error" } } },
-  { id: "log_010", timestamp: "2026-10-29T09:50:02.930Z", appId: "app_763d10", method: "GET", endpoint: "/v1/payments", status: 200, responseTimeMs: 118, requestId: "req_3e8019af", requestBody: { query: { created_after: "2026-10-01" } }, responseBody: { data: [{ id: "pay_demo_194", status: "succeeded" }], has_more: false } },
-  { id: "log_011", timestamp: "2026-10-28T18:41:10.001Z", appId: "app_8f31a2", method: "POST", endpoint: "/v1/users", status: 201, responseTimeMs: 177, requestId: "req_7bd890ae", requestBody: { name: "Morgan Lee", email: "morgan@example.test", password: "[REDACTED]" }, responseBody: { id: "usr_demo_29", created: true } },
-  { id: "log_012", timestamp: "2026-10-28T16:20:45.200Z", appId: "app_41bc09", method: "GET", endpoint: "/v1/invoices", status: 200, responseTimeMs: 140, requestId: "req_288b1d46", requestBody: { query: { limit: 20 } }, responseBody: { data: [], has_more: false } },
+  { id: "log_001", timestamp: "2026-10-29T10:24:18.442Z", appId: "app_sociomile_demo", method: "GET", endpoint: "/v1/sociomile/tickets", status: 200, responseTimeMs: 84, requestId: "req_7f8a2c19", requestBody: { query: { status: "open", limit: 25, cursor: "[REDACTED]" } }, responseBody: { data: [{ id: "tkt_demo_2a91", priority: "high" }], has_more: true } },
+  { id: "log_002", timestamp: "2026-10-29T10:23:51.108Z", appId: "app_ivodevjne", method: "GET", endpoint: "/v1/ripple10/mentions", status: 200, responseTimeMs: 212, requestId: "req_1c6b5e03", requestBody: { query: { source: "instagram", limit: 50 } }, responseBody: { data: [{ id: "mnt_demo_204", sentiment: "positive" }], has_more: true } },
+  { id: "log_003", timestamp: "2026-10-29T10:21:06.900Z", appId: "app_ivosightsdev", method: "POST", endpoint: "/v1/cognivo/insights", status: 200, responseTimeMs: 131, requestId: "req_829a41d0", requestBody: { query: { workspace: "ivosights-demo", window: "7d" } }, responseBody: { data: [{ id: "ins_demo_18", status: "ready" }] } },
+  { id: "log_004", timestamp: "2026-10-29T10:18:42.012Z", appId: "app_sociomile_demo", method: "GET", endpoint: "/v1/sociomile/tickets", status: 200, responseTimeMs: 96, requestId: "req_91c87f2a", requestBody: { query: { assignee: "team_support", limit: 20 } }, responseBody: { data: [{ id: "tkt_demo_91c8", updated: true }], has_more: false } },
+  { id: "log_005", timestamp: "2026-10-29T10:16:03.553Z", appId: "app_ivodevjne", method: "POST", endpoint: "/v1/cognivo/insights", status: 400, responseTimeMs: 47, requestId: "req_0f5e2a64", requestBody: { query: { workspace: "ivosights-demo", window: "invalid" } }, responseBody: { error: { type: "validation_error", code: "window_invalid" } } },
+  { id: "log_006", timestamp: "2026-10-29T10:12:29.034Z", appId: "app_sociomile_demo", method: "GET", endpoint: "/v1/sociomile/tickets", status: 200, responseTimeMs: 63, requestId: "req_aa4d7b83", requestBody: { query: { queue: "priority", environment: "production" } }, responseBody: { data: [{ id: "tkt_demo_77aa", queue: "priority" }] } },
+  { id: "log_007", timestamp: "2026-10-29T10:08:11.607Z", appId: "app_ivosightsdev", method: "POST", endpoint: "/v1/agentics/runs", status: 202, responseTimeMs: 109, requestId: "req_6db72810", requestBody: { agent_id: "agt_demo_18", input: { task: "summarize_mentions" } }, responseBody: { run_id: "run_demo_18", status: "queued" } },
+  { id: "log_008", timestamp: "2026-10-29T10:02:49.440Z", appId: "app_ivodevjne", method: "POST", endpoint: "/v1/agentics/runs", status: 429, responseTimeMs: 23, requestId: "req_b3fc1907", requestBody: { agent_id: "agt_demo_03", input: { task: "classify_tickets" } }, responseBody: { error: { type: "rate_limit_error", retry_after: 30 } } },
+  { id: "log_009", timestamp: "2026-10-29T09:58:30.224Z", appId: "app_sociomile_demo", method: "POST", endpoint: "/v1/agentics/runs", status: 500, responseTimeMs: 1502, requestId: "req_72a1d46c", requestBody: { agent_id: "agt_demo_09", input: { task: "ticket_triage" } }, responseBody: { error: { type: "api_error", message: "Temporary processing error" } } },
+  { id: "log_010", timestamp: "2026-10-29T09:50:02.930Z", appId: "app_ivosightsdev", method: "GET", endpoint: "/v1/ripple10/mentions", status: 200, responseTimeMs: 118, requestId: "req_3e8019af", requestBody: { query: { source: "x", created_after: "2026-10-01" } }, responseBody: { data: [{ id: "mnt_demo_194", sentiment: "neutral" }], has_more: false } },
+  { id: "log_011", timestamp: "2026-10-28T18:41:10.001Z", appId: "app_sociomile_demo", method: "GET", endpoint: "/v1/sociomile/tickets", status: 200, responseTimeMs: 177, requestId: "req_7bd890ae", requestBody: { query: { queue: "customer-care", limit: 25 } }, responseBody: { data: [{ id: "tkt_demo_29", status: "resolved" }], has_more: true } },
+  { id: "log_012", timestamp: "2026-10-28T16:20:45.200Z", appId: "app_ivodevjne", method: "GET", endpoint: "/v1/ripple10/mentions", status: 200, responseTimeMs: 140, requestId: "req_288b1d46", requestBody: { query: { topic: "brand-health", limit: 20 } }, responseBody: { data: [], has_more: false } },
 ]
 
 export function formatCompactNumber(value: number) {

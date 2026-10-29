@@ -223,7 +223,7 @@ const templates: Template[] = [
   {
     slug: "developer-portal-workspace",
     name: "Developer Portal Workspace",
-    description: "A developer workspace for managing API applications, credentials, webhooks, usage, and request logs.",
+    description: "An Ivosights developer portal for product API traffic, application environments, endpoint requests, and daily rate limits.",
     category: "Developer Tools",
     reference: "Parry UI · API platform",
   },
