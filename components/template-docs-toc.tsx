@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 
 import { DocsToc } from "@/components/docs-nav"
 
@@ -8,7 +8,7 @@ export function TemplateDocsToc({ items }: { items: { id: string; label: string 
   const [previewOverlapsToc, setPreviewOverlapsToc] = useState(false)
   const tocRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const preview = document.getElementById("live-preview")
     const toc = tocRef.current
     if (!preview || !toc) return
