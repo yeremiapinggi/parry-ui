@@ -1,11 +1,11 @@
-// WCAG contrast check for the hex tokens in app/globals.css (:root and .dark).
+// WCAG contrast check for the hex tokens in app/globals.css (:root, .dark and the [data-theme] block presets).
 // Usage: node scripts/check-contrast.mjs  — exits 1 if any pair is below its minimum.
 import { readFileSync } from "node:fs"
 
 const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8")
 
 function tokens(selector) {
-  const block = css.match(new RegExp(`^${selector.replace(".", "\\.")} \\{([^}]*)\\}`, "m"))[1]
+  const block = css.match(new RegExp(`^${selector.replace(/[.[\]]/g, "\\$&")} \\{([^}]*)\\}`, "m"))[1]
   return Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]))
 }
 
@@ -87,5 +87,10 @@ for (const [selector, dark] of [[":root", false], [".dark", true]]) {
   for (const [id, p] of Object.entries(products)) {
     check(`${id}${dark ? " dark" : ""}`, { ...t, ...p[dark ? "dark" : "light"] }, productPairs)
   }
+}
+// Block presets define every token, so they get the full pair list; nightshift also sets .dark.
+for (const name of ["classic", "nightshift", "lagoon", "contrast"]) {
+  const t = tokens(`[data-theme="${name}"]`)
+  check(name, t, pairs(t, name === "nightshift"))
 }
 process.exit(failed ? 1 : 0)

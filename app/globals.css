@@ -159,6 +159,201 @@
   --sidebar-ring: #5B8DEF;
 }
 
+/*
+ * Block presets (Sociomile page blocks, /blocks). Set on <html> by the block route; each defines every token.
+ * They sit after .dark so they win at equal specificity. sync-theme.mjs ignores them; check-contrast.mjs checks them.
+ */
+[data-theme="classic"] {
+  --background: #F1F3F6;
+  --foreground: #1F2937;
+  --card: #FFFFFF;
+  --card-foreground: #1F2937;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F2937;
+  --primary: #1A6CCC; /* Sociomile blue #1A73D9 darkened: 4.2:1 as text on the grey background */
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #1662B8;
+  --link: #1A66C2;
+  --placeholder: #64748B;
+  --secondary: #E8EDF3;
+  --secondary-foreground: #1F2937;
+  --muted: #E8EDF3;
+  --muted-foreground: #4B5563;
+  --accent: #E8F1FC;
+  --accent-foreground: #1F2937;
+  --destructive: #C81E1E;
+  --destructive-foreground: #FFFFFF;
+  --destructive-soft: #FEE2E2;
+  --success: #15803D;
+  --success-soft: #DCFCE7;
+  --warning: #B45309;
+  --warning-soft: #FEF3C7;
+  --info: #1D4ED8;
+  --info-soft: #DBEAFE;
+  --border: #DCE1E8;
+  --input: #C7CFD9;
+  --ring: #1A73D9;
+  --chart-1: #1A73D9;
+  --chart-2: #5BA3F0;
+  --chart-3: #0F4C92;
+  --chart-4: #9CC6F5;
+  --chart-5: #475569;
+  --radius: 0.5rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #374151;
+  --sidebar-primary: #1A73D9;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E8F1FC;
+  --sidebar-accent-foreground: #0F4C92;
+  --sidebar-border: #DCE1E8;
+  --sidebar-ring: #1A73D9;
+}
+
+[data-theme="nightshift"] {
+  --background: #0D1117;
+  --foreground: #E2E8EF;
+  --card: #151B23;
+  --card-foreground: #E2E8EF;
+  --popover: #151B23;
+  --popover-foreground: #E2E8EF;
+  --primary: #4C9CFF;
+  --primary-foreground: #0D1117; /* white on #4C9CFF is 2.9:1 */
+  --primary-hover: #6AADFF;
+  --link: #6AADFF;
+  --placeholder: #8B97A6;
+  --secondary: #1F2731;
+  --secondary-foreground: #E2E8EF;
+  --muted: #1C232D; /* must differ from --card */
+  --muted-foreground: #95A1B1;
+  --accent: #232C38;
+  --accent-foreground: #E2E8EF;
+  --destructive: #F87171;
+  --destructive-foreground: #FFFFFF;
+  --destructive-soft: #3B1A1E;
+  --success: #4ADE80;
+  --success-soft: #12301F;
+  --warning: #FBBF24;
+  --warning-soft: #3A2C0E;
+  --info: #60A5FA;
+  --info-soft: #172A4A;
+  --border: #2A3340;
+  --input: #7A879A; /* switch track at 80% needs 3:1 on card */
+  --ring: #4C9CFF;
+  --chart-1: #4C9CFF;
+  --chart-2: #8CC2FF;
+  --chart-3: #2563EB;
+  --chart-4: #22D3EE;
+  --chart-5: #94A3B8;
+  --radius: 0.5rem;
+  --sidebar: #0A0E13;
+  --sidebar-foreground: #C3CCD8;
+  --sidebar-primary: #4C9CFF;
+  --sidebar-primary-foreground: #0A0E13;
+  --sidebar-accent: #18202A;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1F2731;
+  --sidebar-ring: #4C9CFF;
+}
+
+[data-theme="lagoon"] {
+  --background: #EDF3F2;
+  --foreground: #13302E;
+  --card: #FFFFFF;
+  --card-foreground: #13302E;
+  --popover: #FFFFFF;
+  --popover-foreground: #13302E;
+  --primary: #0F7C72; /* Ivosights teal */
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #0C665E;
+  --link: #0B6B62;
+  --placeholder: #5B6F6D;
+  --secondary: #E0ECEA;
+  --secondary-foreground: #13302E;
+  --muted: #E0ECEA;
+  --muted-foreground: #4A5F5D;
+  --accent: #DDEFEC;
+  --accent-foreground: #13302E;
+  --destructive: #C81E1E;
+  --destructive-foreground: #FFFFFF;
+  --destructive-soft: #FEE2E2;
+  --success: #15803D;
+  --success-soft: #DCFCE7;
+  --warning: #B45309;
+  --warning-soft: #FEF3C7;
+  --info: #1D4ED8;
+  --info-soft: #DBEAFE;
+  --border: #D3E0DE;
+  --input: #B9CCC9;
+  --ring: #0F7C72;
+  --chart-1: #0F7C72;
+  --chart-2: #4FB3A8;
+  --chart-3: #0E3B3A;
+  --chart-4: #A3D9D2;
+  --chart-5: #6B7F7D;
+  --radius: 0.875rem; /* 14px */
+  --sidebar: #0E3B3A;
+  --sidebar-foreground: #E5F2F0;
+  --sidebar-primary: #5FD3C4;
+  --sidebar-primary-foreground: #0E3B3A;
+  --sidebar-accent: #175250;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1D5A57;
+  --sidebar-ring: #5FD3C4;
+}
+
+[data-theme="contrast"] {
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --card: #FFFFFF;
+  --card-foreground: #000000;
+  --popover: #FFFFFF;
+  --popover-foreground: #000000;
+  --primary: #0046B8;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #00368F;
+  --link: #0046B8;
+  --placeholder: #404040;
+  --secondary: #F0F0F0;
+  --secondary-foreground: #000000;
+  --muted: #F0F0F0;
+  --muted-foreground: #333333;
+  --accent: #DCE8FA;
+  --accent-foreground: #000000;
+  --destructive: #B00020;
+  --destructive-foreground: #FFFFFF;
+  --destructive-soft: #FFE5E9;
+  --success: #0B6B2E;
+  --success-soft: #E3F5E9;
+  --warning: #8A4B00;
+  --warning-soft: #FFF1D6;
+  --info: #0046B8;
+  --info-soft: #E0EAFA;
+  --border: #000000;
+  --input: #000000;
+  --ring: #0046B8;
+  --chart-1: #0046B8;
+  --chart-2: #000000;
+  --chart-3: #B00020;
+  --chart-4: #0B6B2E;
+  --chart-5: #8A4B00;
+  --radius: 0.25rem; /* 4px */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #0046B8;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #DCE8FA;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #000000;
+  --sidebar-ring: #0046B8;
+}
+
+/* Contrast preset: 2px borders. There is no border-width token, so the border utilities are bumped here. */
+[data-theme="contrast"] .border { border-width: 2px; }
+[data-theme="contrast"] .border-t { border-top-width: 2px; }
+[data-theme="contrast"] .border-b { border-bottom-width: 2px; }
+[data-theme="contrast"] .border-l { border-left-width: 2px; }
+[data-theme="contrast"] .border-r { border-right-width: 2px; }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
