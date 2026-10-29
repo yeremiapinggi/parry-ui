@@ -246,7 +246,7 @@ export function PipelinePerformanceWorkspace({
         </div>
       )}
       {!validWindow && <p role="alert" className="text-sm text-destructive">Choose a start date on or before the end date.</p>}
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(13rem,1.5fr)_minmax(10rem,1fr)_minmax(10rem,1fr)_auto] xl:items-end">
+      <div className="grid template-filter-grid gap-3 xl:items-end">
         <FilterSelect id="pipeline-filter" label="Pipeline" value={pipelineId} onValueChange={(value) => { setPipelineId(value); setSelectedStage(null); setShowDrilldown(false) }} options={pipelineDefinitions.map((item) => ({ value: item.id, label: item.name }))} />
         <FilterSelect id="pipeline-owner-filter" label="Owner" value={owner} onValueChange={setOwner} options={[{ value: "all", label: "All owners" }, ...ownerOptions.map((item) => ({ value: item, label: item }))]} />
         <FilterSelect id="pipeline-source-filter" label="Lead source" value={leadSource} onValueChange={setLeadSource} options={[{ value: "all", label: "All sources" }, ...leadSourceOptions.map((item) => ({ value: item, label: item }))]} />
@@ -290,7 +290,7 @@ export function PipelinePerformanceWorkspace({
   const compareLabel = compare ? "Compared with the immediately preceding equal-length period" : "Click a metric to inspect its underlying opportunities"
 
   return (
-    <div className="flex min-w-0 flex-col gap-5" data-pipeline-workspace>
+    <div className="template-preview-container flex min-w-0 flex-col gap-5" data-pipeline-workspace>
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2"><h2 className="font-heading text-xl font-semibold tracking-tight sm:text-2xl">Pipeline Performance</h2><Badge variant="secondary">{dataLabel}</Badge></div>
@@ -310,7 +310,7 @@ export function PipelinePerformanceWorkspace({
 
       <section className="flex flex-col gap-2" aria-labelledby="pipeline-overview-heading">
         <div className="flex flex-wrap items-center justify-between gap-2"><h3 id="pipeline-overview-heading" className="text-sm font-semibold">Overview</h3><p className="text-xs text-muted-foreground">{compareLabel}</p></div>
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        <div className="grid template-kpi-grid gap-3">
           {metricCards.map((metric) => (
             <MetricCard key={metric.testId} metric={metric} compare={compare} />
           ))}
@@ -321,7 +321,7 @@ export function PipelinePerformanceWorkspace({
         </div>
       </section>
 
-      <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)]" aria-label="Funnel and revenue forecast">
+      <section className="grid template-two-pane-grid min-w-0 gap-4" aria-label="Funnel and revenue forecast">
         <PipelineFunnel stages={metrics.stages} selectedStage={selectedStage} onSelectStage={selectStage} wonCount={metrics.wonCount} lostCount={metrics.lostCount} compare={compare} wonStage={pipeline.wonStage} lostStage={pipeline.lostStage} currencyCode={pipeline.currency} entityLabel={pipeline.entityLabel} />
         <ForecastSummary monthlyForecast={metrics.monthlyForecast} totalPipelineValue={metrics.totalPipelineValue} weightedForecast={metrics.weightedForecast} wonRevenue={metrics.wonRevenue} endDateLabel={periodEndLabel} currencyCode={pipeline.currency} pipelineValueLabel={metricLabels.pipelineValue ?? "Open pipeline value"} weightedForecastLabel={metricLabels.weightedForecast ?? "Weighted forecast"} wonRevenueLabel={metricLabels.wonRevenue ?? "Won Revenue"} />
       </section>
@@ -376,7 +376,7 @@ function getComparison(current: number, previous: number) {
 function LoadingWorkspace() {
   return (
     <div className="flex flex-col gap-5" aria-label="Loading pipeline performance">
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">{Array.from({ length: 4 }, (_, index) => <Card key={index} className="gap-3 py-4"><CardHeader><Skeleton className="h-4 w-32" /></CardHeader><CardContent className="flex flex-col gap-3"><Skeleton className="h-7 w-24" /><Skeleton className="h-3 w-full" /></CardContent></Card>)}</div>
+      <div className="grid template-kpi-grid gap-3">{Array.from({ length: 4 }, (_, index) => <Card key={index} className="gap-3 py-4"><CardHeader><Skeleton className="h-4 w-32" /></CardHeader><CardContent className="flex flex-col gap-3"><Skeleton className="h-7 w-24" /><Skeleton className="h-3 w-full" /></CardContent></Card>)}</div>
       <div className="grid gap-4 xl:grid-cols-2"><Card className="gap-3 py-4"><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent className="flex flex-col gap-3">{Array.from({ length: 4 }, (_, index) => <Skeleton key={index} className="h-14 w-full" />)}</CardContent></Card><Card className="gap-3 py-4"><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent><Skeleton className="h-56 w-full" /></CardContent></Card></div>
       <p role="status" className="sr-only">Loading pipeline analytics.</p>
     </div>

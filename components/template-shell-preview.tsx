@@ -15,7 +15,7 @@ export function TemplateShellPreview({
   const [mode, setMode] = useState<"standalone" | "shell">("standalone")
 
   return (
-    <div className="flex min-w-0 flex-col gap-4">
+    <div className="template-preview-container flex min-w-0 flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card px-4 py-3">
         <div className="flex flex-col gap-1">
           <Label className="font-data text-sm font-medium">Preview mode</Label>

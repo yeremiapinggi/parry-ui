@@ -181,7 +181,7 @@ function MetricSummary({
   ]
 
   return (
-    <section aria-label="Key performance indicators" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <section aria-label="Key performance indicators" className="grid template-kpi-grid gap-3">
       {metrics.map((metric) => (
         <MetricCard
           key={metric.label}
@@ -203,7 +203,7 @@ function MetricSummary({
 function DashboardSkeleton() {
   return (
     <div aria-label="Loading analytics dashboard" aria-busy="true" className="flex flex-col gap-5">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid template-kpi-grid gap-3">
         {Array.from({ length: 4 }, (_, index) => (
           <Card key={index} className="gap-3 py-4">
             <CardContent className="flex flex-col gap-3 px-5 py-0"><Skeleton className="h-4 w-28" /><Skeleton className="h-8 w-24" /><Skeleton className="h-3 w-32" /></CardContent>
@@ -266,7 +266,7 @@ function DateRangeControls({
   rangeError: string | null
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-3 lg:items-end">
+    <div className="flex min-w-0 flex-col gap-3 @5xl:items-end">
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex min-w-40 flex-col gap-1.5">
           <Label htmlFor="analytics-date-range" className="text-xs text-muted-foreground">Date range</Label>
@@ -344,8 +344,8 @@ export function AnalyticsDashboard({ state = "default" }: { state?: AnalyticsDem
   }
 
   return (
-    <section className="font-data flex min-w-0 flex-col gap-5" aria-labelledby="analytics-overview-heading">
-      <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+    <section className="template-preview-container font-data flex min-w-0 flex-col gap-5" aria-labelledby="analytics-overview-heading">
+      <header className="template-dashboard-header flex gap-4">
         <div className="flex flex-col gap-2">
           <h2 id="analytics-overview-heading" className="font-data text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Analytics Overview</h2>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">Monitor activity, audience, and service performance across your workspace.</p>
@@ -377,7 +377,7 @@ export function AnalyticsDashboard({ state = "default" }: { state?: AnalyticsDem
         <div className="flex flex-col gap-5">
           <MetricSummary current={current} previous={hasCompletePreviousPeriod ? previous : undefined} compare={compare} />
           <ActivityTrendChart data={trend} compare={compare && hasCompletePreviousPeriod} />
-<div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+<div className="grid template-chart-grid gap-4">
             <ActivityByChannelChart data={current.channels} />
             <ActivityDistributionChart completed={current.completed} activity={current.activity} />
             <TopSegmentsList data={current.segments} />

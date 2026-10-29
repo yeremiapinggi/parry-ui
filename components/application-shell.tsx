@@ -44,7 +44,7 @@ export function ApplicationShell({
   const hasSidebar = variant === "sidebar" || variant === "hybrid"
 
   return (
-    <section data-layout={variant} aria-label={`${variant} application shell`} className={cn("min-w-0 overflow-hidden rounded-xl border bg-background text-foreground", className)}>
+    <section data-layout={variant} aria-label={`${variant} application shell`} className={cn("template-preview-container min-w-0 overflow-hidden rounded-xl border bg-background text-foreground", className)}>
       <div className={variant === "sidebar" ? "hidden" : "block"}>
         <TopNavbar
           groups={groups}
@@ -70,13 +70,13 @@ export function ApplicationShell({
           onItemExpandedChange={(id, expanded) => setExpandedGroups((current) => ({ ...current, [id]: expanded }))}
           className={cn(
             "min-h-[36rem] border-r",
-            hasSidebar ? "hidden md:flex" : "hidden",
+            hasSidebar ? "hidden @3xl:flex" : "hidden",
             sidebarCollapsed ? "w-20" : isSidebar ? "w-64" : "w-60",
           )}
         />
 
         <div className="min-w-0 flex-1">
-          <header className="flex min-h-14 items-center justify-between gap-3 border-b px-3 py-2 sm:px-5">
+          <header className="flex min-h-14 items-center justify-between gap-3 border-b px-3 py-2 @2xl:px-5">
             <div className="flex min-w-0 items-center gap-2">
               {isSidebar ? (
                 <MobileNavigationDrawer
@@ -85,7 +85,7 @@ export function ApplicationShell({
                   onNavigate={onNavigate}
                   workspaceName={workspaceName}
                   onWorkspaceChange={setWorkspaceName}
-                  className="md:hidden"
+                  className="@3xl:hidden"
                 />
               ) : null}
               <Breadcrumb items={breadcrumbItems} onNavigate={onNavigate} />
@@ -97,7 +97,7 @@ export function ApplicationShell({
               </div>
             ) : null}
           </header>
-          <main className="min-w-0 px-3 py-4 sm:px-5 sm:py-6 lg:px-6">
+          <main className="template-preview-container min-w-0 px-3 py-4 @2xl:px-5 @2xl:py-6 @5xl:px-6">
             {children}
           </main>
         </div>

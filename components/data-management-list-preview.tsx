@@ -281,7 +281,7 @@ export function DataManagementListPreview({ showControls = true }: { showControl
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="template-preview-container flex min-w-0 flex-col gap-5">
       <div className="flex flex-col gap-4">
         {showControls && (
           <details className="group rounded-xl border bg-card">

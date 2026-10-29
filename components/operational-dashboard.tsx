@@ -647,8 +647,8 @@ export function OperationalDashboard({ previewState = "default" }: { previewStat
   ]
 
   return (
-    <div className="flex w-full flex-col gap-5 text-foreground sm:gap-6">
-      <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <div className="template-preview-container flex w-full min-w-0 flex-col gap-5 text-foreground sm:gap-6">
+      <header className="template-dashboard-header flex gap-5">
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2"><Badge variant="secondary">Operations</Badge><span className="text-xs text-muted-foreground">Fictional demo snapshot</span></div>
           <div className="flex flex-col gap-1.5"><h2 id="operational-overview-heading" className="font-heading text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Operations Overview</h2><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Current workload, service health, and SLA risks that may need a response.</p></div>
@@ -668,18 +668,18 @@ export function OperationalDashboard({ previewState = "default" }: { previewStat
         </div>
       </header>
 
-      <section aria-label="Operational metrics" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-label="Operational metrics" className="grid template-kpi-grid gap-3">
         {metrics.map((metric) => <MetricCard key={metric.title} title={metric.title} value={metric.value} context={metric.context} icon={metric.icon} tone={metric.tone} onClick={metric.action} pressed={metric.selected} />)}
       </section>
 
       {previewState === "empty" ? <div role="status" className="flex items-start gap-3 rounded-lg border border-dashed p-4 text-sm"><CircleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" /><div><p className="font-medium">This demo snapshot is empty</p><p className="mt-1 leading-relaxed text-muted-foreground">The dashboard retains its structure while showing that there are no work items to summarize.</p></div></div> : null}
 
-      <section aria-label="Workload overview" className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.8fr)]">
+      <section aria-label="Workload overview" className="grid template-workload-grid gap-4">
         <WorkloadChart items={matchedItems} selectedChannel={channelFilter} onSelectChannel={(channel) => setChannel(channel)} />
         <QueueStatus items={matchedItems} selectedStatus={statusFilter} onSelectStatus={showStatus} />
       </section>
 
-      <section aria-label="Service and issue overview" className="grid gap-4 lg:grid-cols-[minmax(18rem,0.82fr)_minmax(0,1.45fr)]">
+      <section aria-label="Service and issue overview" className="grid template-service-grid gap-4">
         <ServiceHealth services={serviceHealth} />
         <AttentionRequired
           issues={visibleIssues}

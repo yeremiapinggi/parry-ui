@@ -228,3 +228,145 @@
     @apply bg-background font-sans text-foreground;
   }
 }
+
+@layer components {
+  #live-preview,
+  .template-preview-container {
+    container: template-preview / inline-size;
+    min-width: 0;
+  }
+
+  .template-kpi-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-chart-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-filter-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-two-pane-grid,
+  .template-workload-grid,
+  .template-service-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-dashboard-header {
+    flex-direction: column;
+  }
+
+  @container template-preview (min-width: 40rem) {
+    .template-kpi-grid,
+    .template-filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .template-chart-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @container template-preview (min-width: 64rem) {
+    .template-kpi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .template-filter-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .template-two-pane-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.9fr);
+    }
+
+    .template-workload-grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.8fr);
+    }
+
+    .template-service-grid {
+      grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.45fr);
+    }
+
+    .template-dashboard-header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+
+  @container template-preview (min-width: 80rem) {
+    .template-chart-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @container template-preview (max-width: 39.999rem) {
+    #live-preview [class*="grid-cols-2"],
+    #live-preview [class*="grid-cols-3"],
+    #live-preview [class*="grid-cols-4"],
+    #live-preview [class*="sm:grid-cols-["],
+    #live-preview [class*="md:grid-cols-["],
+    #live-preview [class*="lg:grid-cols-["],
+    #live-preview [class*="xl:grid-cols-["],
+    .template-preview-container [class*="grid-cols-2"],
+    .template-preview-container [class*="grid-cols-3"],
+    .template-preview-container [class*="grid-cols-4"],
+    .template-preview-container [class*="sm:grid-cols-["],
+    .template-preview-container [class*="md:grid-cols-["],
+    .template-preview-container [class*="lg:grid-cols-["],
+    .template-preview-container [class*="xl:grid-cols-["] {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #live-preview [class~="sm:flex-row"],
+    #live-preview [class~="md:flex-row"],
+    #live-preview [class~="lg:flex-row"],
+    #live-preview [class~="xl:flex-row"],
+    .template-preview-container [class~="sm:flex-row"],
+    .template-preview-container [class~="md:flex-row"],
+    .template-preview-container [class~="lg:flex-row"],
+    .template-preview-container [class~="xl:flex-row"] {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    #live-preview [class*="sm:col-span-"],
+    #live-preview [class*="md:col-span-"],
+    #live-preview [class*="lg:col-span-"],
+    .template-preview-container [class*="sm:col-span-"],
+    .template-preview-container [class*="md:col-span-"],
+    .template-preview-container [class*="lg:col-span-"] {
+      grid-column: auto !important;
+    }
+
+    #live-preview [class*="min-w-"]:not(table),
+    .template-preview-container [class*="min-w-"]:not(table) {
+      min-width: 0 !important;
+    }
+  }
+
+  @container template-preview (min-width: 40rem) and (max-width: 63.999rem) {
+    #live-preview [class*="grid-cols-3"],
+    #live-preview [class*="grid-cols-4"],
+    .template-preview-container [class*="grid-cols-3"],
+    .template-preview-container [class*="grid-cols-4"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #live-preview [class~="lg:flex-row"],
+    #live-preview [class~="xl:flex-row"],
+    .template-preview-container [class~="lg:flex-row"],
+    .template-preview-container [class~="xl:flex-row"] {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+  }
+
+  #live-preview [data-slot="chart"],
+  .template-preview-container [data-slot="chart"] {
+    min-width: 0;
+  }
+}

@@ -511,21 +511,21 @@ export function TopNavbar({
   const items = groups.flatMap((group) => group.items)
 
   return (
-    <header className="flex min-h-16 flex-wrap items-center gap-3 border-b bg-background px-3 py-2 sm:px-5">
+    <header className="flex min-h-16 flex-wrap items-center gap-3 border-b bg-background px-3 py-2 @2xl:px-5">
       <MobileNavigationDrawer
         groups={groups}
         activeItemId={activeItemId}
         onNavigate={onNavigate}
         workspaceName={workspaceName}
         onWorkspaceChange={onWorkspaceChange}
-        className="md:hidden"
+        className="@3xl:hidden"
       />
       <div className="flex min-w-0 items-center gap-2">
         <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground" aria-hidden="true"><BlocksIcon className="size-4" /></span>
         <span className="hidden truncate font-data text-sm font-semibold sm:inline">Northstar</span>
       </div>
       <div className="hidden min-w-52 max-w-64 flex-1 sm:block"><WorkspaceSwitcher value={workspaceName} onValueChange={onWorkspaceChange} /></div>
-      <nav aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto md:flex md:overflow-visible">
+      <nav aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto @3xl:flex @3xl:overflow-visible">
         {items.map((item) => (
           <div key={item.id} className="flex shrink-0 items-center gap-0.5">
             <NavigationItem item={item} active={containsActiveItem(item, activeItemId)} onNavigate={onNavigate} />

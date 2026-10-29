@@ -125,7 +125,7 @@ export function DeveloperPortalWorkspace() {
   )
 
   return (
-    <section aria-label="Developer Portal Workspace preview" className="developer-portal-preview min-w-0 overflow-hidden rounded-xl border bg-background text-foreground shadow-sm">
+    <section aria-label="Developer Portal Workspace preview" className="developer-portal-preview template-preview-container min-w-0 overflow-hidden rounded-xl border bg-background text-foreground shadow-sm">
       <div className="flex min-h-[44rem] items-stretch">
         <AppSidebar
           groups={navigation}
@@ -138,7 +138,7 @@ export function DeveloperPortalWorkspace() {
           showWorkspace={false}
           brandName="Developer Portal"
           footerContent={desktopFooter}
-          className={`hidden min-h-[44rem] border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] md:flex ${sidebarCollapsed ? "w-[4.5rem]" : "w-64"}`}
+          className={`hidden min-h-[44rem] border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] @3xl:flex ${sidebarCollapsed ? "w-[4.5rem]" : "w-64"}`}
         />
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-10 flex min-h-16 flex-wrap items-center justify-between gap-3 border-b bg-background/95 px-3 py-2 backdrop-blur sm:px-5">
@@ -152,19 +152,19 @@ export function DeveloperPortalWorkspace() {
                 showWorkspace={false}
                 brandName="Developer Portal"
                 footerContent={mobileFooter}
-                className="md:hidden"
+                className="@3xl:hidden"
               />
-              <div className="hidden min-w-44 sm:block"><WorkspaceSwitcher value={workspaceName} onValueChange={setWorkspaceName} options={["IvosightsDev workspace", "Ivosights Sandbox", "Ivosights Staging"]} /></div>
-              <span className="truncate font-data text-sm font-semibold sm:hidden">{activePage === "overview" ? "Overview" : activePage === "apps" ? "Apps" : activePage === "webhooks" ? "Webhooks" : activePage === "usage" ? "Usage" : "Logs"}</span>
+              <div className="hidden min-w-44 @2xl:block"><WorkspaceSwitcher value={workspaceName} onValueChange={setWorkspaceName} options={["IvosightsDev workspace", "Ivosights Sandbox", "Ivosights Staging"]} /></div>
+              <span className="truncate font-data text-sm font-semibold @2xl:hidden">{activePage === "overview" ? "Overview" : activePage === "apps" ? "Apps" : activePage === "webhooks" ? "Webhooks" : activePage === "usage" ? "Usage" : "Logs"}</span>
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
-              <Badge variant="outline" className="hidden items-center gap-1.5 border-success/30 bg-success-soft text-success sm:inline-flex"><span aria-hidden="true" className="size-1.5 rounded-full bg-success" />API operational</Badge>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link href="/docs">Documentation</Link></Button>
-              <Button asChild variant="ghost" size="icon-sm" className="sm:hidden" aria-label="Open documentation"><Link href="/docs" aria-label="Open documentation"><span className="text-xs font-semibold">Docs</span></Link></Button>
+              <Badge variant="outline" className="hidden items-center gap-1.5 border-success/30 bg-success-soft text-success @2xl:inline-flex"><span aria-hidden="true" className="size-1.5 rounded-full bg-success" />API operational</Badge>
+              <Button asChild variant="ghost" size="sm" className="hidden @2xl:inline-flex"><Link href="/docs">Documentation</Link></Button>
+              <Button asChild variant="ghost" size="icon-sm" className="@2xl:hidden" aria-label="Open documentation"><Link href="/docs" aria-label="Open documentation"><span className="text-xs font-semibold">Docs</span></Link></Button>
             </div>
           </header>
-          <main className="min-w-0 flex-1 px-3 py-5 sm:px-5 sm:py-6 lg:px-6">
-            <div className="mx-auto w-full max-w-7xl">{content}</div>
+          <main className="template-preview-container min-w-0 flex-1 px-3 py-5 @2xl:px-5 @2xl:py-6 @5xl:px-6">
+            <div className="template-preview-container mx-auto w-full max-w-7xl">{content}</div>
           </main>
         </div>
       </div>
