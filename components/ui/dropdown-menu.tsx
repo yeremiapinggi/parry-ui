@@ -4,6 +4,7 @@ import * as React from "react"
 import { cn } from "cn"
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
+import { controlTriggerBaseClasses, controlTriggerSizeClasses, type ControlSize } from "@/components/ui/control-size"
 
 function DropdownMenu({
   ...props
@@ -20,11 +21,21 @@ function DropdownMenuPortal({
 }
 
 function DropdownMenuTrigger({
+  className,
+  controlSize,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & {
+  controlSize?: ControlSize
+}) {
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
+      data-control-size={controlSize}
+      className={cn(
+        controlSize && controlTriggerBaseClasses,
+        controlSize && controlTriggerSizeClasses[controlSize],
+        className
+      )}
       {...props}
     />
   )

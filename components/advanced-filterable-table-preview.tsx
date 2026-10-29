@@ -106,13 +106,13 @@ function StatusQuickFilter({ selectedStatuses, onChange }: {
 
   return <Popover>
     <PopoverTrigger asChild>
-      <Button type="button" variant={selectedStatuses.length ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5 px-2.5" aria-label={selectedStatuses.length ? `Filter by status, ${selectedStatuses.length} selected` : "Filter by status"}>
+      <Button type="button" variant={selectedStatuses.length ? "secondary" : "outline"} controlSize="sm" aria-label={selectedStatuses.length ? `Filter by status, ${selectedStatuses.length} selected` : "Filter by status"}>
         Status
         {selectedStatuses.length > 0 && <Badge variant="outline" className="h-5 min-w-5 px-1 text-[10px]">{selectedStatuses.length}</Badge>}
         <ChevronDownIcon data-icon="inline-end" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
+    <PopoverContent data-parry-theme widthMode="custom" side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
       <div className="flex items-center justify-between gap-2 px-2 py-1">
         <span className="text-xs font-semibold">Status</span>
         <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={selectedStatuses.length === 0} onClick={() => onChange([])}>Clear</Button>
@@ -144,13 +144,13 @@ function PriorityQuickFilter({ selectedPriority, onChange }: {
 
   return <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger asChild>
-      <Button type="button" variant={selectedPriority ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5 px-2.5" aria-label={selectedPriority ? `Filter by priority: ${selectedPriority}` : "Filter by priority"}>
+      <Button type="button" variant={selectedPriority ? "secondary" : "outline"} controlSize="sm" aria-label={selectedPriority ? `Filter by priority: ${selectedPriority}` : "Filter by priority"}>
         Priority
         {selectedPriority && <Badge variant="outline" className="h-5 px-1.5 text-[10px]">{selectedPriority}</Badge>}
         <ChevronDownIcon data-icon="inline-end" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
+    <PopoverContent data-parry-theme widthMode="custom" side="bottom" align="start" collisionPadding={12} className="w-52 p-2">
       <div className="flex flex-col gap-0.5" role="group" aria-label="Priority options">
         {options.map(({ value, label }) => <Button key={value ?? "all"} type="button" variant="ghost" size="sm" className="h-8 w-full justify-between px-2 text-left font-normal" aria-pressed={selectedPriority === value} onClick={() => selectPriority(value)}>
           <span className="text-left">{label}</span>

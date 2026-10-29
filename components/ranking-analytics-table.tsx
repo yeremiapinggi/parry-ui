@@ -222,11 +222,11 @@ function PlatformFilter({ selected, onChange }: { selected: string[]; onChange: 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button type="button" variant={selected.length ? "secondary" : "outline"} size="sm" aria-label={selected.length ? `Filter platforms, ${selected.length} selected` : "Filter platforms"}>
+        <Button type="button" variant={selected.length ? "secondary" : "outline"} controlSize="sm" aria-label={selected.length ? `Filter platforms, ${selected.length} selected` : "Filter platforms"}>
           Platforms{selected.length > 0 ? ` · ${selected.length}` : ""}
         </Button>
       </PopoverTrigger>
-      <PopoverContent data-parry-theme align="start" className="w-52 p-3">
+      <PopoverContent data-parry-theme widthMode="custom" align="start" className="w-52 p-3">
         <div className="mb-2 flex items-center justify-between gap-2">
           <p className="text-sm font-medium">Platforms</p>
           <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={!selected.length} onClick={() => onChange([])}>Clear</Button>
@@ -252,9 +252,9 @@ function ColumnVisibility({ visible, onChange }: { visible: ColumnKey[]; onChang
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm" aria-label="Choose visible columns"><SlidersHorizontalIcon data-icon="inline-start" />Columns</Button>
+        <Button type="button" variant="outline" controlSize="sm" aria-label="Choose visible columns"><SlidersHorizontalIcon data-icon="inline-start" />Columns</Button>
       </PopoverTrigger>
-      <PopoverContent data-parry-theme align="end" className="w-56 p-3">
+      <PopoverContent data-parry-theme widthMode="custom" align="end" className="w-56 p-3">
         <p className="mb-2 text-sm font-medium">Visible columns</p>
         <fieldset className="flex flex-col gap-2" aria-label="Choose visible table columns">
           {columnOptions.map(({ key, label }) => (

@@ -44,27 +44,29 @@ export function ChartCatalogPreview() {
 export function PopoverCatalogPreview() {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm">
-          Filter status <ChevronDownIcon data-icon="inline-end" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-56">
-        <PopoverHeader>
-          <PopoverTitle>Status</PopoverTitle>
-          <PopoverDescription>Choose which records to show.</PopoverDescription>
-        </PopoverHeader>
-        <div className="flex flex-col gap-3 px-1 py-2">
-          <div className="flex items-center gap-2">
-            <Checkbox id="catalog-status-active" defaultChecked />
-            <Label htmlFor="catalog-status-active">Active</Label>
+      <div className="w-56">
+        <PopoverTrigger asChild>
+          <Button type="button" variant="outline" controlSize="sm" className="w-full">
+            Filter status <ChevronDownIcon data-icon="inline-end" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent widthMode="match-trigger" align="start" className="p-3">
+          <PopoverHeader>
+            <PopoverTitle>Status</PopoverTitle>
+            <PopoverDescription>Choose which records to show.</PopoverDescription>
+          </PopoverHeader>
+          <div className="flex flex-col gap-3 px-1 py-2">
+            <div className="flex items-center gap-2">
+              <Checkbox id="catalog-status-active" defaultChecked />
+              <Label htmlFor="catalog-status-active">Active</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox id="catalog-status-pending" />
+              <Label htmlFor="catalog-status-pending">Pending</Label>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id="catalog-status-pending" />
-            <Label htmlFor="catalog-status-pending">Pending</Label>
-          </div>
-        </div>
-      </PopoverContent>
+        </PopoverContent>
+      </div>
     </Popover>
   )
 }

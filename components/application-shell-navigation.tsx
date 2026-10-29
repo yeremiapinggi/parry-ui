@@ -38,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { controlIconSizeClasses, type ControlSize } from "@/components/ui/control-size"
 
 export type ShellNavigationItem = {
   id: string
@@ -296,18 +297,32 @@ export function WorkspaceSwitcher({
   onValueChange,
   options = [...demoWorkspaces],
   compact = false,
+  size = "md",
+  disabled = false,
+  className,
 }: {
   value: string
   onValueChange: (value: string) => void
   options?: string[]
   compact?: boolean
+  size?: ControlSize
+  disabled?: boolean
+  className?: string
 }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button type="button" variant="outline" size={compact ? "icon" : "sm"} aria-label="Switch workspace" className={cn("min-w-0 justify-between gap-2 font-data", compact && "w-10 justify-center px-0")}>
-          <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground"><BlocksIcon className="size-3.5" /></span>
-          {!compact ? <><span className="min-w-0 flex-1 truncate text-left">{value}</span><ChevronDownIcon data-icon="inline-end" /></> : null}
+        <Button
+          type="button"
+          variant="outline"
+          size={compact ? "icon" : "default"}
+          controlSize={compact ? "sm" : size}
+          aria-label="Switch workspace"
+          disabled={disabled}
+          className={cn("min-w-0 justify-between gap-2 font-data", compact && "size-8 justify-center px-0", className)}
+        >
+          <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground"><BlocksIcon className={controlIconSizeClasses[compact ? "sm" : size]} /></span>
+          {!compact ? <><span className="min-w-0 flex-1 truncate text-left">{value}</span><ChevronDownIcon data-icon="inline-end" className={controlIconSizeClasses[size]} /></> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-56">

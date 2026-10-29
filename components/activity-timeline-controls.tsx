@@ -40,6 +40,7 @@ export function TimelineFilters({ filters, onChange, onReset }: TimelineFiltersP
         <SearchIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         <Input
           type="search"
+          controlSize="sm"
           value={filters.search}
           onChange={(event) => onChange({ ...filters, search: event.currentTarget.value })}
           placeholder="Search activities"
@@ -50,12 +51,12 @@ export function TimelineFilters({ filters, onChange, onReset }: TimelineFiltersP
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button type="button" size="sm" variant="outline" aria-label={`Filter by activity type${filters.types.length ? `, ${filters.types.length} selected` : ""}`}>
+          <Button type="button" controlSize="sm" variant="outline" aria-label={`Filter by activity type${filters.types.length ? `, ${filters.types.length} selected` : ""}`}>
             <FilterIcon data-icon="inline-start" />
             Activity type{filters.types.length > 0 && <span className="rounded-full bg-muted px-1.5 text-[10px]">{filters.types.length}</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-72">
+        <PopoverContent widthMode="custom" align="start" className="w-72">
           <PopoverHeader>
             <PopoverTitle>Activity types</PopoverTitle>
             <p className="text-xs text-muted-foreground">Select one or more events to include.</p>

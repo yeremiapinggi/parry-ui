@@ -104,11 +104,11 @@ export function AdvancedTableViewOptions({ configuration, onChange }: {
 
   return <Popover>
     <PopoverTrigger asChild>
-      <Button type="button" variant="outline" size="sm" className="h-8 shrink-0 gap-1.5 px-2.5">
+      <Button type="button" variant="outline" controlSize="sm" className="shrink-0">
         <Columns3Icon data-icon="inline-start" />View options<ChevronDownIcon data-icon="inline-end" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent data-parry-theme side="bottom" align="end" collisionPadding={12} className="w-[min(46rem,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] max-h-[var(--radix-popover-content-available-height)] overflow-hidden p-0">
+    <PopoverContent data-parry-theme widthMode="custom" side="bottom" align="end" collisionPadding={12} className="w-[min(46rem,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] max-h-[var(--radix-popover-content-available-height)] overflow-hidden p-0">
       <div className="flex max-h-[min(34rem,var(--radix-popover-content-available-height))] min-h-0 flex-col">
         <header className="border-b px-4 py-3">
           <h2 className="text-sm font-semibold">View options</h2>

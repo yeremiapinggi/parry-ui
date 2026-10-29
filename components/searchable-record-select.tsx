@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import type { SelectOption } from "@/lib/create-edit-form-config"
+import { controlIconSizeClasses } from "@/components/ui/control-size"
 
 export function SearchableRecordSelect({
   id,
@@ -48,15 +49,16 @@ export function SearchableRecordSelect({
           aria-expanded={open}
           aria-controls={listboxId}
           disabled={disabled}
+          controlSize="md"
           className="w-full justify-between font-normal"
         >
           <span className={selectedOption ? "truncate text-foreground" : "truncate text-muted-foreground"}>
             {selectedOption?.label ?? placeholder}
           </span>
-          <ChevronsUpDownIcon aria-hidden="true" className="shrink-0 text-muted-foreground" />
+          <ChevronsUpDownIcon aria-hidden="true" className={`shrink-0 text-muted-foreground ${controlIconSizeClasses.md}`} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent data-parry-theme align="start" className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-2">
+      <PopoverContent data-parry-theme widthMode="match-trigger" align="start" className="p-2">
         <div className="relative">
           <SearchIcon aria-hidden="true" className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -119,15 +121,16 @@ export function RecordTagsSelect({
           aria-haspopup="listbox"
           aria-controls={listboxId}
           disabled={disabled}
-          className="h-auto min-h-8 w-full justify-between gap-2 py-1.5 font-normal"
+          controlSize="md"
+          className="h-auto min-h-control-md w-full justify-between gap-2 px-control-pad-md py-2 font-normal"
         >
           <span className="flex min-w-0 flex-wrap items-center gap-1">
             {selectedOptions.length ? selectedOptions.map((option) => <Badge key={option.value} variant="secondary" className="font-normal">{option.label}</Badge>) : <span className="text-muted-foreground">Select tags</span>}
           </span>
-          <ChevronsUpDownIcon aria-hidden="true" className="shrink-0 text-muted-foreground" />
+          <ChevronsUpDownIcon aria-hidden="true" className={`shrink-0 text-muted-foreground ${controlIconSizeClasses.md}`} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent data-parry-theme align="start" className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-3">
+      <PopoverContent data-parry-theme widthMode="match-trigger" align="start" className="p-3">
         <p className="text-xs font-medium text-muted-foreground">Select one or more tags</p>
         <div id={listboxId} role="group" aria-label="Available tags" className="flex flex-col gap-2">
           {options.map((option) => {

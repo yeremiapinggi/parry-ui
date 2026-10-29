@@ -233,12 +233,12 @@ export function AdvancedFilterBuilder({
         else if (isOpen) setComposer(null)
       }}>
         <PopoverTrigger asChild>
-          <Button type="button" variant="ghost" size="sm" className="h-7 min-w-0 max-w-[min(20rem,calc(100vw-5rem))] justify-start gap-1.5 rounded-none px-2 text-left text-xs font-medium text-info hover:bg-info/10 hover:text-info" aria-label={`Edit filter: ${label}`}>
+          <Button type="button" variant="ghost" controlSize="sm" className="min-w-0 max-w-[min(20rem,calc(100vw-5rem))] justify-start text-left font-medium text-info hover:bg-info/10 hover:text-info" aria-label={`Edit filter: ${label}`}>
             <FilterIcon aria-hidden="true" className="size-3.5 shrink-0" />
             <span className="truncate">{label}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={10} className="w-[min(22rem,calc(100vw-1.5rem))] p-2.5">
+        <PopoverContent data-parry-theme widthMode="custom" side="bottom" align="start" collisionPadding={10} className="w-[min(22rem,calc(100vw-1.5rem))] p-2.5">
           {renderEditor()}
         </PopoverContent>
       </Popover>
@@ -253,11 +253,11 @@ export function AdvancedFilterBuilder({
       else if (isOpen) setComposer(null)
     }}>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs">
+        <Button type="button" variant="outline" controlSize="sm" className="shrink-0">
           <CirclePlusIcon data-icon="inline-start" />{label}
         </Button>
       </PopoverTrigger>
-      <PopoverContent data-parry-theme side="bottom" align="start" collisionPadding={10} className="w-[min(22rem,calc(100vw-1.5rem))] p-2.5">
+      <PopoverContent data-parry-theme widthMode="custom" side="bottom" align="start" collisionPadding={10} className="w-[min(22rem,calc(100vw-1.5rem))] p-2.5">
         {renderEditor()}
       </PopoverContent>
     </Popover>
@@ -265,7 +265,7 @@ export function AdvancedFilterBuilder({
 
   function renderLogic(group: FilterGroup, label: string) {
     return <Select value={group.logic} onValueChange={(value) => changeLogic(group.id, value as FilterLogic)}>
-      <SelectTrigger aria-label={`${label} match logic`} className="h-7 w-[7.25rem] shrink-0 px-2 text-xs"><SelectValue /></SelectTrigger>
+      <SelectTrigger size="sm" aria-label={`${label} match logic`} className="w-[7.25rem] shrink-0"><SelectValue /></SelectTrigger>
       <SelectContent data-parry-theme position="popper" align="start" className="w-[var(--radix-select-trigger-width)]"><SelectGroup><SelectItem value="AND">Match All</SelectItem><SelectItem value="OR">Match Any</SelectItem></SelectGroup></SelectContent>
     </Select>
   }
@@ -273,7 +273,7 @@ export function AdvancedFilterBuilder({
   return <div className="flex min-w-0 flex-col gap-2">
     <div className="relative min-w-0 sm:w-56 sm:shrink-0">
       <SearchIcon aria-hidden="true" className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-      <Input aria-label="Search records" placeholder="Search records…" value={search} onChange={(event) => onSearchChange(event.target.value)} className="h-8 border-transparent bg-muted/40 pl-9 shadow-none focus-visible:border-ring sm:w-full" />
+      <Input controlSize="sm" aria-label="Search records" placeholder="Search records…" value={search} onChange={(event) => onSearchChange(event.target.value)} className="h-8 border-transparent bg-muted/40 pl-9 shadow-none focus-visible:border-ring sm:w-full" />
     </div>
     {expanded && <div id="advanced-filter-builder" className="flex min-w-0 flex-col gap-2.5 rounded-lg border bg-background p-2.5 sm:p-3">
       <div className="flex min-w-0 flex-wrap items-center gap-2" aria-label="Advanced filter query">

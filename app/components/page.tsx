@@ -6,6 +6,7 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import { ChartCatalogPreview, PopoverCatalogPreview, RadioGroupCatalogPreview, ToggleGroupCatalogPreview } from "@/components/component-catalog-previews";
 import { ApplicationShellComponentExample } from "@/components/application-shell-component-examples"
+import { ControlSizeShowcase } from "@/components/control-size-showcase"
 import { ProductSwitcher } from "@/components/product-theme"
 ;
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -57,9 +58,11 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
         name: "input",
         preview: (
           <div className="flex w-full max-w-60 flex-col gap-2">
-            <Input aria-label="Email" placeholder="name@ivosights.com" />
-            <Input aria-label="Invalid email" defaultValue="not-an-email" aria-invalid />
-            <Input aria-label="Disabled email" placeholder="Disabled" disabled />
+            <Input controlSize="sm" aria-label="Small email input" placeholder="Small" />
+            <Input controlSize="md" aria-label="Medium email input" placeholder="Medium" />
+            <Input controlSize="lg" aria-label="Large email input" placeholder="Large" />
+            <Input controlSize="md" aria-label="Invalid email" defaultValue="not-an-email" aria-invalid />
+            <Input controlSize="md" aria-label="Disabled email" placeholder="Disabled" disabled />
           </div>
         ),
       },
@@ -304,6 +307,9 @@ export default function ComponentsPage() {
     <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 lg:grid-cols-[200px_1fr]">
       <aside className="hidden lg:block">
         <nav aria-label="Components" className="sticky top-14 flex max-h-[calc(100vh-3.5rem)] flex-col gap-5 overflow-y-auto py-8 text-sm">
+          <a href="#control-sizes" className="rounded-md px-2 py-1 capitalize text-muted-foreground hover:bg-muted hover:text-foreground">
+            Control sizes
+          </a>
           {groups.map((g) => (
             <div key={g.title} className="flex flex-col gap-1">
               <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">{g.title}</p>
@@ -356,6 +362,16 @@ export default function ComponentsPage() {
             </div>
           </section>
         ))}
+
+        <section id="control-sizes" className="flex scroll-mt-20 flex-col gap-5 rounded-xl border bg-card p-5 sm:p-6" aria-labelledby="control-sizes-heading">
+          <header className="flex flex-col gap-1">
+            <h2 id="control-sizes-heading" className="font-heading text-xl font-semibold">Interactive control sizing</h2>
+            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              Shared sizing keeps related controls aligned while popover content remains flexible for filters and complex panels.
+            </p>
+          </header>
+          <ControlSizeShowcase />
+        </section>
 
         <Link href="/themes" className="inline-flex items-center gap-1 self-center text-sm font-medium text-link hover:underline">
           See the color tokens on Themes <ArrowRightIcon className="size-4" />
