@@ -12,12 +12,14 @@ import {
   FieldCatalogPreview,
   GithubStarsCatalogPreview,
   InputGroupCatalogPreview,
+  InputOTPCatalogPreview,
   KbdCatalogPreview,
   LoginButtonCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
+  SliderCatalogPreview,
   SocialButtonCatalogPreview,
   SpinnerCatalogPreview,
   ToggleGroupCatalogPreview,
@@ -98,6 +100,8 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     items: [
       { name: "field", preview: <FieldCatalogPreview /> },
       { name: "input-group", preview: <InputGroupCatalogPreview /> },
+      { name: "input-otp", preview: <InputOTPCatalogPreview /> },
+      { name: "slider", preview: <SliderCatalogPreview /> },
       {
         name: "input",
         preview: (

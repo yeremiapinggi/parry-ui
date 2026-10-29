@@ -19,7 +19,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 1: Foundations & Theming
 - [x] T2 aspect-ratio, scroll-area, resizable (`shadcn add`; dep `react-resizable-panels`). Sheet: 3/7, 4/8, 4/9 Selesai. (S)
-  - Note: pnpm isn't installed here and `shadcn add` calls pnpm (pnpm-lock.yaml exists). Run it with a `pnpm` shim to `corepack pnpm`, then `npm install --package-lock-only` and `npm ci` to keep both lockfiles and an npm-layout `node_modules`.
+  - Note: pnpm isn't installed here and `shadcn add` calls pnpm (pnpm-lock.yaml exists). Run it with a `pnpm` shim to `corepack pnpm`, then `npm install --package-lock-only` and `npm ci` to keep both lockfiles and an npm-layout `node_modules`. The shim also needs `npm_config_strict_dep_builds=false` (pnpm 12 fails on ignored build scripts). Stop the dev server first, and clear `.next/dev` after `npm ci`, or Turbopack keeps resolving the old `node_modules`.
 - [x] T3 theme-toggle (icon / labeled / outline × default/outline/ghost), theme-switcher (light/dark/system, settings row) — refactor `components/theme-mode-picker.tsx` into these, keep its callers working. (S)
 
 ## Phase 2: Actions
@@ -29,7 +29,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 3: Form & Input
 - [x] T6 field, input-group. shadcn's `form` item is now empty (forms are built from Field), so no `form` component or react-hook-form/zod deps; Form rows set to Review with that note. Sheet: Field 2/43, Input Group 6/39. Install with `yes n |` so shadcn doesn't overwrite the themed button/input/textarea. (M)
-- [ ] T7 input-otp (dep `input-otp`), slider (single + range). (S)
+- [x] T7 input-otp (dep `input-otp`), slider (single + range). (S)
 - [ ] T8 calendar, date-picker, mini-calendar (dep `react-day-picker`, `date-fns`). (M)
 - [ ] T9 command (dep `cmdk`), combobox (single/multi, grouped, clear), autocomplete. Reuse pattern from `components/searchable-record-select.tsx`. (M)
 - [ ] T10 choicebox, rating, form-star-rating, tags, color-picker. (M)

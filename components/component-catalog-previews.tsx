@@ -1,6 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, MinusIcon, PlusIcon, SearchIcon } from "lucide-react"
+import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -14,6 +16,7 @@ import { GithubStars } from "@/components/ui/github-stars"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
 import { Input } from "@/components/ui/input"
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
@@ -22,6 +25,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
@@ -367,6 +371,58 @@ export function InputGroupCatalogPreview() {
           <Spinner />
         </InputGroupAddon>
       </InputGroup>
+    </div>
+  )
+}
+
+export function InputOTPCatalogPreview() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} aria-label="Verification code">
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
+          <InputOTPSlot index={3} />
+          <InputOTPSlot index={4} />
+          <InputOTPSlot index={5} />
+        </InputOTPGroup>
+      </InputOTP>
+      <InputOTP maxLength={4} value="2486" disabled aria-label="Disabled PIN">
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+          <InputOTPSlot index={3} />
+        </InputOTPGroup>
+      </InputOTP>
+    </div>
+  )
+}
+
+export function SliderCatalogPreview() {
+  const [volume, setVolume] = useState([60])
+  const [price, setPrice] = useState([20, 80])
+
+  return (
+    <div className="flex w-full max-w-60 flex-col gap-6 text-sm">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <Label id="catalog-slider-volume">Volume</Label>
+          <span className="text-muted-foreground tabular-nums">{volume[0]}%</span>
+        </div>
+        <Slider aria-labelledby="catalog-slider-volume" value={volume} onValueChange={setVolume} max={100} step={1} />
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <Label id="catalog-slider-price">Price range</Label>
+          <span className="text-muted-foreground tabular-nums">${price[0]} – ${price[1]}</span>
+        </div>
+        <Slider aria-labelledby="catalog-slider-price" value={price} onValueChange={setPrice} max={100} step={5} minStepsBetweenThumbs={1} />
+      </div>
     </div>
   )
 }
