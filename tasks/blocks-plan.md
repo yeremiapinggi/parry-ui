@@ -97,6 +97,15 @@ filter and sort are Notion-style icon tools (`_parts/view-toolbar.tsx`) right of
 Conversation/Ticket toggle and Download Excel after them; adding a filter opens a chip row below with the value menu
 open. Filters, sort and search act on the sample data. `_parts/filter-chips.tsx` was folded into the toolbar.
 Review 2026-10-30 (5): count line set to text-sm; Conversation/Ticket toggle removed.
+Review 2026-10-30 (6): ticket detail redesigned from a product brief (`ticket-detail.tsx` + header / timeline / composer /
+sidebar). Header carries status, channel, assignee, sentiment, priority, created, age and SLA, with inline status, assign
+and Close/Reopen and a grouped More menu. The timeline has filter tabs, day dividers, grouping, relative time (full on
+hover), delivery ticks, inline notes and escalations, and jump to latest. The composer has Reply / Escalate / Note, is
+compact until focused, and offers "/" quick replies, attachment chips, a counter near 2000 and split Send / Send & Close.
+Closed and locked tickets dim the composer behind a banner. The sidebar covers Contact, Ticket details, Internal notes
+(replacing "Ticket Note"), Customer history and Activity log. Shortcuts: Alt+1/2/3, Alt+C, Alt+A, Ctrl+Enter.
+New DS gaps: no rich-text editor (escalation formatting buttons are visual only); a TooltipTrigger wrapped around a
+ToggleGroupItem overwrites its data-state, so tooltips go on the item's label.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

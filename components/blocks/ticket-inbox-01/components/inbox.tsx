@@ -1,19 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeftIcon, DownloadIcon, PanelLeftOpenIcon, PanelRightIcon } from "lucide-react"
+import { DownloadIcon, PanelLeftOpenIcon } from "lucide-react"
+
+import { cn } from "cn"
 
 import { channels } from "@/components/blocks/_data/channels"
-import { currentAgent } from "@/components/blocks/_data/team"
 import { tickets, views } from "@/components/blocks/_data/tickets"
 import { AppShell } from "@/components/blocks/_parts/app-shell"
 import { QueueRail, type QueueKey } from "@/components/blocks/_parts/queue-rail"
 import { channelMeta } from "@/components/blocks/channel-meta"
-import { ContextPanel } from "@/components/blocks/ticket-inbox-01/components/context-panel"
-import { Conversation } from "@/components/blocks/ticket-inbox-01/components/conversation"
+import { TicketDetail } from "@/components/blocks/ticket-inbox-01/components/ticket-detail"
 import { TicketList } from "@/components/blocks/ticket-inbox-01/components/ticket-list"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -32,14 +32,14 @@ const queueTitle = (key: QueueKey) => {
   return kind === "view" ? views.find((v) => v.id === id)!.label : channelMeta[id as keyof typeof channelMeta].label
 }
 
-// The page is queue rail + ticket list inside the app shell; a ticket opens as a full-screen dialog
-// (conversation, plus details from 1280 or in a Sheet). Below 1024 the rail moves into a Sheet.
+// The page is queue rail + ticket list inside the app shell; a ticket opens TicketDetail in a dialog that is full
+// screen by default and can shrink to a large window. Below 1024 the queue rail moves into a Sheet.
 export function Inbox() {
   const [queue, setQueue] = useState<QueueKey>("view:progress")
   const [selectedId, setSelectedId] = useState<number>()
   const [openId, setOpenId] = useState<number | null>(null)
   const [queuesOpen, setQueuesOpen] = useState(false)
-  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const shown = inQueue(queue)
   const ticket = tickets.find((t) => t.id === openId)
 
@@ -78,49 +78,24 @@ export function Inbox() {
         <DialogContent
           showCloseButton={false}
           aria-describedby={undefined}
+          // Focus the dialog, not its first button, so no tooltip pops on open; Tab then walks the header.
+          onOpenAutoFocus={(e) => {
+            e.preventDefault()
+            ;(e.currentTarget as HTMLElement).focus()
+          }}
           // Opened from state, not a DialogTrigger, so hand focus back to the ticket row ourselves.
           onCloseAutoFocus={(e) => {
             e.preventDefault()
             document.querySelector<HTMLElement>('[data-ticket-row][aria-current="true"]')?.focus()
           }}
-          className="top-0 left-0 flex h-dvh w-screen max-w-none translate-x-0 translate-y-0 gap-0 rounded-none bg-background p-0 ring-0 sm:max-w-none data-open:zoom-in-100 data-closed:zoom-out-100"
-        >
-          {ticket && (
-            <>
-              <DialogTitle className="sr-only">
-                Ticket #{ticket.id} · {ticket.customer}
-              </DialogTitle>
-              <div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px]">
-                <Conversation
-                  ticket={ticket}
-                  currentAgent={currentAgent.name}
-                  leading={
-                    <DialogClose asChild>
-                      <Button variant="ghost" size="icon-sm" aria-label="Back to tickets">
-                        <ArrowLeftIcon />
-                      </Button>
-                    </DialogClose>
-                  }
-                  trailing={
-                    <Button variant="outline" size="icon-sm" className="xl:hidden" aria-label="Show ticket details" onClick={() => setDetailsOpen(true)}>
-                      <PanelRightIcon />
-                    </Button>
-                  }
-                />
-                <aside aria-label="Ticket details" className="hidden min-h-0 flex-col border-l xl:flex">
-                  <ContextPanel key={ticket.id} ticket={ticket} className="min-h-0 flex-1" />
-                </aside>
-              </div>
-              <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-                <SheetContent side="right" className="w-80 gap-0 p-0">
-                  <SheetHeader className="border-b">
-                    <SheetTitle>Ticket details</SheetTitle>
-                  </SheetHeader>
-                  <ContextPanel key={ticket.id} ticket={ticket} className="min-h-0 flex-1" />
-                </SheetContent>
-              </Sheet>
-            </>
+          className={cn(
+            "flex max-w-none gap-0 overflow-hidden bg-background p-0 sm:max-w-none data-open:zoom-in-100 data-closed:zoom-out-100",
+            expanded
+              ? "top-0 left-0 h-dvh w-screen translate-x-0 translate-y-0 rounded-none ring-0"
+              : "top-[4dvh] h-[92dvh] w-[min(1280px,94vw)] translate-y-0 rounded-2xl"
           )}
+        >
+          {ticket && <TicketDetail key={ticket.id} ticket={ticket} expanded={expanded} onToggleExpanded={() => setExpanded((e) => !e)} />}
         </DialogContent>
       </Dialog>
 
