@@ -332,20 +332,20 @@ export function AiChatWorkspace() {
 
   return (
     <div data-parry-theme className="relative flex h-[min(780px,calc(100dvh-2rem))] min-h-[560px] w-full min-w-0 overflow-hidden rounded-xl border bg-card font-data text-card-foreground shadow-sm">
-      <aside className={`hidden min-h-0 shrink-0 border-r bg-background transition-[width] md:flex ${sidebarCollapsed ? "w-14" : "w-72"}`}>
+      <aside className={`hidden min-h-0 shrink-0 border-r bg-background transition-[width] @3xl:flex ${sidebarCollapsed ? "w-14" : "w-72"}`}>
         {renderSidebar(sidebarCollapsed, () => setSidebarCollapsed(true), () => setSidebarCollapsed(false))}
       </aside>
 
       <section aria-label="AI chat workspace" className="flex min-h-0 min-w-0 flex-1 flex-col">
         <header className="flex min-h-14 shrink-0 items-center gap-3 border-b px-3 py-2.5 sm:px-5">
-          <Button type="button" size="icon-sm" variant="ghost" className="md:hidden" aria-label="Open conversation sidebar" onClick={() => setMobileSidebarOpen(true)}><MenuIcon /></Button>
+          <Button type="button" size="icon-sm" variant="ghost" className="@3xl:hidden" aria-label="Open conversation sidebar" onClick={() => setMobileSidebarOpen(true)}><MenuIcon /></Button>
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border bg-muted/50 text-muted-foreground"><AgentIcon agentId={activeAgent.id} className="size-4" /></div>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <h1 className="truncate text-sm font-semibold">{activeAgent.name}</h1>
             <p className="truncate text-[11px] text-muted-foreground">{activeConversation?.title ?? "New conversation"}</p>
           </div>
           <Badge variant="outline" className="shrink-0">Demo workspace</Badge>
-          <Button type="button" size="icon-sm" variant="ghost" className="hidden md:inline-flex" aria-label={sidebarCollapsed ? "Expand conversation sidebar" : "Collapse conversation sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}>
+          <Button type="button" size="icon-sm" variant="ghost" className="hidden @3xl:inline-flex" aria-label={sidebarCollapsed ? "Expand conversation sidebar" : "Collapse conversation sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}>
             {sidebarCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
           </Button>
         </header>
@@ -384,7 +384,7 @@ export function AiChatWorkspace() {
       </section>
 
       <Dialog open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
-        <DialogContent showCloseButton={false} data-parry-theme className="left-2 top-2 flex h-[calc(100dvh-1rem)] w-[min(20rem,calc(100vw-1rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-hidden p-0 md:hidden">
+        <DialogContent showCloseButton={false} data-parry-theme className="left-2 top-2 flex h-[calc(100dvh-1rem)] w-[min(20rem,calc(100vw-1rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-hidden p-0">
           <DialogHeader className="sr-only">
             <DialogTitle>Conversation history</DialogTitle>
             <DialogDescription>Search and switch between AI conversations.</DialogDescription>

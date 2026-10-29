@@ -346,6 +346,11 @@
     .template-preview-container [class*="min-w-"]:not(table) {
       min-width: 0 !important;
     }
+
+    #live-preview [class*="w-["],
+    .template-preview-container [class*="w-["] {
+      max-width: 100% !important;
+    }
   }
 
   @container template-preview (min-width: 40rem) and (max-width: 63.999rem) {

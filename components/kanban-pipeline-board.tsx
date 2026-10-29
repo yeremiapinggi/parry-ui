@@ -282,7 +282,7 @@ export function KanbanPipelineBoard() {
       </section>
 
       {loading ? (
-        <div aria-label="Loading pipeline" className="flex gap-3 overflow-hidden" role="status">
+        <div aria-label="Loading pipeline" className="flex min-w-0 gap-3 overflow-x-auto overscroll-x-contain pb-2" role="status">
           {stages.map((stage) => <div key={stage.id} className="flex w-[17rem] shrink-0 flex-col gap-3 rounded-xl border p-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-28 w-full" /><Skeleton className="h-24 w-full" /></div>)}
           <span className="sr-only">Loading opportunities</span>
         </div>

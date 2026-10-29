@@ -499,6 +499,7 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
   const [newItemIds, setNewItemIds] = useState<string[]>([])
   const [isRefreshing, setIsRefreshing] = useState(false)
   const itemButtonRefs = useRef(new Map<string, HTMLButtonElement>())
+  const workspaceRef = useRef<HTMLDivElement>(null)
   const enabledFilters = { source: true, sentiment: true, dateRange: true, reviewStatus: true, sort: true, ...options.enabledFilters }
   const labels = options.reviewLabels ?? { reviewed: "Reviewed", unreviewed: "Unreviewed" }
   const actions = { review: true, bookmark: true, tags: true, copy: true, original: true, ...options.actions }
@@ -544,7 +545,8 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
 
   function onSelectItem(item: MonitoringFeedItem) {
     setSelectedId(item.id)
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) setMobileDetailsOpen(true)
+    const workspaceWidth = workspaceRef.current?.getBoundingClientRect().width ?? window.innerWidth
+    if (workspaceWidth < 1024) setMobileDetailsOpen(true)
   }
 
   function toggleReview(item: MonitoringFeedItem) {
@@ -624,8 +626,8 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
     onCopy: () => selectedItem && void copyContent(selectedItem),
   }
 
-  return <div className="flex h-[min(80dvh,800px)] min-h-[600px] w-full min-w-0 flex-col overflow-hidden rounded-lg border bg-background text-foreground md:min-h-[620px]">
-    <header className="flex shrink-0 flex-col gap-2 border-b px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+  return <div ref={workspaceRef} className="flex h-[min(80dvh,800px)] min-h-[600px] w-full min-w-0 flex-col overflow-hidden rounded-lg border bg-background text-foreground @5xl:min-h-[620px]">
+    <header className="flex shrink-0 flex-col gap-2 border-b px-3 py-3 @2xl:flex-row @2xl:items-center @2xl:justify-between sm:px-4">
       <div className="flex min-w-0 flex-col gap-0.5">
         <div className="flex items-center gap-2"><h2 className="font-heading text-sm font-semibold">{options.title ?? "Social Listening"}</h2><Badge variant="outline" className="h-5 px-1.5 text-[10px] font-normal">Demo data</Badge></div>
         <p className="text-[11px] leading-relaxed text-muted-foreground">{options.description ?? `${items.length} mentions · ${unreviewedCount} unreviewed · local demonstration only`}</p>
@@ -641,7 +643,7 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
     </header>
 
     <div className="flex min-h-0 flex-1">
-      <section aria-label="Monitoring feed" className={`flex min-h-0 min-w-0 flex-col ${detailCollapsed ? "flex-1" : "w-full md:w-[60%] md:flex-none"}`}>
+      <section aria-label="Monitoring feed" className={`flex min-h-0 min-w-0 flex-col ${detailCollapsed ? "flex-1" : "w-full @5xl:w-[60%] @5xl:flex-none"}`}>
         <div className="flex shrink-0 flex-col gap-2 border-b px-3 py-3 sm:px-4">
           <div className="flex min-w-0 items-center gap-2">
             <div className="relative min-w-0 flex-1">
@@ -649,9 +651,9 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
               <Input aria-label="Search content or author" placeholder="Search content or author" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(6) }} className="h-8 pl-8 text-xs" />
             </div>
             <span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{filteredItems.length} results</span>
-            <Button type="button" variant="ghost" size="icon-sm" className="hidden md:inline-flex" aria-label={detailCollapsed ? "Expand detail panel" : "Collapse detail panel"} aria-pressed={detailCollapsed} onClick={() => setDetailCollapsed((collapsed) => !collapsed)}>{detailCollapsed ? <PanelRightOpenIcon aria-hidden="true" /> : <PanelRightCloseIcon aria-hidden="true" />}</Button>
+            <Button type="button" variant="ghost" size="icon-sm" className="hidden @5xl:inline-flex" aria-label={detailCollapsed ? "Expand detail panel" : "Collapse detail panel"} aria-pressed={detailCollapsed} onClick={() => setDetailCollapsed((collapsed) => !collapsed)}>{detailCollapsed ? <PanelRightOpenIcon aria-hidden="true" /> : <PanelRightCloseIcon aria-hidden="true" />}</Button>
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <div className="grid grid-cols-2 gap-2 @2xl:flex @2xl:flex-wrap">
             {enabledFilters.source && <FilterField label="Source"><SelectFilter label="Filter by source" value={source} options={["All sources", ...availableSources]} onValueChange={(value) => { setSource(value as SourceFilter); setVisibleCount(6) }} /></FilterField>}
             {enabledFilters.sentiment && <FilterField label="Sentiment"><SelectFilter label="Filter by sentiment" value={sentiment} options={["All sentiments", ...availableSentiments]} onValueChange={(value) => { setSentiment(value as SentimentFilter); setVisibleCount(6) }} /></FilterField>}
             {enabledFilters.dateRange && <FilterField label="Date range"><SelectFilter label="Filter by date range" value={dateRange} options={["Any time", "Past 24 hours", "Past 7 days", "Past 30 days"]} onValueChange={(value) => { setDateRange(value as DateRange); setVisibleCount(6) }} /></FilterField>}
@@ -687,10 +689,10 @@ export function MonitoringFeed({ initialItems, options = {}, showPreviewStates =
         </div>
       </section>
 
-      {!detailCollapsed && <div className="hidden min-h-0 min-w-0 flex-1 border-l md:flex md:w-[40%] md:flex-none"><DetailPanel {...detailProps} />
+      {!detailCollapsed && <div className="hidden min-h-0 min-w-0 flex-1 border-l @5xl:flex @5xl:w-[40%] @5xl:flex-none"><DetailPanel {...detailProps} />
       </div>}
-      {detailCollapsed && <div className="hidden md:flex md:w-12 md:shrink-0 md:items-start md:justify-center md:border-l md:pt-3"><Button type="button" variant="ghost" size="icon-sm" aria-label="Expand detail panel" onClick={() => setDetailCollapsed(false)}><PanelRightOpenIcon aria-hidden="true" /></Button></div>}
-      <div className="md:hidden"><Sheet open={mobileDetailsOpen} onOpenChange={setMobileDetailsOpen}><SheetContent side="right" showCloseButton={false} className="w-[min(92vw,28rem)] max-w-[min(92vw,28rem)] gap-0 p-0"><SheetHeader className="sr-only"><SheetTitle>Selected mention details</SheetTitle><SheetDescription>Details for the selected monitoring feed item.</SheetDescription></SheetHeader><DetailPanel {...detailProps} onClose={() => setMobileDetailsOpen(false)} /></SheetContent></Sheet></div>
+      {detailCollapsed && <div className="hidden @5xl:flex @5xl:w-12 @5xl:shrink-0 @5xl:items-start @5xl:justify-center @5xl:border-l @5xl:pt-3"><Button type="button" variant="ghost" size="icon-sm" aria-label="Expand detail panel" onClick={() => setDetailCollapsed(false)}><PanelRightOpenIcon aria-hidden="true" /></Button></div>}
+      <div className="@5xl:hidden"><Sheet open={mobileDetailsOpen} onOpenChange={setMobileDetailsOpen}><SheetContent side="right" showCloseButton={false} className="w-[min(92vw,28rem)] max-w-[min(92vw,28rem)] gap-0 p-0"><SheetHeader className="sr-only"><SheetTitle>Selected mention details</SheetTitle><SheetDescription>Details for the selected monitoring feed item.</SheetDescription></SheetHeader><DetailPanel {...detailProps} onClose={() => setMobileDetailsOpen(false)} /></SheetContent></Sheet></div>
     </div>
   </div>
 }

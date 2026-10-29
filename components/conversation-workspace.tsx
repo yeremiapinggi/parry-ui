@@ -225,7 +225,7 @@ function MessageTimeline({
     ...systemEvents.map((event) => ({ kind: "event" as const, event, date: event.date, key: event.id, sortAt: event.timestamp })),
   ].sort((left, right) => left.sortAt - right.sortAt)
 
-  return <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
+  return <div className="flex flex-col gap-4 px-4 py-4 @2xl:px-6 @2xl:py-5">
     {timeline.map((item, index) => {
       const previousDate = index > 0 ? timeline[index - 1].date : ""
       const showDate = item.date !== previousDate
@@ -374,17 +374,17 @@ function ConversationHeader({
 }) {
   const isClosed = conversation.status === "Closed"
   const assignmentLabel = conversation.assignee ? `Assigned to ${conversation.assignee}` : "Unassigned"
-  return <header className="flex h-14 shrink-0 min-w-0 items-center gap-1 border-b px-2 sm:gap-1.5 sm:px-2.5 xl:gap-2 xl:px-3">
+  return <header className="flex h-14 shrink-0 min-w-0 items-center gap-1 border-b px-2 @2xl:gap-1.5 @2xl:px-2.5 @7xl:gap-2 @7xl:px-3">
     {onBack && <Button type="button" variant="ghost" size="icon-lg" aria-label="Back to conversation list" onClick={onBack} className="shrink-0 @3xl:hidden"><ArrowLeftIcon /></Button>}
     <Button type="button" variant="ghost" size="icon-lg" aria-label="Open conversation list" onClick={onOpenList} className="hidden shrink-0 @3xl:flex @5xl:hidden"><MessagesSquareIcon /></Button>
-    <Button type="button" variant="ghost" size="icon-lg" aria-label={listCollapsed ? "Expand conversation list" : "Collapse conversation list"} onClick={onToggleList} className="hidden shrink-0 lg:flex">{listCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}</Button>
+    <Button type="button" variant="ghost" size="icon-lg" aria-label={listCollapsed ? "Expand conversation list" : "Collapse conversation list"} onClick={onToggleList} className="hidden shrink-0 @5xl:flex">{listCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}</Button>
     <Avatar aria-hidden="true" className="size-8 shrink-0"><AvatarFallback className="bg-muted text-xs font-medium text-foreground">{conversation.initials}</AvatarFallback></Avatar>
     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
       <div className="flex min-w-0 items-center gap-2"><h2 className="min-w-0 truncate font-heading text-sm font-semibold">{conversation.customer}</h2><Badge variant="outline" className={`${statusTone[conversation.status]} h-5 shrink-0 px-1.5 text-[10px]`}>{conversation.status}</Badge></div>
-      <div className="flex min-w-0 items-center gap-0.5 text-[10px] text-muted-foreground sm:text-[11px] xl:gap-1"><ChannelIcon channel={conversation.channel} className="size-3 shrink-0" /><span className="shrink-0">{conversation.channel}</span><span aria-hidden="true" className="hidden xl:inline">·</span><span className="hidden min-w-0 truncate font-mono xl:inline">{conversation.id}</span></div>
+      <div className="flex min-w-0 items-center gap-0.5 text-[10px] text-muted-foreground @2xl:text-[11px] @7xl:gap-1"><ChannelIcon channel={conversation.channel} className="size-3 shrink-0" /><span className="shrink-0">{conversation.channel}</span><span aria-hidden="true" className="hidden @7xl:inline">·</span><span className="hidden min-w-0 truncate font-mono @7xl:inline">{conversation.id}</span></div>
     </div>
     <DropdownMenu>
-      <DropdownMenuTrigger asChild><Button type="button" variant="outline" size="sm" aria-label={assignmentLabel} title={assignmentLabel} className="h-9 max-w-44 shrink-0 gap-1.5 border-border bg-muted/40 px-2 text-[11px] sm:max-w-48 xl:max-w-56" disabled={!canReply}><UserRoundIcon data-icon="inline-start" /><span className="sr-only min-w-0 truncate sm:not-sr-only">{assignmentLabel}</span><ChevronDownIcon data-icon="inline-end" className="hidden size-3 sm:inline" /></Button></DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild><Button type="button" variant="outline" size="sm" aria-label={assignmentLabel} title={assignmentLabel} className="h-9 max-w-44 shrink-0 gap-1.5 border-border bg-muted/40 px-2 text-[11px] @2xl:max-w-48 @7xl:max-w-56" disabled={!canReply}><UserRoundIcon data-icon="inline-start" /><span className="sr-only min-w-0 truncate @2xl:not-sr-only">{assignmentLabel}</span><ChevronDownIcon data-icon="inline-end" className="hidden size-3 @2xl:inline" /></Button></DropdownMenuTrigger>
       <DropdownMenuContent data-parry-theme align="end" className="w-60">
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={onAssignToMe} disabled={!canReply}><UserRoundIcon data-icon="inline-start" />Assign to Me</DropdownMenuItem>
@@ -392,7 +392,7 @@ function ConversationHeader({
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-    <Button type="button" variant="outline" size="sm" aria-label={isClosed ? "Reopen Conversation" : "Close Conversation"} onClick={() => onStatusChange(isClosed ? "Open" : "Closed")} className="h-9 shrink-0 border-primary/40 bg-primary/5 px-2 text-[11px] text-primary hover:bg-primary/10 sm:px-2.5"><span className="hidden sm:inline">{isClosed ? "Reopen Conversation" : "Close Conversation"}</span><span className="sm:hidden">{isClosed ? "Reopen" : "Close"}</span></Button>
+    <Button type="button" variant="outline" size="sm" aria-label={isClosed ? "Reopen Conversation" : "Close Conversation"} onClick={() => onStatusChange(isClosed ? "Open" : "Closed")} className="h-9 shrink-0 border-primary/40 bg-primary/5 px-2 text-[11px] text-primary hover:bg-primary/10 @2xl:px-2.5"><span className="hidden @2xl:inline">{isClosed ? "Reopen Conversation" : "Close Conversation"}</span><span className="@2xl:hidden">{isClosed ? "Reopen" : "Close"}</span></Button>
     <DropdownMenu>
       <DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-lg" aria-label="Conversation actions" className="shrink-0"><MoreHorizontalIcon /></Button></DropdownMenuTrigger>
       <DropdownMenuContent data-parry-theme align="end" className="w-60">
@@ -405,7 +405,7 @@ function ConversationHeader({
         <DropdownMenuItem onSelect={onTransfer} disabled={!canReply}><ArrowRightLeftIcon data-icon="inline-start" />Transfer conversation</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-    <Button type="button" variant="ghost" size="icon-lg" aria-label={detailsCollapsed ? "Expand customer details" : "Collapse customer details"} onClick={onToggleDetails} className="hidden shrink-0 lg:flex">{detailsCollapsed ? <PanelRightOpenIcon /> : <PanelRightCloseIcon />}</Button>
+    <Button type="button" variant="ghost" size="icon-lg" aria-label={detailsCollapsed ? "Expand customer details" : "Collapse customer details"} onClick={onToggleDetails} className="hidden shrink-0 @5xl:flex">{detailsCollapsed ? <PanelRightOpenIcon /> : <PanelRightCloseIcon />}</Button>
     <Button type="button" variant="ghost" size="icon-lg" aria-label="Open customer details" className="shrink-0 @5xl:hidden" onClick={onOpenDetails}><UserRoundIcon /></Button>
     {!canReply && <span className="sr-only">This closed conversation is read-only.</span>}
   </header>
@@ -698,7 +698,7 @@ export function ConversationWorkspace({
           <div ref={threadScrollRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-muted/10" aria-label="Message timeline">
             <MessageTimeline conversation={selectedConversation} messages={activeMessages} systemEvents={activeSystemEvents} />
           </div>
-          <section aria-label="Message composer" className="shrink-0 px-3 pb-3 pt-2 sm:px-4 sm:pb-4">
+          <section aria-label="Message composer" className="shrink-0 px-3 pb-3 pt-2 @2xl:px-4 @2xl:pb-4">
             {isClosed ? <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-3 py-3 shadow-sm"><div className="flex flex-col gap-0.5"><span className="text-sm font-medium">This conversation is closed</span><span className="text-xs text-muted-foreground">Reopen it to send a message or internal note.</span></div><Button type="button" variant="outline" size="sm" onClick={() => setConfirmation("reopen")}>Reopen conversation</Button></div> : <div className="flex flex-col gap-1.5">
               <div className={`flex flex-col gap-1.5 rounded-2xl border p-2.5 shadow-md ${messageMode === "note" ? "border-warning/40 bg-warning-soft/30" : "bg-card"}`}>
                 <div className="flex items-center justify-between gap-2">
@@ -706,7 +706,7 @@ export function ConversationWorkspace({
                     <ToggleGroupItem value="reply" className="h-7 px-2.5 text-xs"><MessageCircleMoreIcon data-icon="inline-start" />Reply</ToggleGroupItem>
                     <ToggleGroupItem value="note" className="h-7 px-2.5 text-xs"><FileIcon data-icon="inline-start" />Internal note</ToggleGroupItem>
                   </ToggleGroup>
-                  <span className="hidden text-[10px] text-muted-foreground sm:inline">Enter to send · Shift+Enter for a new line</span>
+                  <span className="hidden text-[10px] text-muted-foreground @2xl:inline">Enter to send · Shift+Enter for a new line</span>
                 </div>
                 {messageMode === "note" && <div role="status" className="rounded-md border border-warning/35 bg-warning-soft px-2.5 py-1.5 text-[11px] text-foreground">Internal notes are visible only in this workspace demo.</div>}
                 {currentAttachments.length > 0 && <ul aria-label="Selected attachments" className="flex flex-wrap gap-2">{currentAttachments.map((attachment, index) => <li key={`${attachment.name}-${index}`} className="flex max-w-full items-center gap-2 rounded-md border bg-muted/40 px-2 py-1.5 text-xs"><span className="truncate">{attachment.name}</span><span className="shrink-0 text-muted-foreground">{attachment.sizeLabel}</span><Button type="button" variant="ghost" size="icon-xs" aria-label={`Remove ${attachment.name}`} onClick={() => removeAttachment(index)}><XIcon /></Button></li>)}</ul>}
@@ -716,27 +716,27 @@ export function ConversationWorkspace({
                   <div className="flex min-w-0 items-center gap-1.5">
                     <input ref={fileInputRef} className="sr-only" id={`attachment-${selectedConversation.id}`} type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx" onChange={handleAttachmentChange} disabled={isSending} />
                     <Button type="button" variant="ghost" size="icon-sm" aria-label="Attach files" onClick={() => fileInputRef.current?.click()} disabled={isSending}><PaperclipIcon /></Button>
-                    <span className="hidden truncate text-[10px] text-muted-foreground sm:inline">Images, PDF, DOC or TXT · max 5 MB each</span>
+                    <span className="hidden truncate text-[10px] text-muted-foreground @2xl:inline">Images, PDF, DOC or TXT · max 5 MB each</span>
                   </div>
                   <Button type="button" size="sm" className="h-8 shrink-0" onClick={sendMessage} disabled={isSending || demoState === "loading" || (!currentDraft.trim() && currentAttachments.length === 0)}>{isSending ? "Sending…" : messageSent[selectedConversation.id] ? <><CheckIcon data-icon="inline-start" />Sent</> : <><SendIcon data-icon="inline-start" />{messageMode === "note" ? "Add note" : "Send"}</>}</Button>
                 </div>
               </div>
-              <div className="flex items-center justify-between px-1 text-[10px] text-muted-foreground"><span>Fictional demo · messages are not delivered</span><span className="hidden sm:inline">Drafts stay with each conversation</span></div>
+              <div className="flex items-center justify-between px-1 text-[10px] text-muted-foreground"><span>Fictional demo · messages are not delivered</span><span className="hidden @2xl:inline">Drafts stay with each conversation</span></div>
             </div>}
           </section>
         </> : <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center"><div className="flex size-12 items-center justify-center rounded-full bg-muted"><MessagesSquareIcon aria-hidden="true" className="size-5 text-muted-foreground" /></div><div className="flex flex-col gap-1"><h2 className="font-heading text-base font-semibold">No conversation selected</h2><p className="max-w-sm text-sm leading-relaxed text-muted-foreground">Choose a conversation from the inbox to read its messages and customer details.</p></div></div>}
       </main>
-      {selectedConversation && !rightCollapsed && <aside aria-label="Customer details" className="hidden w-[250px] shrink-0 flex-col border-l xl:w-[300px] lg:flex"><div className="flex h-14 shrink-0 items-center justify-between border-b px-3"><h2 className="font-heading text-sm font-semibold">Customer details</h2><Badge variant="outline" className={`${priorityTone[selectedConversation.priority]} h-5 px-1.5 text-[10px]`}>{selectedConversation.priority}</Badge></div>{customerDetailsContent}</aside>}
+      {selectedConversation && !rightCollapsed && <aside aria-label="Customer details" className="hidden w-[250px] shrink-0 flex-col border-l @7xl:w-[300px] @5xl:flex"><div className="flex h-14 shrink-0 items-center justify-between border-b px-3"><h2 className="font-heading text-sm font-semibold">Customer details</h2><Badge variant="outline" className={`${priorityTone[selectedConversation.priority]} h-5 px-1.5 text-[10px]`}>{selectedConversation.priority}</Badge></div>{customerDetailsContent}</aside>}
     </div>
     <Dialog open={listDrawerOpen} onOpenChange={setListDrawerOpen}>
-      <DialogContent data-parry-theme aria-describedby="workspace-list-description" showCloseButton={false} className="left-0 right-auto top-0 flex h-dvh w-[min(22rem,88vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-none rounded-r-xl p-0 @3xl:flex @5xl:hidden">
+      <DialogContent data-parry-theme aria-describedby="workspace-list-description" showCloseButton={false} className="left-0 right-auto top-0 flex h-dvh w-[min(22rem,88vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-none rounded-r-xl p-0 md:flex lg:hidden">
         <DialogHeader className="sr-only"><DialogTitle>Conversation list</DialogTitle><DialogDescription id="workspace-list-description">Search and select a conversation.</DialogDescription></DialogHeader>
         <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b px-3"><div className="flex min-w-0 flex-col gap-0.5"><h2 className="font-heading text-sm font-semibold">Conversations</h2><span className="text-[11px] text-muted-foreground">{conversations.length} conversations</span></div><Button type="button" variant="ghost" size="icon-lg" aria-label="Close conversation list" onClick={() => setListDrawerOpen(false)}><XIcon /></Button></div>
         <ConversationList conversations={conversations} selectedId={selectedId} loading={demoState === "loading"} query={query} status={statusFilter} scrollTop={listScrollTop} onSelect={openConversation} onQueryChange={setQuery} onStatusChange={setStatusFilter} onScrollTopChange={setListScrollTop} showHeading={false} />
       </DialogContent>
     </Dialog>
     <Dialog open={showDetails} onOpenChange={setShowDetails}>
-      <DialogContent data-parry-theme aria-describedby="workspace-customer-details-description" showCloseButton={false} className="left-auto right-0 top-0 flex h-dvh w-[min(24rem,100vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-xl rounded-r-none p-0 sm:w-96 @5xl:hidden">
+      <DialogContent data-parry-theme aria-describedby="workspace-customer-details-description" showCloseButton={false} className="left-auto right-0 top-0 flex h-dvh w-[min(24rem,100vw)] max-w-none -translate-x-0 -translate-y-0 flex-col gap-0 overflow-hidden rounded-l-xl rounded-r-none p-0 sm:w-96 lg:hidden">
         <DialogHeader className="sr-only"><DialogTitle>Customer details</DialogTitle><DialogDescription id="workspace-customer-details-description">Customer profile and ticket details for the selected conversation.</DialogDescription></DialogHeader>
         {selectedConversation && <><div className="flex h-14 shrink-0 items-center justify-between border-b px-3"><div className="flex items-center gap-2"><h2 className="font-heading text-sm font-semibold">Customer details</h2><Badge variant="outline" className={`${priorityTone[selectedConversation.priority]} h-5 px-1.5 text-[10px]`}>{selectedConversation.priority}</Badge></div><Button type="button" variant="ghost" size="icon-lg" aria-label="Close customer details" onClick={() => setShowDetails(false)}><XIcon /></Button></div>{customerDetailsContent}</>}
       </DialogContent>
