@@ -8,6 +8,7 @@ import { currentAgent } from "@/components/blocks/_data/team"
 import { AppHeader } from "@/components/blocks/_parts/app-header"
 import { QueueRail, type QueueKey } from "@/components/blocks/_parts/queue-rail"
 import { channelMeta } from "@/components/blocks/channel-meta"
+import { ContextPanel } from "@/components/blocks/ticket-inbox-01/components/context-panel"
 import { Conversation } from "@/components/blocks/ticket-inbox-01/components/conversation"
 import { TicketList } from "@/components/blocks/ticket-inbox-01/components/ticket-list"
 
@@ -38,7 +39,9 @@ export function Inbox() {
         <QueueRail selected={queue} onSelect={setQueue} counts={counts} />
         <TicketList title={queueTitle(queue)} tickets={shown} selectedId={selectedId} onSelect={setSelectedId} />
         <Conversation ticket={ticket} currentAgent={currentAgent.name} />
-        <aside aria-label="Ticket details" className="border-l bg-card" />
+        <aside aria-label="Ticket details" className="flex min-h-0 flex-col border-l">
+          <ContextPanel key={ticket.id} ticket={ticket} className="min-h-0 flex-1" />
+        </aside>
       </div>
     </div>
   )
