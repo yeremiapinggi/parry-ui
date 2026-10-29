@@ -29,6 +29,8 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export const metadata: Metadata = { title: "Components · Parry UI" };
 
@@ -51,6 +53,26 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
             <Button size="icon" aria-label="Add">
               <PlusIcon />
             </Button>
+          </div>
+        ),
+      },
+      {
+        name: "theme-toggle",
+        preview: (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <ThemeToggle />
+            <ThemeToggle variant="default" />
+            <ThemeToggle variant="ghost" />
+            <ThemeToggle showLabel />
+          </div>
+        ),
+      },
+      {
+        name: "theme-switcher",
+        preview: (
+          <div className="flex w-full max-w-72 flex-col gap-2">
+            <p className="text-sm font-medium">Appearance</p>
+            <ThemeSwitcher />
           </div>
         ),
       },

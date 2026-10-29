@@ -530,6 +530,44 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "theme-toggle",
+      "type": "registry:ui",
+      "title": "Theme Toggle",
+      "description": "Light/dark toggle button. Needs a next-themes ThemeProvider with attribute=\"class\".",
+      "dependencies": [
+        "next-themes",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/theme-toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "theme-switcher",
+      "type": "registry:ui",
+      "title": "Theme Switcher",
+      "description": "Light / dark / system picker. Needs a next-themes ThemeProvider with enableSystem.",
+      "dependencies": [
+        "next-themes",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/theme-switcher.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

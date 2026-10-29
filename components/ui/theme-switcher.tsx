@@ -15,12 +15,12 @@ const modes = [
 // The stored theme is only known on the client; render no selection on the server to avoid a hydration mismatch.
 const useMounted = () => useSyncExternalStore(() => () => {}, () => true, () => false)
 
-export function ThemeModePicker() {
+function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
   const mounted = useMounted()
 
   return (
-    <div role="group" aria-label="Theme mode" className="grid grid-cols-3 gap-2">
+    <div data-slot="theme-switcher" role="group" aria-label="Theme mode" className="grid grid-cols-3 gap-2">
       {modes.map(({ value, label, icon: Icon }) => {
         const active = mounted && theme === value
         return (
@@ -39,3 +39,5 @@ export function ThemeModePicker() {
     </div>
   )
 }
+
+export { ThemeSwitcher }

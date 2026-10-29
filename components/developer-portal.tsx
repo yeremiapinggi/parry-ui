@@ -20,7 +20,7 @@ import { SEED_APPS, SEED_WEBHOOKS, getUsage, type PortalApp, type Webhook } from
 import { UsageAreaChart } from "@/components/developer-portal-shared"
 import { UsageSection } from "@/components/developer-portal-usage"
 import { LogsSection } from "@/components/developer-portal-logs"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

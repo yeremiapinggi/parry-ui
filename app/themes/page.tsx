@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BellIcon, FolderIcon, LayoutDashboardIcon, SearchIcon, SettingsIcon, TriangleAlertIcon } from "lucide-react";
 
 import { ProductSwitcher, ProductTokens } from "@/components/product-theme";
-import { ThemeModePicker } from "@/components/theme-mode-picker";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +49,7 @@ export default function ThemesPage() {
               Pick a mode to see it in the preview.
             </p>
           </div>
-          <ThemeModePicker />
+          <ThemeSwitcher />
           <div className="flex flex-col gap-2">
             <p className="text-sm font-medium">Product preview</p>
             <p className="text-sm text-muted-foreground">Only the preview changes; the Parry site keeps its own theme.</p>

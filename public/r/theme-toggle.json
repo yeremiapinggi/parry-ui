@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "title": "Theme Toggle",
+  "description": "Light/dark toggle button. Needs a next-themes ThemeProvider with attribute=\"class\".",
+  "dependencies": [
+    "next-themes",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/theme-toggle.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { MoonIcon, SunIcon } from \"lucide-react\"\nimport { useTheme } from \"next-themes\"\n\nimport { Button } from \"@/components/ui/button\"\n\nfunction ThemeToggle({\n  variant = \"outline\",\n  showLabel = false,\n  ...props\n}: Omit<React.ComponentProps<typeof Button>, \"onClick\" | \"children\"> & {\n  showLabel?: boolean\n}) {\n  const { resolvedTheme, setTheme } = useTheme()\n\n  // Icons and labels swap via the .dark class, so no mounted check is needed to avoid a hydration mismatch.\n  return (\n    <Button\n      data-slot=\"theme-toggle\"\n      variant={variant}\n      size={showLabel ? \"default\" : \"icon\"}\n      aria-label={showLabel ? undefined : \"Toggle light/dark theme\"}\n      onClick={() => setTheme(resolvedTheme === \"dark\" ? \"light\" : \"dark\")}\n      {...props}\n    >\n      <SunIcon className=\"dark:hidden\" />\n      <MoonIcon className=\"hidden dark:block\" />\n      {showLabel && (\n        <>\n          <span className=\"dark:hidden\">Light</span>\n          <span className=\"hidden dark:inline\">Dark</span>\n        </>\n      )}\n    </Button>\n  )\n}\n\nexport { ThemeToggle }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
