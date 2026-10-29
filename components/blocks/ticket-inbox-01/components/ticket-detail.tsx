@@ -129,7 +129,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
 
       <div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px]">
         <section aria-label={`Conversation with ${ticket.customer}`} className="flex min-h-0 min-w-0 flex-col bg-background">
-          <TicketTimeline thread={thread} channel={ticket.channel} initials={ticket.initials} className="flex-1" />
+          <TicketTimeline thread={thread} initials={ticket.initials} className="flex-1" />
 
           <div className="flex flex-col gap-2 p-3 md:px-6 md:pb-4">
             {closed && (
@@ -172,7 +172,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
       </div>
 
       <Sheet open={detailsOpen && !isXl} onOpenChange={setDetailsOpen}>
-        <SheetContent side="right" className="w-[22rem] gap-0 p-0 sm:max-w-[22rem]">
+        <SheetContent side="right" className="gap-0 p-0 data-[side=right]:w-full sm:data-[side=right]:w-[22rem] sm:data-[side=right]:max-w-[22rem]">
           <SheetHeader className="border-b">
             <SheetTitle>Ticket details</SheetTitle>
           </SheetHeader>

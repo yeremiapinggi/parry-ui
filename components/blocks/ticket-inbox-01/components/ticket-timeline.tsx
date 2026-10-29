@@ -8,7 +8,6 @@ import { cn } from "cn"
 import type { ThreadItem } from "@/components/blocks/_data/tickets"
 import { MessageBubble } from "@/components/blocks/_parts/message-bubble"
 import { byTime, dayKey, dayLabel } from "@/components/blocks/_parts/time"
-import type { ChannelId } from "@/components/blocks/channel-meta"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -34,7 +33,7 @@ const sameGroup = (a: ThreadItem | undefined, b: ThreadItem | undefined) =>
   dayKey(a.at) === dayKey(b.at) &&
   Math.abs(new Date(b.at).getTime() - new Date(a.at).getTime()) < GROUP_GAP_MS
 
-export function TicketTimeline({ thread, channel, initials, className }: { thread: ThreadItem[]; channel: ChannelId; initials: string; className?: string }) {
+export function TicketTimeline({ thread, initials, className }: { thread: ThreadItem[]; initials: string; className?: string }) {
   const [filter, setFilter] = useState<Filter>("all")
   const [atLatest, setAtLatest] = useState(true)
   const end = useRef<HTMLLIElement>(null)
@@ -84,7 +83,6 @@ export function TicketTimeline({ thread, channel, initials, className }: { threa
                 )}
                 <MessageBubble
                   item={item}
-                  channel={channel}
                   initials={initials}
                   groupStart={newDay || !sameGroup(prev, item)}
                   groupEnd={!sameGroup(item, items[i + 1])}

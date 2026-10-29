@@ -3,9 +3,7 @@ import { CheckCheckIcon, CheckIcon, ShieldAlertIcon, StickyNoteIcon } from "luci
 import { cn } from "cn"
 
 import type { Delivery, ThreadItem } from "@/components/blocks/_data/tickets"
-import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { clock, fullTime, relativeTime } from "@/components/blocks/_parts/time"
-import type { ChannelId } from "@/components/blocks/channel-meta"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -35,13 +33,11 @@ const deliveryMeta: Record<Delivery, { label: string; icon: typeof CheckIcon; to
  */
 export function MessageBubble({
   item,
-  channel,
   initials,
   groupStart = true,
   groupEnd = true,
 }: {
   item: ThreadItem
-  channel: ChannelId
   initials: string
   groupStart?: boolean
   groupEnd?: boolean
@@ -89,8 +85,7 @@ export function MessageBubble({
           <div className="flex min-w-0 flex-col items-start gap-1">
             <p className={cn("rounded-2xl border bg-card px-3 py-2 text-sm text-card-foreground", groupEnd ? "rounded-bl-sm" : "")}>{item.body}</p>
             {groupEnd && (
-              <span className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
-                <ChannelIcon channel={channel} className="size-3.5 [&_svg]:size-2.5" />
+              <span className="px-1 text-xs text-muted-foreground">
                 <Stamp at={item.at} />
               </span>
             )}

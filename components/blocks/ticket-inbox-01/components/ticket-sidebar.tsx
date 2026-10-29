@@ -15,7 +15,6 @@ import {
   PhoneIcon,
   PlusIcon,
   ShieldAlertIcon,
-  StickyNoteIcon,
   UserRoundXIcon,
   XIcon,
 } from "lucide-react"
@@ -26,7 +25,7 @@ import { team } from "@/components/blocks/_data/team"
 import type { Sentiment, ThreadItem, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { Stamp } from "@/components/blocks/_parts/message-bubble"
-import { age, byTime, clock, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
+import { age, byTime, clock, monthDayTime, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
 import { channelMeta } from "@/components/blocks/channel-meta"
 import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -60,14 +59,31 @@ const customFields = [
   { id: "sub-3", label: "Sub category 3", options: ["AC", "Engine", "Body"] },
 ]
 
+// One label/value grid for every section, so labels line up down the whole sidebar.
+const rowGrid = "grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-x-3"
+
+function Row({ label, htmlFor, labelId, children }: { label: string; htmlFor?: string; labelId?: string; children: React.ReactNode }) {
+  return (
+    <div className={cn(rowGrid, "min-h-8")}>
+      {htmlFor ? (
+        <Label htmlFor={htmlFor} className="text-xs font-normal text-muted-foreground">
+          {label}
+        </Label>
+      ) : (
+        <span id={labelId} className="text-xs text-muted-foreground">
+          {label}
+        </span>
+      )}
+      <div className="min-w-0">{children}</div>
+    </div>
+  )
+}
+
 function Field({ id, label, options, value }: { id: string; label: string; options: string[]; value?: string }) {
   return (
-    <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-center gap-2">
-      <Label htmlFor={id} className="text-xs font-normal text-muted-foreground">
-        {label}
-      </Label>
+    <Row label={label} htmlFor={id}>
       <Select defaultValue={value}>
-        <SelectTrigger id={id} size="sm" className="w-full">
+        <SelectTrigger id={id} size="sm" className="h-8 w-full">
           <SelectValue placeholder="Empty" />
         </SelectTrigger>
         <SelectContent>
@@ -78,14 +94,17 @@ function Field({ id, label, options, value }: { id: string; label: string; optio
           ))}
         </SelectContent>
       </Select>
-    </div>
+    </Row>
   )
 }
 
+// Menu triggers styled like the Select fields next to them.
+const fieldTrigger = "h-8 w-full justify-between gap-2 px-2.5 font-normal"
+
 const Section = ({ value, title, count, children }: { value: string; title: string; count?: number; children: React.ReactNode }) => (
-  <AccordionItem value={value} className="border-b px-4">
+  <AccordionItem value={value} className="border-b px-4 last:border-b-0">
     <AccordionTrigger className="py-3 hover:no-underline">
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 font-semibold">
         {title}
         {count !== undefined && (
           <Badge variant="secondary" className="h-5 px-1.5 tabular-nums">
@@ -94,7 +113,7 @@ const Section = ({ value, title, count, children }: { value: string; title: stri
         )}
       </span>
     </AccordionTrigger>
-    <AccordionContent className="flex flex-col gap-3 pb-4">{children}</AccordionContent>
+    <AccordionContent className="flex flex-col gap-2 pb-4">{children}</AccordionContent>
   </AccordionItem>
 )
 
@@ -122,11 +141,18 @@ function AssigneeMenu({
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="-ml-2 h-7 max-w-full gap-2 px-2" aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}>
-              <Avatar size="sm">
-                <AvatarFallback>{assignee ? initialsOf(assignee) : "?"}</AvatarFallback>
-              </Avatar>
-              <span className="truncate">{assignee ?? "Unassigned"}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              className={fieldTrigger}
+              aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}
+            >
+              <span className="flex min-w-0 items-center gap-2">
+                <Avatar size="sm" className="size-5">
+                  <AvatarFallback className="text-[0.625rem]">{assignee ? initialsOf(assignee) : "?"}</AvatarFallback>
+                </Avatar>
+                <span className="truncate">{assignee ?? "Unassigned"}</span>
+              </span>
               <ChevronDownIcon className="text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
@@ -160,9 +186,11 @@ function StatusMenu({ status, onChange }: { status: TicketStatus; onChange: (s: 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-7 gap-1.5 px-2" aria-label={`Status: ${statusMeta[status].label}, change`}>
-          <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[status].dot)} />
-          {statusMeta[status].label}
+        <Button variant="outline" size="sm" className={fieldTrigger} aria-label={`Status: ${statusMeta[status].label}, change`}>
+          <span className="flex items-center gap-2">
+            <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[status].dot)} />
+            {statusMeta[status].label}
+          </span>
           <ChevronDownIcon className="text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
@@ -191,6 +219,39 @@ const contactFieldTypes: { id: string; label: string; icon: typeof MailIcon }[] 
   { id: "customer-id", label: "Customer ID", icon: IdCardIcon },
 ]
 
+// Icon · value · type label; rows the agent added get a remove button.
+function ContactRow({
+  icon,
+  type,
+  onRemove,
+  children,
+}: {
+  icon: React.ReactNode
+  type: string
+  onRemove?: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <li className="flex min-h-8 items-center gap-2.5 text-sm">
+      <span aria-hidden="true" className="grid size-4 shrink-0 place-items-center text-muted-foreground">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1 truncate">
+        <span className="sr-only">{type}: </span>
+        {children}
+      </span>
+      <span aria-hidden="true" className="shrink-0 text-xs text-muted-foreground">
+        {type}
+      </span>
+      {onRemove && (
+        <Button variant="ghost" size="icon-xs" aria-label={`Remove ${type}`} className="-mr-1 text-muted-foreground" onClick={onRemove}>
+          <XIcon />
+        </Button>
+      )}
+    </li>
+  )
+}
+
 /**
  * Channel identities, email and phone, plus contact data the agent adds during the session (local state only).
  * Identities that repeat the email or phone are skipped so each value shows once.
@@ -213,51 +274,55 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
 
   return (
     <>
-      <ul aria-label="Contact information" className="flex flex-col gap-1.5 text-sm">
+      <ul aria-label="Contact information" className="flex flex-col">
         {identities.map((id) => (
-          <li key={id.handle} className="flex items-center gap-2">
-            <ChannelIcon channel={id.channel} />
-            <span className="sr-only">{channelMeta[id.channel].label}:</span>
-            <span className="truncate">{id.handle}</span>
-          </li>
+          <ContactRow
+            key={id.handle}
+            icon={<ChannelIcon channel={id.channel} className="size-4 [&_svg]:size-2.5" />}
+            type={channelMeta[id.channel].label}
+          >
+            {id.handle}
+          </ContactRow>
         ))}
         {c.email && (
-          <li className="flex items-center gap-2">
-            <MailIcon aria-label="Email" className="size-4 shrink-0 text-muted-foreground" />
-            <a href={`mailto:${c.email}`} className="truncate text-link hover:underline">
+          <ContactRow icon={<MailIcon className="size-4" />} type="Email">
+            <a href={`mailto:${c.email}`} className="text-link hover:underline">
               {c.email}
             </a>
-          </li>
+          </ContactRow>
         )}
         {c.phone && (
-          <li className="flex items-center gap-2">
-            <PhoneIcon aria-label="Phone" className="size-4 shrink-0 text-muted-foreground" />
+          <ContactRow icon={<PhoneIcon className="size-4" />} type="Phone">
             <span className="tabular-nums">{c.phone}</span>
-          </li>
+          </ContactRow>
         )}
         {extra.map((f, i) => {
           const M = meta(f.type)
           return (
-            <li key={i} className="group/field flex items-center gap-2">
-              <M.icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-              <span className="min-w-0 flex-1 truncate">
-                <span className="sr-only">{M.label}: </span>
-                {f.value}
-              </span>
-              <span className="text-xs text-muted-foreground">{M.label}</span>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                aria-label={`Remove ${M.label} ${f.value}`}
-                className="text-muted-foreground"
-                onClick={() => setExtra((x) => x.filter((_, j) => j !== i))}
-              >
-                <XIcon />
-              </Button>
-            </li>
+            <ContactRow
+              key={i}
+              icon={<M.icon className="size-4" />}
+              type={M.label}
+              onRemove={() => setExtra((x) => x.filter((_, j) => j !== i))}
+            >
+              {f.value}
+            </ContactRow>
           )
         })}
       </ul>
+
+      <Row label="Tags">
+        <div className="flex flex-wrap items-center gap-1">
+          {c.tags.map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag}
+            </Badge>
+          ))}
+          <Button variant="ghost" size="icon-xs" aria-label="Add tag" className="text-muted-foreground">
+            <PlusIcon />
+          </Button>
+        </div>
+      </Row>
 
       {adding ? (
         <form onSubmit={save} aria-label="Add contact information" className="flex flex-col gap-2 rounded-lg border bg-background p-2">
@@ -275,7 +340,14 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
                 ))}
               </SelectContent>
             </Select>
-            <Input autoFocus aria-label={`${meta(type).label} value`} placeholder={meta(type).label} value={value} onChange={(e) => setValue(e.target.value)} className="h-8" />
+            <Input
+              autoFocus
+              aria-label={`${meta(type).label} value`}
+              placeholder={meta(type).label}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="h-8"
+            />
           </div>
           <div className="flex justify-end gap-1.5">
             <Button type="button" variant="ghost" size="sm" onClick={() => (setAdding(false), setValue(""))}>
@@ -287,10 +359,16 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
           </div>
         </form>
       ) : (
-        <Button variant="ghost" size="xs" className="self-start text-muted-foreground" onClick={() => setAdding(true)}>
-          <PlusIcon />
-          Add contact info
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="xs" className="text-muted-foreground" onClick={() => setAdding(true)}>
+            <PlusIcon />
+            Add contact info
+          </Button>
+          <Button variant="ghost" size="xs" className="text-muted-foreground">
+            <GitMergeIcon />
+            Search &amp; Merge
+          </Button>
+        </div>
       )}
     </>
   )
@@ -330,83 +408,69 @@ export function TicketSidebar({
   const notes = thread.filter((i) => i.kind === "note").sort((a, b) => byTime(b, a))
   const activity = activityOf(thread)
   const c = t.contact
-  const S = sentimentMeta[sentiment]
-  const sla =
-    status === "closed" ? null : t.state === "out-sla" ? (
-      <Badge variant="destructive">Out SLA · {t.slaOverdue}</Badge>
-    ) : (
-      <Badge variant="outline" className="text-success">
-        Within SLA
-      </Badge>
-    )
-  // Always-visible ticket summary (kept out of the header so the header stays clean).
-  const summary: [string, React.ReactNode][] = [
-    ["Status", <StatusMenu key="st" status={status} onChange={onStatusChange} />],
-    ["Assignee", <AssigneeMenu key="as" assignee={assignee} onAssign={onAssign} open={assignOpen} onOpenChange={onAssignOpenChange} />],
+  const facts: [string, React.ReactNode][] = [
     [
-      "Sentiment",
-      <Badge key="s" variant="outline" className={cn("gap-1", S.tone)}>
-        <S.icon />
-        {S.label}
-      </Badge>,
+      "Created",
+      <time key="c" dateTime={t.createdAt} title={shortDateTime(t.createdAt)} className="tabular-nums">
+        {monthDayTime(t.createdAt)}
+      </time>,
     ],
-    ["Priority", <Badge key="p" variant={t.priority === "Urgent" ? "destructive" : "secondary"}>{t.priority}</Badge>],
-    ["Created", <span key="c" className="tabular-nums">{shortDateTime(t.createdAt)}</span>],
-    ["Age", <span key="a" className="tabular-nums">{age(t.createdAt)}</span>],
-    ...(sla ? ([["SLA", sla]] as [string, React.ReactNode][]) : []),
-    ["Group", t.group],
+    [
+      "Age",
+      <span key="a" className="tabular-nums">
+        {age(t.createdAt)}
+      </span>,
+    ],
+    [
+      "SLA",
+      status === "closed" ? (
+        <span key="sla" className="text-muted-foreground">
+          Stopped
+        </span>
+      ) : t.state === "out-sla" ? (
+        <span key="sla" className="font-medium text-destructive">
+          Out · {t.slaOverdue}
+        </span>
+      ) : (
+        <span key="sla" className="font-medium text-success">
+          Within
+        </span>
+      ),
+    ],
   ]
 
   return (
     <ScrollArea className={cn("bg-card text-card-foreground [&_[data-slot=scroll-area-viewport]>div]:block!", className)}>
-      <div className="flex items-center gap-3 border-b px-4 py-4">
+      {/* Customer stays pinned while the sections scroll under it. */}
+      <div className="sticky top-0 z-10 flex items-center gap-3 border-b bg-card px-4 py-3">
         <Avatar size="lg">
           <AvatarFallback>{t.initials}</AvatarFallback>
         </Avatar>
         <div className="flex min-w-0 flex-col">
           <h3 className="truncate font-heading font-semibold">{t.customer}</h3>
-          <p className="text-xs text-muted-foreground">
-            {t.history.length + 1} {t.history.length ? "tickets" : "ticket"} · via {channelMeta[t.channel].typeLabel}
+          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
+            {channelMeta[t.channel].typeLabel} · {t.history.length + 1} {t.history.length ? "tickets" : "ticket"}
           </p>
         </div>
       </div>
 
-      <dl aria-label={`Ticket #${t.id} info`} className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b px-4 py-3 text-sm">
-        {summary.map(([k, v]) => (
-          <div key={k} className="contents">
-            <dt className="text-xs text-muted-foreground">{k}</dt>
-            <dd className="min-w-0 truncate">{v}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <Accordion type="multiple" defaultValue={["contact", "details", "notes"]}>
-        <Section value="contact" title="Contact">
-          <ContactInfo contact={c} />
-          <div className="flex flex-wrap items-center gap-1.5">
-            {c.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-            <Button variant="ghost" size="xs" className="text-muted-foreground">
-              <PlusIcon />
-              Tag
-            </Button>
-          </div>
-          <Button variant="outline" size="sm" className="self-start">
-            <GitMergeIcon />
-            Search &amp; Merge
-          </Button>
-        </Section>
-
-        <Section value="details" title="Ticket details">
-          <Field id="category" label="Category" options={["Complaint", "Inquiry", "Request", "Warranty claim", "Billing"]} value={t.category} />
+      <Accordion type="multiple" defaultValue={["info", "contact", "notes"]}>
+        <Section value="info" title="Ticket information">
+          <Row label="Status">
+            <StatusMenu status={status} onChange={onStatusChange} />
+          </Row>
+          <Row label="Assignee">
+            <AssigneeMenu assignee={assignee} onAssign={onAssign} open={assignOpen} onOpenChange={onAssignOpenChange} />
+          </Row>
           <Field id="priority" label="Priority" options={["Low", "Medium", "High", "Urgent"]} value={t.priority} />
-          <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-center gap-2">
-            <span id="sentiment-label" className="text-xs text-muted-foreground">
-              Sentiment
-            </span>
+          <Field
+            id="category"
+            label="Category"
+            options={["Complaint", "Inquiry", "Request", "Warranty claim", "Billing"]}
+            value={t.category}
+          />
+          <Row label="Sentiment" labelId="sentiment-label">
             <ToggleGroup
               type="single"
               variant="outline"
@@ -420,13 +484,29 @@ export function TicketSidebar({
               {(Object.keys(sentimentMeta) as Sentiment[]).map((s) => {
                 const M = sentimentMeta[s]
                 return (
-                  <ToggleGroupItem key={s} value={s} aria-label={M.label} title={M.label} className="flex-1">
+                  <ToggleGroupItem key={s} value={s} aria-label={M.label} title={M.label} className="h-8 flex-1">
                     <M.icon className={M.tone} />
                   </ToggleGroupItem>
                 )
               })}
             </ToggleGroup>
-          </div>
+          </Row>
+          <Row label="Group">
+            <span className="text-sm">{t.group}</span>
+          </Row>
+          {/* Read-only timing facts as compact tiles under the editable fields. */}
+          <dl className="mt-1 grid grid-cols-[1.5fr_1fr_1fr] gap-2">
+            {facts.map(([k, v]) => (
+              <div key={k} className="flex min-w-0 flex-col gap-0.5 rounded-lg border bg-background px-2.5 py-2">
+                <dt className="text-xs text-muted-foreground">{k}</dt>
+                <dd className="truncate text-sm">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </Section>
+
+        <Section value="contact" title="Contact">
+          <ContactInfo contact={c} />
         </Section>
 
         <Section value="custom-fields" title="Custom fields" count={customFields.length}>
@@ -447,8 +527,8 @@ export function TicketSidebar({
               </li>
             ))}
           </ul>
-          <Button variant="outline" size="sm" className="self-start" onClick={onAddNote}>
-            <StickyNoteIcon />
+          <Button variant="ghost" size="xs" className="self-start text-muted-foreground" onClick={onAddNote}>
+            <PlusIcon />
             Add internal note
           </Button>
         </Section>
@@ -460,7 +540,10 @@ export function TicketSidebar({
             <ul className="flex flex-col gap-1">
               {t.history.map((h) => (
                 <li key={h.id}>
-                  <Button variant="ghost" className="h-auto w-full flex-col items-start gap-0.5 px-2 py-1.5 text-left font-normal whitespace-normal">
+                  <Button
+                    variant="ghost"
+                    className="h-auto w-full flex-col items-start gap-0.5 px-2 py-1.5 text-left font-normal whitespace-normal"
+                  >
                     <span className="flex w-full items-center gap-2">
                       <span className="font-mono text-xs text-muted-foreground">#{h.id}</span>
                       <span className="flex-1 truncate text-sm">{h.subject}</span>

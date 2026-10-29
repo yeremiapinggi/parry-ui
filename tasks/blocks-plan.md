@@ -119,6 +119,10 @@ and no longer repeats an identity that equals the email or phone.
 Review 2026-10-30 (10): inbox drops the Download icon and the count in "Tickets in <view>"; `AppShell fill` stops page
 scroll so the queue rail (own ScrollArea) and the ticket card (rows in a ScrollArea, header and pagination fixed) are
 capped at the window height. ScrollArea roots need overflow-hidden here or their scrollbar layer leaks height to <main>.
+Review 2026-10-30 (11): inbound bubbles drop the channel icon. Sidebar reworked: sticky customer header; "Ticket
+information" is an accordion (open by default) merging the old summary and "Ticket details" (Status, Assignee,
+Priority, Category, Sentiment, Group as uniform fields + Created / Age / SLA tiles); every section uses one
+label/value grid; Contact rows read icon · value · type with Tags above the actions; details Sheet is full width on phones.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

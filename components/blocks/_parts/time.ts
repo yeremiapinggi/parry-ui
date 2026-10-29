@@ -31,12 +31,14 @@ export function age(iso: string) {
 const fmt = (locale: string, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale, { timeZone: TZ, ...options })
 const full = fmt("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })
 const short = fmt("en-US", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })
+const monthDayFmt = fmt("en-US", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false })
 const clockFmt = fmt("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })
 const dayFmt = fmt("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
 const longDay = fmt("en-GB", { day: "numeric", month: "long", year: "numeric" })
 
 export const fullTime = (iso: string) => full.format(new Date(iso)) // 24 September 2026 at 17:04:46
 export const shortDateTime = (iso: string) => short.format(new Date(iso)) // Sep 24, 2026, 17:04
+export const monthDayTime = (iso: string) => monthDayFmt.format(new Date(iso)) // Sep 24, 17:04
 export const clock = (iso: string) => clockFmt.format(new Date(iso)) // 17:04
 export const dayKey = (iso: string) => dayFmt.format(new Date(iso)) // 2026-09-24
 
