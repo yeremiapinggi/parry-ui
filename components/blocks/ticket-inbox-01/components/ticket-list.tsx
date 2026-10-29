@@ -120,7 +120,7 @@ export function TicketList({
         leading={
           <>
             {leading}
-            <h2 className="truncate text-muted-foreground">
+            <h2 className="truncate text-sm text-muted-foreground">
               <span className="font-medium text-foreground tabular-nums">{tickets.length}</span>
               {narrowed && <span className="tabular-nums"> of {all.length}</span>} tickets in <span className="font-medium text-foreground">{title}</span>
             </h2>

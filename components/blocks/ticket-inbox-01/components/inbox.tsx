@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const inQueue = (key: QueueKey) => {
@@ -40,7 +39,6 @@ export function Inbox() {
   const [selectedId, setSelectedId] = useState<number>()
   const [openId, setOpenId] = useState<number | null>(null)
   const [queuesOpen, setQueuesOpen] = useState(false)
-  const [mode, setMode] = useState("conversation")
   const [detailsOpen, setDetailsOpen] = useState(false)
   const shown = inQueue(queue)
   const ticket = tickets.find((t) => t.id === openId)
@@ -59,13 +57,9 @@ export function Inbox() {
           trailing={
             <>
               <Separator orientation="vertical" className="mx-1.5 h-5!" />
-              <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={mode} onValueChange={(v) => v && setMode(v)} aria-label="List mode">
-                <ToggleGroupItem value="conversation">Conversation</ToggleGroupItem>
-                <ToggleGroupItem value="ticket">Ticket</ToggleGroupItem>
-              </ToggleGroup>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" className="ml-0.5 text-muted-foreground" aria-label="Download Excel">
+                  <Button variant="ghost" size="icon-sm" className="text-muted-foreground" aria-label="Download Excel">
                     <DownloadIcon />
                   </Button>
                 </TooltipTrigger>

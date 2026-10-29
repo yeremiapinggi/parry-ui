@@ -96,6 +96,7 @@ Review 2026-10-30 (4): inbox hides the page header (`AppShell hideHeader`, title
 filter and sort are Notion-style icon tools (`_parts/view-toolbar.tsx`) right of the ticket count, with the
 Conversation/Ticket toggle and Download Excel after them; adding a filter opens a chip row below with the value menu
 open. Filters, sort and search act on the sample data. `_parts/filter-chips.tsx` was folded into the toolbar.
+Review 2026-10-30 (5): count line set to text-sm; Conversation/Ticket toggle removed.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)
