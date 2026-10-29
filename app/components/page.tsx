@@ -515,7 +515,7 @@ export default function ComponentsPage() {
         {groups.map((g) => (
           <section key={g.title} className="flex flex-col gap-4" aria-labelledby={`group-${g.title}`}>
             <h2 id={`group-${g.title}`} className="font-heading text-xl font-semibold">{g.title}</h2>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               {g.items.map(({ name, preview }) => (
                 <div key={name} id={name} className="flex min-w-0 scroll-mt-20 flex-col gap-2">
                   <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
