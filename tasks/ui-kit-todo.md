@@ -28,7 +28,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] **Checkpoint A: Foundations + Actions reviewed by user**
 
 ## Phase 3: Form & Input
-- [ ] T6 field, input-group, form (deps `react-hook-form`, `zod`, `@hookform/resolvers`). Check `components/create-edit-form.tsx` still builds. (M)
+- [x] T6 field, input-group. shadcn's `form` item is now empty (forms are built from Field), so no `form` component or react-hook-form/zod deps; Form rows set to Review with that note. Sheet: Field 2/43, Input Group 6/39. Install with `yes n |` so shadcn doesn't overwrite the themed button/input/textarea. (M)
 - [ ] T7 input-otp (dep `input-otp`), slider (single + range). (S)
 - [ ] T8 calendar, date-picker, mini-calendar (dep `react-day-picker`, `date-fns`). (M)
 - [ ] T9 command (dep `cmdk`), combobox (single/multi, grouped, clear), autocomplete. Reuse pattern from `components/searchable-record-select.tsx`. (M)

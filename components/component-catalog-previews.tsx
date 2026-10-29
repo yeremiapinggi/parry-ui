@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, MinusIcon, PlusIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, MinusIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
+import { Input } from "@/components/ui/input"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
@@ -21,6 +24,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
+import { Switch } from "@/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -289,6 +293,80 @@ export function GithubStarsCatalogPreview() {
     <div className="flex flex-wrap items-center justify-center gap-2">
       <GithubStars repo="shadcn-ui/ui" stars={98400} />
       <GithubStars repo="shadcn-ui/ui" stars={98400} showRepo />
+    </div>
+  )
+}
+
+export function FieldCatalogPreview() {
+  return (
+    <FieldGroup className="w-full max-w-64">
+      <Field>
+        <FieldLabel htmlFor="catalog-field-name">Workspace name</FieldLabel>
+        <Input id="catalog-field-name" defaultValue="Ivosights" />
+        <FieldDescription>Shown to everyone you invite.</FieldDescription>
+      </Field>
+      <Field data-invalid>
+        <FieldLabel htmlFor="catalog-field-email">Billing email</FieldLabel>
+        <Input id="catalog-field-email" defaultValue="finance@" aria-invalid aria-describedby="catalog-field-email-error" />
+        <FieldError id="catalog-field-email-error">Enter a complete email address.</FieldError>
+      </Field>
+      <Field orientation="horizontal">
+        <Switch id="catalog-field-digest" defaultChecked />
+        <FieldLabel htmlFor="catalog-field-digest">Send weekly digest</FieldLabel>
+      </Field>
+      <FieldSet>
+        <FieldLegend variant="label">Channels</FieldLegend>
+        <Field orientation="horizontal">
+          <Checkbox id="catalog-field-wa" defaultChecked />
+          <FieldLabel htmlFor="catalog-field-wa">WhatsApp</FieldLabel>
+        </Field>
+        <Field orientation="horizontal">
+          <Checkbox id="catalog-field-ig" />
+          <FieldLabel htmlFor="catalog-field-ig">Instagram</FieldLabel>
+        </Field>
+      </FieldSet>
+    </FieldGroup>
+  )
+}
+
+export function InputGroupCatalogPreview() {
+  return (
+    <div className="flex w-full max-w-64 flex-col gap-3">
+      <InputGroup>
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+        <InputGroupInput aria-label="Search conversations" placeholder="Search conversations" />
+        <InputGroupAddon align="inline-end">
+          <Kbd>⌘K</Kbd>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>
+          <InputGroupText>https://</InputGroupText>
+        </InputGroupAddon>
+        <InputGroupInput aria-label="Webhook URL" defaultValue="api.ivosights.com/hooks" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="icon-xs" aria-label="Copy URL">
+            <CopyIcon />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupTextarea aria-label="Ask the assistant" placeholder="Ask the assistant…" />
+        <InputGroupAddon align="block-end">
+          <InputGroupText className="text-xs">0/280</InputGroupText>
+          <InputGroupButton variant="default" size="icon-xs" className="ml-auto rounded-full" aria-label="Send">
+            <ArrowUpIcon />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup data-disabled="true">
+        <InputGroupInput aria-label="Checking availability" defaultValue="parry-ui" disabled />
+        <InputGroupAddon align="inline-end">
+          <Spinner />
+        </InputGroupAddon>
+      </InputGroup>
     </div>
   )
 }

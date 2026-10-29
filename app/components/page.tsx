@@ -9,7 +9,9 @@ import {
   BorderButtonCatalogPreview,
   ButtonGroupCatalogPreview,
   ChartCatalogPreview,
+  FieldCatalogPreview,
   GithubStarsCatalogPreview,
+  InputGroupCatalogPreview,
   KbdCatalogPreview,
   LoginButtonCatalogPreview,
   PopoverCatalogPreview,
@@ -94,6 +96,8 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
   {
     title: "Form",
     items: [
+      { name: "field", preview: <FieldCatalogPreview /> },
+      { name: "input-group", preview: <InputGroupCatalogPreview /> },
       {
         name: "input",
         preview: (
