@@ -31,9 +31,13 @@ export function Logo() {
   )
 }
 
+// Full-screen block previews (/blocks/<id>) render without site chrome.
+export const isBlockPage = (pathname: string) => /^\/blocks\/[^/]+/.test(pathname)
+
 export function SiteHeader() {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  if (isBlockPage(pathname)) return null
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">

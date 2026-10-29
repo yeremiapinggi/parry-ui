@@ -1,4 +1,9 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+import { isBlockPage } from "@/components/site-header"
 
 const columns = [
   {
@@ -26,6 +31,7 @@ const columns = [
 ]
 
 export function SiteFooter() {
+  if (isBlockPage(usePathname())) return null
   return (
     <footer className="border-t border-border/60">
       <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:grid-cols-[2fr_repeat(3,1fr)]">
