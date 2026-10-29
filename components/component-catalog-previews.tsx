@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CopyIcon, PencilIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"
+import { AvatarStack } from "@/components/ui/avatar-stack"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
@@ -42,13 +43,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
 import { Input } from "@/components/ui/input"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
+import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
+import { List, ListGroup, ListHeader, ListItem, ListItems } from "@/components/ui/list"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
 import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "@/components/ui/menubar"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { Pill, PillButton, PillDelta, PillIndicator } from "@/components/ui/pill"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -1078,5 +1082,113 @@ export function ScrollableTabsListCatalogPreview() {
         ))}
       </ScrollableTabsList>
     </Tabs>
+  )
+}
+
+const team = ["RW", "BT", "SL", "AP", "DK", "MN"]
+
+export function AvatarGroupCatalogPreview() {
+  return (
+    <AvatarGroup>
+      {team.slice(0, 3).map((initials) => (
+        <Avatar key={initials}>
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
+      ))}
+      <AvatarGroupCount aria-label="3 more">+3</AvatarGroupCount>
+    </AvatarGroup>
+  )
+}
+
+export function AvatarStackCatalogPreview() {
+  return (
+    <AvatarStack max={4} spreadOnHover label="6 agents online">
+      {team.map((initials) => (
+        <Avatar key={initials}>
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
+      ))}
+    </AvatarStack>
+  )
+}
+
+export function PillCatalogPreview() {
+  const [tags, setTags] = useState(["Jakarta", "VIP"])
+  return (
+    <div className="flex flex-wrap justify-center gap-2">
+      <Pill>
+        <PillIndicator pulse /> Live
+      </Pill>
+      <Pill>
+        <PillDelta delta={12} /> CSAT 4.6
+      </Pill>
+      <Pill>
+        <PillDelta delta={-3} /> Backlog 41
+      </Pill>
+      <Pill>
+        <CircleDotIcon className="text-info" /> In review
+      </Pill>
+      {tags.map((tag) => (
+        <Pill key={tag}>
+          {tag}
+          <PillButton aria-label={`Remove ${tag}`} onClick={() => setTags(tags.filter((t) => t !== tag))}>
+            <XIcon />
+          </PillButton>
+        </Pill>
+      ))}
+    </div>
+  )
+}
+
+export function ItemCatalogPreview() {
+  return (
+    <ItemGroup className="w-full max-w-72">
+      <Item variant="outline">
+        <ItemMedia>
+          <Avatar>
+            <AvatarFallback>RW</AvatarFallback>
+          </Avatar>
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle>Rina Wijaya</ItemTitle>
+          <ItemDescription>Support lead · Jakarta</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Button size="sm" variant="outline">Assign</Button>
+        </ItemActions>
+      </Item>
+      <Item variant="muted" size="sm" asChild>
+        <a href="#item">
+          <ItemContent>
+            <ItemTitle>Billing settings</ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <ArrowRightIcon className="size-4" />
+          </ItemActions>
+        </a>
+      </Item>
+    </ItemGroup>
+  )
+}
+
+const listGroups = [
+  { title: "In progress", color: "var(--info)", items: ["Reply to refund request", "Update SLA policy"] },
+  { title: "Done", color: "var(--success)", items: ["Connect Instagram"] },
+]
+
+export function ListCatalogPreview() {
+  return (
+    <List className="max-w-72">
+      {listGroups.map((group) => (
+        <ListGroup key={group.title}>
+          <ListHeader title={group.title} count={group.items.length} color={group.color} />
+          <ListItems>
+            {group.items.map((item) => (
+              <ListItem key={item}>{item}</ListItem>
+            ))}
+          </ListItems>
+        </ListGroup>
+      ))}
+    </List>
   )
 }

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pill",
+  "title": "Pill",
+  "dependencies": [
+    "class-variance-authority",
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/pill.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { ArrowDownRightIcon, ArrowUpRightIcon, MinusIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\n// Rounded label that composes an avatar, status dot, icon, delta or small action.\nfunction Pill({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"pill\"\n      className={cn(\n        \"inline-flex h-7 items-center gap-1.5 rounded-full border bg-background px-2.5 text-xs font-medium whitespace-nowrap [&_svg]:size-3.5 [&_svg]:shrink-0\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction PillAvatar({ className, alt = \"\", ...props }: React.ComponentProps<\"img\">) {\n  // eslint-disable-next-line @next/next/no-img-element -- registry component, must work outside Next.js\n  return <img data-slot=\"pill-avatar\" alt={alt} className={cn(\"-ml-1.5 size-5 rounded-full object-cover\", className)} {...props} />\n}\n\nconst pillIndicatorVariants = cva(\"relative flex size-2 shrink-0 rounded-full\", {\n  variants: {\n    variant: {\n      success: \"bg-success\",\n      warning: \"bg-warning\",\n      error: \"bg-destructive\",\n      info: \"bg-info\",\n    },\n  },\n  defaultVariants: { variant: \"success\" },\n})\n\nfunction PillIndicator({\n  variant,\n  pulse = false,\n  className,\n  ...props\n}: React.ComponentProps<\"span\"> & VariantProps<typeof pillIndicatorVariants> & { pulse?: boolean }) {\n  return (\n    <span data-slot=\"pill-indicator\" aria-hidden className={cn(pillIndicatorVariants({ variant }), className)} {...props}>\n      {pulse && <span className={cn(\"absolute inset-0 rounded-full opacity-75 motion-safe:animate-ping\", pillIndicatorVariants({ variant }))} />}\n    </span>\n  )\n}\n\n// Up/down/flat arrow for a change value; the sign of `delta` picks the icon and color.\nfunction PillDelta({ delta, className }: { delta: number; className?: string }) {\n  const Icon = delta > 0 ? ArrowUpRightIcon : delta < 0 ? ArrowDownRightIcon : MinusIcon\n  return (\n    <Icon\n      data-slot=\"pill-delta\"\n      aria-label={delta > 0 ? \"up\" : delta < 0 ? \"down\" : \"no change\"}\n      className={cn(delta > 0 ? \"text-success\" : delta < 0 ? \"text-destructive\" : \"text-muted-foreground\", className)}\n    />\n  )\n}\n\nfunction PillButton({ className, ...props }: React.ComponentProps<\"button\">) {\n  return (\n    <button\n      data-slot=\"pill-button\"\n      type=\"button\"\n      className={cn(\n        \"-mr-1 inline-flex size-5 items-center justify-center rounded-full text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Pill, PillAvatar, PillButton, PillDelta, PillIndicator }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

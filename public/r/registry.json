@@ -1296,6 +1296,72 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "dependencies": [
+        "class-variance-authority",
+        "radix-ui",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/separator"
+      ],
+      "files": [
+        {
+          "path": "components/ui/item.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar-stack",
+      "type": "registry:ui",
+      "title": "Avatar Stack",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/avatar"
+      ],
+      "files": [
+        {
+          "path": "components/ui/avatar-stack.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pill",
+      "type": "registry:ui",
+      "title": "Pill",
+      "dependencies": [
+        "class-variance-authority",
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/pill.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "list",
+      "type": "registry:ui",
+      "title": "List",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/list.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

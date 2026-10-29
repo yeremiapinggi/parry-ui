@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "list",
+  "title": "List",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/list.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\n// Grouped list (e.g. tasks by status): each ListGroup has a ListHeader and a run of ListItems.\nfunction List({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"list\" className={cn(\"flex w-full flex-col gap-4\", className)} {...props} />\n}\n\nfunction ListGroup({ className, ...props }: React.ComponentProps<\"section\">) {\n  return <section data-slot=\"list-group\" className={cn(\"flex flex-col overflow-hidden rounded-lg border\", className)} {...props} />\n}\n\nfunction ListHeader({\n  title,\n  count,\n  color,\n  className,\n  children,\n  ...props\n}: Omit<React.ComponentProps<\"header\">, \"title\"> & {\n  title: React.ReactNode\n  count?: number\n  // Any CSS color for the leading dot, e.g. \"var(--success)\".\n  color?: string\n}) {\n  return (\n    <header data-slot=\"list-header\" className={cn(\"flex items-center gap-2 border-b bg-muted/50 px-3 py-2 text-sm\", className)} {...props}>\n      {color && <span aria-hidden className=\"size-2 rounded-full\" style={{ backgroundColor: color }} />}\n      <h3 className=\"font-medium\">{title}</h3>\n      {count !== undefined && <span className=\"text-muted-foreground tabular-nums\">{count}</span>}\n      {children && <div className=\"ml-auto flex items-center gap-1\">{children}</div>}\n    </header>\n  )\n}\n\nfunction ListItems({ className, ...props }: React.ComponentProps<\"ul\">) {\n  return <ul data-slot=\"list-items\" className={cn(\"flex flex-col divide-y\", className)} {...props} />\n}\n\nfunction ListItem({ className, ...props }: React.ComponentProps<\"li\">) {\n  return <li data-slot=\"list-item\" className={cn(\"flex items-center gap-3 px-3 py-2 text-sm hover:bg-muted/40\", className)} {...props} />\n}\n\nexport { List, ListGroup, ListHeader, ListItem, ListItems }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

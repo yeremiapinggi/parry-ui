@@ -50,7 +50,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] **Checkpoint C: feedback, overlay, navigation reviewed (keyboard + focus checked on overlays)**
 
 ## Phase 7: Data Display
-- [ ] T17 avatar-group, avatar-stack, pill, item, list. (M)
+- [x] T17 avatar-group (already in avatar.tsx; preview only), avatar-stack (max + "+N", spread on hover), pill (indicator, delta, button), item (shadcn), list (grouped). Sheet: 2/9, 4/6, 5/25, 3/10, 3/8. (M)
 - [ ] T18 stat, counter, price, relative-time, ticker, sparkline (recharts already installed). (M)
 - [ ] T19 data-table (dep `@tanstack/react-table`), data-toolbar, filter-panel — extract from `advanced-filterable-table-preview.tsx` / `advanced-filter-builder.tsx` instead of rewriting. Depends on T9, T13. (L → split if it exceeds 5 files)
 - [ ] T20 list-panel, tree, timeline, comparison. (M)
