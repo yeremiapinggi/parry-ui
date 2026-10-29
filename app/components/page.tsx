@@ -11,6 +11,8 @@ import {
   ButtonGroupCatalogPreview,
   CalendarCatalogPreview,
   ChartCatalogPreview,
+  ChoiceboxCatalogPreview,
+  ColorPickerCatalogPreview,
   ComboboxCatalogPreview,
   CommandCatalogPreview,
   DatePickerCatalogPreview,
@@ -23,10 +25,12 @@ import {
   MiniCalendarCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
+  RatingCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
   SliderCatalogPreview,
   SocialButtonCatalogPreview,
+  TagsInputCatalogPreview,
   SpinnerCatalogPreview,
   ToggleGroupCatalogPreview,
 } from "@/components/component-catalog-previews";
@@ -114,6 +118,10 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "command", preview: <CommandCatalogPreview /> },
       { name: "combobox", preview: <ComboboxCatalogPreview /> },
       { name: "autocomplete", preview: <AutocompleteCatalogPreview /> },
+      { name: "choicebox", preview: <ChoiceboxCatalogPreview /> },
+      { name: "rating", preview: <RatingCatalogPreview /> },
+      { name: "tags-input", preview: <TagsInputCatalogPreview /> },
+      { name: "color-picker", preview: <ColorPickerCatalogPreview /> },
       {
         name: "input",
         preview: (

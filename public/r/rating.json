@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rating",
+  "title": "Rating",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/rating.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { StarIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\nconst sizes = { sm: \"size-4\", default: \"size-5\", lg: \"size-6\" }\n\nfunction Rating({\n  value,\n  onValueChange,\n  max = 5,\n  readOnly = false,\n  size = \"default\",\n  className,\n  \"aria-label\": ariaLabel = \"Rating\",\n}: {\n  value: number\n  onValueChange?: (value: number) => void\n  max?: number\n  readOnly?: boolean\n  size?: keyof typeof sizes\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const [hover, setHover] = React.useState<number | null>(null)\n  const shown = hover ?? value\n  const star = (i: number) => (\n    <StarIcon className={cn(sizes[size], i <= shown ? \"fill-warning text-warning\" : \"text-muted-foreground/40\")} />\n  )\n\n  if (readOnly) {\n    return (\n      <span data-slot=\"rating\" role=\"img\" aria-label={`${ariaLabel}: ${value} out of ${max}`} className={cn(\"inline-flex gap-0.5\", className)}>\n        {Array.from({ length: max }, (_, i) => <React.Fragment key={i}>{star(i + 1)}</React.Fragment>)}\n      </span>\n    )\n  }\n\n  return (\n    <div data-slot=\"rating\" role=\"radiogroup\" aria-label={ariaLabel} className={cn(\"inline-flex gap-0.5\", className)} onMouseLeave={() => setHover(null)}>\n      {Array.from({ length: max }, (_, i) => i + 1).map((n) => (\n        <button\n          key={n}\n          type=\"button\"\n          role=\"radio\"\n          aria-checked={n === value}\n          aria-label={`${n} out of ${max}`}\n          onMouseEnter={() => setHover(n)}\n          onClick={() => onValueChange?.(n)}\n          className=\"rounded-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50\"\n        >\n          {star(n)}\n        </button>\n      ))}\n    </div>\n  )\n}\n\nexport { Rating }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

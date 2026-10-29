@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tags-input",
+  "title": "Tags Input",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/tags-input.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { XIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\n// Enter or comma adds the typed text as a tag; Backspace on an empty input removes the last one.\nfunction TagsInput({\n  value,\n  onValueChange,\n  placeholder = \"Add a tag…\",\n  className,\n  \"aria-label\": ariaLabel,\n}: {\n  value: string[]\n  onValueChange: (value: string[]) => void\n  placeholder?: string\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const [draft, setDraft] = React.useState(\"\")\n\n  const add = () => {\n    const tag = draft.trim()\n    if (tag && !value.includes(tag)) onValueChange([...value, tag])\n    setDraft(\"\")\n  }\n\n  return (\n    <div\n      data-slot=\"tags-input\"\n      className={cn(\n        \"flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-2 py-1.5 text-sm transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50\",\n        className\n      )}\n    >\n      {value.map((tag) => (\n        <span key={tag} className=\"inline-flex items-center gap-1 rounded-md bg-muted py-0.5 pr-1 pl-2 text-xs font-medium\">\n          {tag}\n          <button\n            type=\"button\"\n            aria-label={`Remove ${tag}`}\n            onClick={() => onValueChange(value.filter((t) => t !== tag))}\n            className=\"rounded-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50\"\n          >\n            <XIcon className=\"size-3\" />\n          </button>\n        </span>\n      ))}\n      <input\n        aria-label={ariaLabel}\n        value={draft}\n        placeholder={value.length ? undefined : placeholder}\n        onChange={(e) => setDraft(e.target.value)}\n        onBlur={add}\n        onKeyDown={(e) => {\n          if (e.key === \"Enter\" || e.key === \",\") {\n            e.preventDefault()\n            add()\n          } else if (e.key === \"Backspace\" && !draft && value.length) {\n            onValueChange(value.slice(0, -1))\n          }\n        }}\n        className=\"min-w-20 flex-1 bg-transparent outline-none placeholder:text-placeholder\"\n      />\n    </div>\n  )\n}\n\nexport { TagsInput }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

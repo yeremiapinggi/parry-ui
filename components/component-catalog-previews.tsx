@@ -15,6 +15,8 @@ import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
+import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
@@ -30,6 +32,7 @@ import { LoginButton } from "@/components/ui/login-button"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Rating } from "@/components/ui/rating"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -37,6 +40,7 @@ import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
+import { TagsInput } from "@/components/ui/tags-input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -506,4 +510,46 @@ export function AutocompleteCatalogPreview() {
       <Autocomplete aria-label="City" placeholder="Search a city…" value={city} onValueChange={setCity} suggestions={cities} />
     </div>
   )
+}
+
+export function ChoiceboxCatalogPreview() {
+  return (
+    <Choicebox defaultValue="pro" aria-label="Plan" className="w-full max-w-64">
+      <ChoiceboxItem value="starter" title="Starter" description="Up to 3 channels" />
+      <ChoiceboxItem value="pro" title="Pro" description="Unlimited channels and reports" />
+      <ChoiceboxItem value="enterprise" title="Enterprise" description="Contact sales" disabled />
+    </Choicebox>
+  )
+}
+
+export function RatingCatalogPreview() {
+  const [score, setScore] = useState(4)
+  return (
+    <div className="flex flex-col items-center gap-4 text-sm">
+      <Field className="items-center">
+        <FieldLabel id="catalog-rating-label">How was the agent&apos;s reply?</FieldLabel>
+        <Rating aria-label="Agent reply rating" value={score} onValueChange={setScore} size="lg" />
+      </Field>
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Rating value={4} readOnly size="sm" aria-label="Average rating" />
+        <span className="tabular-nums">4.0 · 128 reviews</span>
+      </div>
+    </div>
+  )
+}
+
+export function TagsInputCatalogPreview() {
+  const [tags, setTags] = useState(["vip", "jakarta"])
+  return (
+    <div className="w-full max-w-64">
+      <TagsInput aria-label="Contact tags" value={tags} onValueChange={setTags} />
+    </div>
+  )
+}
+
+const brandSwatches = ["#171C24", "#3366E0", "#5B8DEF", "#93C5FD", "#15803D", "#B45309", "#C81E1E", "#64748B"]
+
+export function ColorPickerCatalogPreview() {
+  const [color, setColor] = useState("#3366E0")
+  return <ColorPicker aria-label="Brand color" value={color} onValueChange={setColor} swatches={brandSwatches} />
 }

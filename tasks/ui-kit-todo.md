@@ -32,7 +32,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T7 input-otp (dep `input-otp`), slider (single + range). (S)
 - [x] T8 calendar, date-picker, mini-calendar (dep `react-day-picker`, `date-fns`). Previews use a fixed demo date: with `cacheComponents`, prerender fails on `new Date()`/`Date.now()` in render. Sheet: 3/16, 1/8, 3/5. (M)
 - [x] T9 command (dep `cmdk`), combobox (single, grouped, reselect clears), autocomplete (free text + suggestions). Multi-select combobox not built yet. Sheet: 1/21, 4/42, 4/15. (M)
-- [ ] T10 choicebox, rating, form-star-rating, tags, color-picker. (M)
+- [x] T10 choicebox, rating (form-star-rating = rating inside Field, no separate file), tags-input, color-picker (native color input + swatches + hex). Sheet: 2/5, 5/15, 2/7, 2/6, 2/4. (M)
 - [ ] T11 file-upload, dropzone, image-crop (dep `react-image-crop`; optional per Open Question #3). (M)
 - [ ] **Checkpoint B: all form controls reviewed, existing templates still build**
 
