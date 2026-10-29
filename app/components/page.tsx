@@ -5,6 +5,7 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
+  AccordionCatalogPreview,
   AlertDialogCatalogPreview,
   AnnouncementCatalogPreview,
   AspectRatioCatalogPreview,
@@ -16,6 +17,7 @@ import {
   CalendarCatalogPreview,
   ChartCatalogPreview,
   ChoiceboxCatalogPreview,
+  CollapsibleCatalogPreview,
   ColorPickerCatalogPreview,
   ComboboxCatalogPreview,
   ContextMenuCatalogPreview,
@@ -44,12 +46,14 @@ import {
   RatingCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
+  ScrollableTabsListCatalogPreview,
   SheetCatalogPreview,
   SliderCatalogPreview,
   SocialButtonCatalogPreview,
   TagsInputCatalogPreview,
   SpinnerCatalogPreview,
   StatusCatalogPreview,
+  StepperCatalogPreview,
   ToggleGroupCatalogPreview,
 } from "@/components/component-catalog-previews";
 import { ProductSwitcher } from "@/components/product-theme";
@@ -311,6 +315,10 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "pagination", preview: <PaginationCatalogPreview /> },
       { name: "navigation-menu", preview: <NavigationMenuCatalogPreview /> },
       { name: "menubar", preview: <MenubarCatalogPreview /> },
+      { name: "stepper", preview: <StepperCatalogPreview /> },
+      { name: "scrollable-tabs-list", preview: <ScrollableTabsListCatalogPreview /> },
+      { name: "accordion", preview: <AccordionCatalogPreview /> },
+      { name: "collapsible", preview: <CollapsibleCatalogPreview /> },
     ],
   },
   {
@@ -398,7 +406,7 @@ function ComponentCountPreview() {
   );
 }
 
-const label = (name: string) => name.replace("-", " ");
+const label = (name: string) => name.replaceAll("-", " ");
 
 export default function ComponentsPage() {
   return (

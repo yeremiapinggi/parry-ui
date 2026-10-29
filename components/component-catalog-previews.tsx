@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, PencilIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CopyIcon, PencilIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Announcement, AnnouncementTag, AnnouncementTitle } from "@/components/ui/announcement"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
@@ -20,6 +21,7 @@ import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
@@ -53,13 +55,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Rating } from "@/components/ui/rating"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { ScrollableTabsList } from "@/components/ui/scrollable-tabs-list"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
 import { Status } from "@/components/ui/status"
+import { Stepper } from "@/components/ui/stepper"
 import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsTrigger } from "@/components/ui/tabs"
 import { TagsInput } from "@/components/ui/tags-input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
@@ -1005,5 +1010,73 @@ export function MenubarCatalogPreview() {
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
+  )
+}
+
+const faqs = [
+  { q: "Which channels can I connect?", a: "WhatsApp, Instagram, Facebook, Telegram and email." },
+  { q: "Can I export conversations?", a: "Yes, as CSV from any filtered conversation list." },
+  { q: "Is there an API?", a: "The Developer Portal gives you API keys, webhooks and request logs." },
+]
+
+export function AccordionCatalogPreview() {
+  return (
+    <Accordion type="single" collapsible defaultValue="item-0" className="w-full max-w-72">
+      {faqs.map((faq, i) => (
+        <AccordionItem key={faq.q} value={`item-${i}`}>
+          <AccordionTrigger>{faq.q}</AccordionTrigger>
+          <AccordionContent className="text-muted-foreground">{faq.a}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  )
+}
+
+export function CollapsibleCatalogPreview() {
+  return (
+    <Collapsible className="flex w-full max-w-60 flex-col gap-2 text-sm">
+      <div className="flex items-center justify-between gap-2">
+        <span className="font-medium">3 tagged agents</span>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="icon-sm" aria-label="Toggle agents">
+            <ChevronsUpDownIcon />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      <div className="rounded-md border px-3 py-2">Rina Wijaya</div>
+      <CollapsibleContent className="flex flex-col gap-2">
+        <div className="rounded-md border px-3 py-2">Budi Tan</div>
+        <div className="rounded-md border px-3 py-2">Sari Lestari</div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+const checkoutSteps = [{ title: "Cart" }, { title: "Shipping" }, { title: "Payment" }, { title: "Review" }]
+
+export function StepperCatalogPreview() {
+  const [step, setStep] = useState(1)
+  return (
+    <div className="flex w-full max-w-80 flex-col gap-4">
+      <Stepper aria-label="Checkout" steps={checkoutSteps} value={step} onValueChange={setStep} />
+      <div className="flex justify-between">
+        <Button variant="outline" size="sm" disabled={step === 0} onClick={() => setStep(step - 1)}>Back</Button>
+        <Button size="sm" disabled={step === checkoutSteps.length - 1} onClick={() => setStep(step + 1)}>Next</Button>
+      </div>
+    </div>
+  )
+}
+
+const reportTabs = ["Overview", "Inbox", "Agents", "Channels", "Tags", "CSAT", "SLA", "Exports"]
+
+export function ScrollableTabsListCatalogPreview() {
+  return (
+    <Tabs defaultValue="Overview" className="w-full max-w-64">
+      <ScrollableTabsList>
+        {reportTabs.map((tab) => (
+          <TabsTrigger key={tab} value={tab}>{tab}</TabsTrigger>
+        ))}
+      </ScrollableTabsList>
+    </Tabs>
   )
 }

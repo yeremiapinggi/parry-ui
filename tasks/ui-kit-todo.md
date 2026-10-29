@@ -46,7 +46,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 6: Navigation
 - [x] T15 breadcrumb, pagination, navigation-menu, menubar (new "Navigation" group on /components). Sheet: 2/14, 6/19, 1/20, 1/10. (M)
-- [ ] T16 stepper, scrollable-tabslist, collapsible, accordion. (M)
+- [x] T16 stepper (custom, clickable completed steps), scrollable-tabs-list (TabsList in ScrollArea), collapsible, accordion. Also fixed /components labels for names with 2+ hyphens. Sheet: 6/26, 1/1, 2/23, 1/21. (M)
 - [ ] **Checkpoint C: feedback, overlay, navigation reviewed (keyboard + focus checked on overlays)**
 
 ## Phase 7: Data Display

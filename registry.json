@@ -1233,6 +1233,69 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "dependencies": [
+        "radix-ui",
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/stepper.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scrollable-tabs-list",
+      "type": "registry:ui",
+      "title": "Scrollable Tabs List",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/scroll-area",
+        "@parry/tabs"
+      ],
+      "files": [
+        {
+          "path": "components/ui/scrollable-tabs-list.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
