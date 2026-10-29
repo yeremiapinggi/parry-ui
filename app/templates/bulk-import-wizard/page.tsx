@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { BulkImportWizard } from "@/components/bulk-import-wizard"
-import { DocsToc } from "@/components/docs-nav"
+import { TemplateDocumentationLayout } from "@/components/template-documentation-layout"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -63,8 +63,8 @@ const dontGuidelines = [
 export default function BulkImportWizardPage() {
   return (
     <main className="w-full bg-card text-card-foreground">
-      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">
-        <article className="flex min-w-0 flex-col gap-12 py-10">
+      <TemplateDocumentationLayout items={toc}>
+        
           <header className="flex flex-col items-start gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground"><Link href="/templates" className="hover:text-foreground">Templates</Link><span aria-hidden="true">/</span><span>Forms &amp; Settings</span></div>
             <Badge variant="secondary">Page template</Badge>
@@ -125,9 +125,7 @@ export default function BulkImportWizardPage() {
             <Separator />
             <p className="text-sm text-muted-foreground">Explore <Link href="/components" className="font-medium text-link hover:underline">all Parry UI components</Link> or return to the <Link href="/templates" className="font-medium text-link hover:underline">Templates catalog</Link>.</p>
           </section>
-        </article>
-        <aside className="hidden py-10 xl:block"><div className="sticky top-24"><DocsToc items={toc} /></div></aside>
-      </div>
+      </TemplateDocumentationLayout>
     </main>
   )
 }

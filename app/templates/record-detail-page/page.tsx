@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { RecordDetailPagePreview } from "@/components/record-detail-page-preview"
-import { DocsToc } from "@/components/docs-nav"
+import { TemplateDocumentationLayout } from "@/components/template-documentation-layout"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -63,8 +63,8 @@ const componentNames = ["avatar", "badge", "button", "dialog", "dropdown-menu", 
 
 export default function RecordDetailPageTemplate() {
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 xl:grid-cols-[minmax(0,1fr)_180px]">
-      <article className="flex min-w-0 flex-col gap-12 py-10">
+    <TemplateDocumentationLayout items={toc}>
+      
         <header className="flex flex-col items-start gap-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground"><Link href="/templates" className="hover:text-foreground">Templates</Link><span aria-hidden="true">/</span><span>Layouts &amp; Details</span></div>
           <Badge variant="secondary">Page template</Badge>
@@ -92,8 +92,6 @@ export default function RecordDetailPageTemplate() {
         <section id="usage-guidelines" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="guidelines-heading"><h2 id="guidelines-heading" className={sectionHeading}>Usage Guidelines</h2><p className="leading-relaxed text-muted-foreground">Use this page when users need an enduring destination for one entity, not merely a quick peek from a collection. Keep high-signal attributes visible and let secondary navigation earn its place through real depth.</p><div className="grid gap-4 md:grid-cols-2"><Card><CardHeader><CardTitle className="text-base">Do</CardTitle></CardHeader><CardContent><ul className="flex list-disc flex-col gap-2 pl-5 text-sm leading-relaxed text-muted-foreground">{doGuidelines.map((item) => <li key={item}>{item}</li>)}</ul></CardContent></Card><Card><CardHeader><CardTitle className="text-base">Don&apos;t</CardTitle></CardHeader><CardContent><ul className="flex list-disc flex-col gap-2 pl-5 text-sm leading-relaxed text-muted-foreground">{dontGuidelines.map((item) => <li key={item}>{item}</li>)}</ul></CardContent></Card></div><Card><CardHeader><CardTitle className="text-base">Responsive behavior</CardTitle></CardHeader><CardContent><p className="text-sm leading-relaxed text-muted-foreground">Metadata and information sections collapse to a single column on narrow screens. Actions wrap into a second row when needed; related-record labels and activity descriptions remain readable without horizontal scrolling.</p></CardContent></Card></section>
 
         <section id="components-used" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="components-heading"><h2 id="components-heading" className={sectionHeading}>Components Used</h2><p className="leading-relaxed text-muted-foreground">The page composes existing Parry UI controls and the shared fictional contact dataset. No new dependencies or persistence layer are required for the local template preview.</p><div className="flex flex-wrap gap-2">{componentNames.map((name) => <Link key={name} href={`/components#${name}`} className="rounded-md border bg-card px-2.5 py-1.5 font-mono text-xs text-link hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{name}</Link>)}</div><Separator /><p className="text-sm text-muted-foreground">Compare the <Link href="/templates/advanced-filterable-table" className="font-medium text-link hover:underline">table inspector</Link>, explore the <Link href="/templates/create-edit-form" className="font-medium text-link hover:underline">Create / Edit Form</Link>, or return to the <Link href="/templates" className="font-medium text-link hover:underline">Templates catalog</Link>.</p></section>
-      </article>
-      <aside className="hidden py-10 xl:block"><div className="sticky top-24"><DocsToc items={toc} /></div></aside>
-    </div>
+    </TemplateDocumentationLayout>
   )
 }
