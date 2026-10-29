@@ -26,7 +26,7 @@ import { team } from "@/components/blocks/_data/team"
 import type { Sentiment, ThreadItem, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { Stamp } from "@/components/blocks/_parts/message-bubble"
-import { age, byTime, clock, monthDayTime, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
+import { age, byTime, clock, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
 import { channelMeta } from "@/components/blocks/channel-meta"
 import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -56,7 +56,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  * (or pencil), and a click turns them into a select or an input. Read-only values are plain text.
  */
 const editable =
-  "group/edit -mx-2 flex h-8 w-[calc(100%+1rem)] min-w-0 items-center justify-between gap-2 rounded-md border border-transparent bg-transparent px-2 text-left text-sm font-normal shadow-none transition-colors outline-none hover:border-input hover:bg-background focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=open]:border-input data-[state=open]:bg-background"
+  "group/edit -ml-2 inline-flex h-8 w-fit max-w-[calc(100%+0.5rem)] min-w-0 items-center gap-2 rounded-md border border-transparent bg-transparent px-2 text-left text-sm font-normal shadow-none transition-colors outline-none hover:border-input hover:bg-background focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=open]:border-input data-[state=open]:bg-background"
 const editableValue = "truncate underline decoration-muted-foreground/50 decoration-dashed underline-offset-4"
 const editIcon =
   "size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/edit:opacity-100 group-focus-visible/edit:opacity-100 group-data-[state=open]/edit:opacity-100"
@@ -133,7 +133,7 @@ function EditableText({ value, label, onSave }: { value: string; label: string; 
             setEditing(false)
           }
         }}
-        className="-mx-2 h-8 w-[calc(100%+1rem)] px-2"
+        className="-ml-2 h-8 w-[calc(100%+0.5rem)] px-2"
       />
     )
   return (
@@ -164,7 +164,8 @@ const Section = ({ value, title, count, children }: { value: string; title: stri
         )}
       </span>
     </AccordionTrigger>
-    <AccordionContent className="flex flex-col gap-1 pb-4">{children}</AccordionContent>
+    {/* h-auto / mb-0 undo two DS AccordionContent defaults: a height frozen at open (clips the add-contact form) and p margins. */}
+    <AccordionContent className="flex h-auto flex-col gap-1 pb-4 [&_p:not(:last-child)]:mb-0">{children}</AccordionContent>
   </AccordionItem>
 )
 
@@ -486,11 +487,13 @@ export function TicketSidebar({
 }) {
   const notes = thread.filter((i) => i.kind === "note").sort((a, b) => byTime(b, a))
   const activity = activityOf(thread)
+  // Every channel this customer has reached us on; this ticket's channel first.
+  const channelsUsed = [...new Set([t.channel, ...t.contact.identities.map((i) => i.channel)])]
   const facts: [string, React.ReactNode][] = [
     [
       "Created",
-      <time key="c" dateTime={t.createdAt} title={shortDateTime(t.createdAt)} className="tabular-nums">
-        {monthDayTime(t.createdAt)}
+      <time key="c" dateTime={t.createdAt} className="tabular-nums">
+        {shortDateTime(t.createdAt)}
       </time>,
     ],
     [
@@ -503,15 +506,15 @@ export function TicketSidebar({
       "SLA",
       status === "closed" ? (
         <span key="sla" className="text-muted-foreground">
-          Stopped
+          Stopped (ticket closed)
         </span>
       ) : t.state === "out-sla" ? (
         <span key="sla" className="font-medium text-destructive">
-          Out · {t.slaOverdue}
+          Out SLA · {t.slaOverdue} over
         </span>
       ) : (
         <span key="sla" className="font-medium text-success">
-          Within
+          Within SLA
         </span>
       ),
     ],
@@ -527,15 +530,18 @@ export function TicketSidebar({
         <div className="flex min-w-0 flex-col">
           <h3 className="truncate font-heading font-semibold">{t.customer}</h3>
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="inline-flex">
-                  <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
-                  <span className="sr-only">{channelMeta[t.channel].typeLabel}</span>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>{channelMeta[t.channel].typeLabel}</TooltipContent>
-            </Tooltip>
+            {channelsUsed.map((ch) => (
+              <Tooltip key={ch}>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex">
+                    <ChannelIcon channel={ch} className="size-3.5 [&_svg]:size-2.5" />
+                    <span className="sr-only">{channelMeta[ch].typeLabel}</span>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>{ch === t.channel ? `${channelMeta[ch].typeLabel} (this ticket)` : channelMeta[ch].typeLabel}</TooltipContent>
+              </Tooltip>
+            ))}
+            <span className="ml-0.5">·</span>
             {t.history.length + 1} {t.history.length ? "tickets" : "ticket"}
           </p>
         </div>
@@ -560,15 +566,11 @@ export function TicketSidebar({
           <Row label="Group">
             <span className="block truncate text-sm">{t.group}</span>
           </Row>
-          {/* Read-only timing facts as compact tiles under the fields. */}
-          <dl className="mt-2 grid grid-cols-[1.5fr_1fr_1fr] gap-2">
-            {facts.map(([k, v]) => (
-              <div key={k} className="flex min-w-0 flex-col gap-0.5 rounded-lg border bg-background px-2.5 py-2">
-                <dt className="text-xs text-muted-foreground">{k}</dt>
-                <dd className="truncate text-sm">{v}</dd>
-              </div>
-            ))}
-          </dl>
+          {facts.map(([k, v]) => (
+            <Row key={k} label={k}>
+              <span className="block truncate text-sm">{v}</span>
+            </Row>
+          ))}
         </Section>
 
         <Section value="contact" title="Contact">

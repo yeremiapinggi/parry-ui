@@ -127,6 +127,9 @@ Review 2026-10-30 (12): sidebar is text-first. Editable values (status, assignee
 fields, email/phone/added contact fields) read as text with a dashed underline, show an outline + chevron/pencil on
 hover or focus, and become a select or input on click (Enter/blur saves, Esc cancels without closing the dialog via
 data-inline-edit). Read-only values are plain text. Labels that repeat an icon became the icon's tooltip.
+Review 2026-10-30 (13): inline edit controls hug their text (no overflow past the sidebar edge); customer header shows
+an icon per channel the customer used; Created / Age / SLA are plain rows. DS gap: AccordionContent freezes its inner
+height at open (clipped the add-contact form) and adds mb-4 to <p>; Section overrides both (h-auto, mb-0).
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)
