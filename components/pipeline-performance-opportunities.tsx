@@ -3,26 +3,19 @@
 import { useState } from "react"
 import { Building2Icon, CalendarDaysIcon, UserRoundIcon, type LucideIcon } from "lucide-react"
 
-import { PIPELINE_DEFINITIONS, type OpportunitySnapshot } from "@/lib/pipeline-performance-data"
+import type { OpportunitySnapshot, PipelineDefinition } from "@/lib/pipeline-performance-data"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-const exactCurrency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+function formatCurrency(value: number, currencyCode: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode, maximumFractionDigits: 0 }).format(value)
+}
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
 
 export type OpportunityListMode = "open" | "won" | "lost" | "closed" | "new" | "stalled"
-
-const modeLabels: Record<OpportunityListMode, string> = {
-  open: "Open opportunities",
-  won: "Won opportunities",
-  lost: "Lost opportunities",
-  closed: "Closed opportunities",
-  new: "New opportunity inflow",
-  stalled: "Aging attention candidates",
-}
 
 export function OpportunityDrilldown({
   rows,
@@ -30,16 +23,36 @@ export function OpportunityDrilldown({
   selectedStage,
   periodLabel,
   onClearStage,
+  currencyCode,
+  wonStage,
+  lostStage,
+  entityLabel,
+  valueLabel,
+  pipelineDefinitions,
 }: {
   rows: OpportunitySnapshot[]
   mode: OpportunityListMode
   selectedStage: string | null
   periodLabel: string
   onClearStage: () => void
+  currencyCode: string
+  wonStage: string
+  lostStage: string
+  entityLabel: string
+  valueLabel: string
+  pipelineDefinitions: PipelineDefinition[]
 }) {
   const [selectedOpportunity, setSelectedOpportunity] = useState<OpportunitySnapshot | null>(null)
-  const listTitle = selectedStage ? `${selectedStage} opportunities` : modeLabels[mode]
-  const listDescription = selectedStage === "Won" || selectedStage === "Lost" || mode === "won" || mode === "lost" || mode === "closed"
+  const modeTitles: Record<OpportunityListMode, string> = {
+    open: `Open ${entityLabel}`,
+    won: `${wonStage} ${entityLabel}`,
+    lost: `${lostStage} ${entityLabel}`,
+    closed: `Closed ${entityLabel}`,
+    new: `New ${entityLabel} inflow`,
+    stalled: "Aging attention candidates",
+  }
+  const listTitle = selectedStage ? `${selectedStage} ${entityLabel}` : modeTitles[mode]
+  const listDescription = selectedStage === wonStage || selectedStage === lostStage || mode === "won" || mode === "lost" || mode === "closed"
     ? `Opportunities closed in ${periodLabel}.`
     : selectedStage
       ? `Open opportunities currently in ${selectedStage}, as of the reporting period end date.`
@@ -64,14 +77,14 @@ export function OpportunityDrilldown({
         <CardContent className="px-0 pb-0">
           {rows.length === 0 ? (
             <Empty className="min-h-48 rounded-none border-0 border-t">
-              <EmptyHeader><EmptyTitle>No matching opportunities</EmptyTitle><EmptyDescription>Try another stage or change the filters above. The active filters and reporting window are preserved.</EmptyDescription></EmptyHeader>
+              <EmptyHeader><EmptyTitle>No matching records</EmptyTitle><EmptyDescription>Try another stage or change the filters above. The active filters and reporting window are preserved.</EmptyDescription></EmptyHeader>
               {selectedStage && <EmptyContent><Button type="button" size="sm" variant="outline" onClick={onClearStage}>Clear stage selection</Button></EmptyContent>}
             </Empty>
           ) : (
             <div className="overflow-x-auto">
               <Table className="min-w-[900px]">
                 <TableHeader><TableRow>
-                  <TableHead>Opportunity</TableHead><TableHead>Company</TableHead><TableHead>Owner</TableHead><TableHead>Stage</TableHead><TableHead className="text-right">Deal value</TableHead><TableHead className="text-right">Win probability</TableHead><TableHead className="text-right">Days in stage</TableHead><TableHead>Expected close</TableHead>
+                  <TableHead>{entityLabel}</TableHead><TableHead>Company</TableHead><TableHead>Owner</TableHead><TableHead>Stage</TableHead><TableHead className="text-right">{valueLabel}</TableHead><TableHead className="text-right">Win probability</TableHead><TableHead className="text-right">Days in stage</TableHead><TableHead>Expected close</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
                   {rows.map((row) => (
@@ -80,7 +93,7 @@ export function OpportunityDrilldown({
                       <TableCell>{row.opportunity.company}</TableCell>
                       <TableCell>{row.opportunity.owner}</TableCell>
                       <TableCell>{row.stage}</TableCell>
-                      <TableCell className="text-right font-data tabular-nums">{exactCurrency.format(row.opportunity.value)}</TableCell>
+                      <TableCell className="text-right font-data tabular-nums">{formatCurrency(row.opportunity.value, currencyCode)}</TableCell>
                       <TableCell className="text-right font-data tabular-nums">{Math.round(row.winProbability * 100)}%</TableCell>
                       <TableCell className="text-right font-data tabular-nums">{row.daysInStage}</TableCell>
                       <TableCell>{dateFormatter.format(row.opportunity.expectedCloseAt)}</TableCell>
@@ -95,19 +108,20 @@ export function OpportunityDrilldown({
 
       <Sheet open={selectedOpportunity !== null} onOpenChange={(open) => { if (!open) setSelectedOpportunity(null) }}>
         <SheetContent data-parry-theme side="right" className="w-[min(100vw,34rem)] max-w-none gap-0 overflow-y-auto p-0 sm:max-w-[34rem]">
-          {selectedOpportunity && <OpportunityDetails snapshot={selectedOpportunity} />}
+          {selectedOpportunity && <OpportunityDetails snapshot={selectedOpportunity} currencyCode={currencyCode} valueLabel={valueLabel} pipelineDefinitions={pipelineDefinitions} entityLabel={entityLabel} />}
         </SheetContent>
       </Sheet>
     </>
   )
 }
 
-function OpportunityDetails({ snapshot }: { snapshot: OpportunitySnapshot }) {
+function OpportunityDetails({ snapshot, currencyCode, valueLabel, pipelineDefinitions, entityLabel }: { snapshot: OpportunitySnapshot; currencyCode: string; valueLabel: string; pipelineDefinitions: PipelineDefinition[]; entityLabel: string }) {
   const { opportunity } = snapshot
   const snapshotStageIndex = opportunity.history.findIndex((transition) => transition.stage === snapshot.stage)
   const visibleHistory = opportunity.history.slice(0, snapshotStageIndex + 1)
   const probability = Math.round(snapshot.winProbability * 100)
-  const pipelineName = PIPELINE_DEFINITIONS.find((pipeline) => pipeline.id === opportunity.pipelineId)?.name ?? "Pipeline"
+  const singularEntityLabel = entityLabel.endsWith("ies") ? `${entityLabel.slice(0, -3)}y` : entityLabel.endsWith("s") ? entityLabel.slice(0, -1) : entityLabel
+  const pipelineName = pipelineDefinitions.find((pipeline) => pipeline.id === opportunity.pipelineId)?.name ?? "Pipeline"
 
   return (
     <>
@@ -117,13 +131,13 @@ function OpportunityDetails({ snapshot }: { snapshot: OpportunitySnapshot }) {
       </SheetHeader>
       <div className="flex flex-col gap-5 p-5">
         <div className="grid grid-cols-2 gap-3">
-          <DetailMetric label="Deal value" value={exactCurrency.format(opportunity.value)} />
+          <DetailMetric label={valueLabel} value={formatCurrency(opportunity.value, currencyCode)} />
           <DetailMetric label="Win probability" value={`${probability}%`} />
           <DetailMetric label="Current stage" value={snapshot.stage} />
           <DetailMetric label="Days in stage" value={`${snapshot.daysInStage} days`} />
         </div>
         <div className="flex flex-col gap-3 rounded-lg border p-4">
-          <p className="text-sm font-semibold">Opportunity details</p>
+          <p className="text-sm font-semibold">{singularEntityLabel} details</p>
           <DetailLine icon={UserRoundIcon} label="Owner" value={opportunity.owner} />
           <DetailLine icon={Building2Icon} label="Lead source" value={opportunity.leadSource} />
           <DetailLine icon={CalendarDaysIcon} label="Expected close" value={dateFormatter.format(opportunity.expectedCloseAt)} />
@@ -141,7 +155,7 @@ function OpportunityDetails({ snapshot }: { snapshot: OpportunitySnapshot }) {
             ))}
           </ol>
         </div>
-        <div className="rounded-md bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground"><p>Fictional demo record. Current snapshot and active filters remain in place when this detail panel closes.</p></div>
+        <div className="rounded-md bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground"><p>This record reflects the selected reporting-period snapshot. Current filters remain in place when this detail panel closes.</p></div>
       </div>
       <div className="mt-auto flex justify-end border-t p-4"><SheetClose asChild><Button type="button" variant="outline">Close details</Button></SheetClose></div>
     </>

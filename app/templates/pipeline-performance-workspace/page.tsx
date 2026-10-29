@@ -36,7 +36,7 @@ const anatomy = [
 const states = [
   ["Default Overview", "The Cognivo Sales Pipeline starts on a 30-day window. Overview, funnel, stage table, aging, forecast, and drill-down all use one fictional opportunity dataset."],
   ["Stage Selected", "Selecting a funnel or table stage highlights that stage and filters the opportunity list. Clearing the selection leaves the global filters untouched."],
-  ["Comparison Enabled", "The overview and stage funnel compare with the immediately preceding equal-length period. Stage snapshot counts remain distinct from transition-based conversion."],
+  ["Comparison Enabled", "The overview and stage analysis compare with the immediately preceding equal-length period. Stage snapshot counts remain distinct from transition-based conversion and drop-off cohorts."],
   ["Bottleneck Highlighted", "The aging section compares average stage age and exposes records beyond the configured threshold as attention candidates for human review."],
   ["Filtered Opportunities", "Pipeline, owner, source, time window, stage, and KPI drill-downs act on the same data. A stage selection and filters remain when opening or closing a record drawer."],
   ["Opportunity Detail Open", "The right-side drawer shows opportunity identity, deal value, win probability, current stage, days in stage, expected close, and stage history through the selected snapshot."],
@@ -96,7 +96,7 @@ export default function PipelinePerformanceWorkspacePage() {
 
         <section id="features-variants" className="flex scroll-mt-24 flex-col gap-4" aria-labelledby="features-heading">
           <h2 id="features-heading" className={sectionHeading}>Features &amp; Variants</h2>
-          <p className="leading-relaxed text-muted-foreground">The workspace uses a configurable pipeline definition (ordered stage names, entity label, and currency) with shared opportunity, owner, source, probability, expected-close, and transition-history fields. No separate sales or recruitment template is required.</p>
+          <p className="leading-relaxed text-muted-foreground">The workspace accepts configurable pipeline definitions (ordered stage names, terminal outcome labels, entity label, currency, and overview metric labels) plus opportunity records with owner, source, probability, expected-close, and transition history. No separate sales or recruitment template is required.</p>
           <Card><CardHeader><CardTitle className="text-base">Included behavior</CardTitle><CardDescription>All interactions use one deterministic fictional dataset and the period definitions above.</CardDescription></CardHeader><CardContent className="flex flex-wrap gap-2">{["7D / 30D / 90D / custom", "Pipeline / owner / lead-source filters", "Combined filters and reset", "Previous equal-length period", "Selectable conversion funnel", "Sortable stage analysis", "7 / 14 / 30-day aging threshold", "Monthly expected-close chart", "Weighted revenue forecast", "Opportunity detail drawer", "Loading / unavailable / empty states", "Responsive and light / dark modes"].map((feature) => <Badge key={feature} variant="secondary">{feature}</Badge>)}</CardContent></Card>
           <div className="grid gap-3 sm:grid-cols-3">{useCases.map((item) => <Card key={item.title} className="gap-2 py-4"><CardHeader className="pb-0"><CardTitle className="text-base">{item.title}</CardTitle></CardHeader><CardContent><p className="text-sm leading-relaxed text-muted-foreground">{item.text}</p></CardContent></Card>)}</div>
         </section>

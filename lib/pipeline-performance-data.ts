@@ -6,7 +6,7 @@ export type PipelineDefinition = {
   currency: string
   wonStage: string
   lostStage: string
-  metricLabels?: { pipelineValue?: string; wonRevenue?: string; winRate?: string; weightedForecast?: string; averageDealValue?: string }
+  metricLabels?: { pipelineValue?: string; wonRevenue?: string; winRate?: string; weightedForecast?: string; value?: string; averageDealValue?: string }
 }
 
 export type StageTransition = {
@@ -36,6 +36,9 @@ export type StageSummary = {
   stage: string
   opportunityCount: number
   previousOpportunityCount: number
+  previousConversionRate: number
+  previousDropOffRate: number
+  previousEntriesInPeriod: number
   totalValue: number
   averageDealValue: number
   averageDaysInStage: number
@@ -228,10 +231,10 @@ export function getSnapshotState(opportunity: PipelineOpportunity, endDate: Date
   }
 }
 
-function getActiveSnapshots(opportunities: PipelineOpportunity[], endDate: Date): OpportunitySnapshot[] {
+function getActiveSnapshots(opportunities: PipelineOpportunity[], endDate: Date, wonStage: string, lostStage: string): OpportunitySnapshot[] {
   return opportunities.flatMap((opportunity) => {
     const snapshot = getSnapshotState(opportunity, endDate)
-    return snapshot && snapshot.stage !== "Won" && snapshot.stage !== "Lost" ? [snapshot] : []
+    return snapshot && snapshot.stage !== wonStage && snapshot.stage !== lostStage ? [snapshot] : []
   })
 }
 
@@ -246,7 +249,6 @@ function getMonthlyForecast(snapshots: OpportunitySnapshot[], startDate: Date): 
   const months: MonthlyForecast[] = []
   for (let offset = 0; offset < 5; offset += 1) {
     const monthDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth() + offset, 1))
-    const key = `${monthDate.getUTCFullYear()}-${String(monthDate.getUTCMonth() + 1).padStart(2, "0")}`
     const monthSnapshots = snapshots.filter((snapshot) => {
       const closeDate = snapshot.opportunity.expectedCloseAt
       return closeDate.getUTCFullYear() === monthDate.getUTCFullYear() && closeDate.getUTCMonth() === monthDate.getUTCMonth()
@@ -282,21 +284,26 @@ export function calculatePipelineMetrics({
     && (owner === "all" || opportunity.owner === owner)
     && (leadSource === "all" || opportunity.leadSource === leadSource)
   ))
-  const snapshots = getActiveSnapshots(filtered, window.end)
-  const previousSnapshots = getActiveSnapshots(filtered, previousWindow.end)
+  const snapshots = getActiveSnapshots(filtered, window.end, pipeline.wonStage, pipeline.lostStage)
+  const previousSnapshots = getActiveSnapshots(filtered, previousWindow.end, pipeline.wonStage, pipeline.lostStage)
   const stageEntries: Record<string, number> = {}
 
   const stages = pipeline.stages.map((stage, stageIndex) => {
     const stageSnapshots = snapshots.filter((snapshot) => snapshot.stage === stage)
     const previousCount = previousSnapshots.filter((snapshot) => snapshot.stage === stage).length
     const entries = getPeriodStageEntries(filtered, stage, window)
+    const previousEntries = getPeriodStageEntries(filtered, stage, previousWindow)
     const nextStage = pipeline.stages[stageIndex + 1]
-    const advanced = entries.filter(({ opportunity, entry }) => opportunity.history.some((transition) => (
-      transition.stage === nextStage && transition.changedAt > entry.changedAt && transition.changedAt <= window.end
+    const countAdvanced = (cohort: typeof entries, endDate: Date) => cohort.filter(({ opportunity, entry }) => opportunity.history.some((transition) => (
+      transition.stage === nextStage && transition.changedAt > entry.changedAt && transition.changedAt <= endDate
     ))).length
-    const dropped = entries.filter(({ opportunity, entry }) => opportunity.history.some((transition) => (
-      transition.stage === pipeline.lostStage && transition.changedAt > entry.changedAt && transition.changedAt <= window.end
+    const countDropped = (cohort: typeof entries, endDate: Date) => cohort.filter(({ opportunity, entry }) => opportunity.history.some((transition) => (
+      transition.stage === pipeline.lostStage && transition.changedAt > entry.changedAt && transition.changedAt <= endDate
     ))).length
+    const advanced = countAdvanced(entries, window.end)
+    const dropped = countDropped(entries, window.end)
+    const previousAdvanced = countAdvanced(previousEntries, previousWindow.end)
+    const previousDropped = countDropped(previousEntries, previousWindow.end)
     stageEntries[stage] = entries.length
     const totalValue = stageSnapshots.reduce((total, snapshot) => total + snapshot.opportunity.value, 0)
 
@@ -304,6 +311,9 @@ export function calculatePipelineMetrics({
       stage,
       opportunityCount: stageSnapshots.length,
       previousOpportunityCount: previousCount,
+      previousConversionRate: previousEntries.length ? (previousAdvanced / previousEntries.length) * 100 : 0,
+      previousDropOffRate: previousEntries.length ? (previousDropped / previousEntries.length) * 100 : 0,
+      previousEntriesInPeriod: previousEntries.length,
       totalValue,
       averageDealValue: stageSnapshots.length ? totalValue / stageSnapshots.length : 0,
       averageDaysInStage: stageSnapshots.length
