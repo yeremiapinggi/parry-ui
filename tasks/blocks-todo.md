@@ -162,11 +162,11 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 11: Acceptance pass + summary
 **Acceptance criteria:**
-- [ ] `npm run check:blocks` output pasted (zero hex/arbitrary colours, zero disallowed imports)
-- [ ] 4 blocks × 4 themes screenshot matrix: no unreadable text, no hard-coded white surfaces
-- [ ] Inbox 1440 / 1024 / 390 without horizontal scroll; keyboard walk passes
-- [ ] `npx tsc --noEmit`, `npm run lint`, `npm run check:contrast`, `npm run build` pass
-- [ ] Summary: files created, DS components used per block, final DS gaps
+- [x] `npm run check:blocks` output pasted (zero hex/arbitrary colours, zero disallowed imports)
+- [x] 4 blocks × 4 themes screenshot matrix: no unreadable text, no hard-coded white surfaces
+- [x] Inbox 1440 / 1024 / 390 without horizontal scroll; keyboard walk passes
+- [x] `npx tsc --noEmit`, `npm run lint`, `npm run check:contrast`, `npm run build` pass
+- [x] Summary: files created, DS components used per block, final DS gaps
 
 **Dependencies:** Task 10
 **Scope:** S
