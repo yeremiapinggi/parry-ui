@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, ZapIcon, MailIcon, UserPlusIcon, CheckCircle2Icon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, ZapIcon, BoldIcon, ItalicIcon, UnderlineIcon, MailIcon, UserPlusIcon, CheckCircle2Icon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -98,6 +98,7 @@ import { TagsInput } from "@/components/ui/tags-input"
 import { Ticker } from "@/components/ui/ticker"
 import { Timeline, TimelineItem } from "@/components/ui/timeline"
 import { Tree } from "@/components/ui/tree"
+import { Toggle } from "@/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -1576,5 +1577,24 @@ export function ImageZoomCatalogPreview() {
       <ImageZoom src="/images/settings-panels-thumbnail.png" alt="Settings panels template" className="aspect-video w-full" />
       <figcaption className="text-xs text-muted-foreground">Settings panels · click to zoom</figcaption>
     </figure>
+  )
+}
+
+export function ToggleCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <Toggle aria-label="Bold" defaultPressed>
+        <BoldIcon />
+      </Toggle>
+      <Toggle variant="outline" aria-label="Italic">
+        <ItalicIcon />
+      </Toggle>
+      <Toggle aria-label="Underline" disabled>
+        <UnderlineIcon />
+      </Toggle>
+      <Toggle variant="outline">
+        <BoldIcon /> Bold
+      </Toggle>
+    </div>
   )
 }

@@ -65,4 +65,4 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T23 code-block (no highlighter dep; copy, filename, line numbers), snippet (tabs + copy). Clipboard "Copied" state not verifiable in the preview pane (clipboard-write denied there). Sheet: 5/6, 3/6. (S)
 - [x] T24 qr-code (dep `uqr`, pinned 0.1.3 to match both lockfiles; decode-checked with BarcodeDetector), credit-card (display only, last 4 digits, flip), logo. Sheet: 4/4, 5/6, 2/3. (M)
 - [x] T25 image-zoom (Dialog lightbox; keyboard open, Esc returns focus). Sheet: 2/4. (S)
-- [ ] **Checkpoint E: 111/111 components present or explicitly marked out of scope in the sheet; README component list updated**
+- [x] **Checkpoint E:** 104 of 111 sheet components present (101 registry items + parry-theme; Form and Form Star Rating are compositions), 7 marked out of scope. Every in-scope row is Selesai or Review; the 50 Belum rows are all out of scope. Sheet total: 282 Selesai / 1,865 Review / 50 Belum. README registry table rewritten; Toggle got its missing preview (4/7).
