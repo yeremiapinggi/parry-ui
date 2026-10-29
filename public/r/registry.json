@@ -10,17 +10,20 @@
       "description": "Midnight + Frost Blue tokens, Plus Jakarta Sans / JetBrains Mono. Generated from app/globals.css by scripts/sync-theme.mjs.",
       "dependencies": [
         "@fontsource-variable/plus-jakarta-sans",
+        "@fontsource-variable/dm-sans",
         "@fontsource-variable/jetbrains-mono"
       ],
       "css": {
         "@import \"@fontsource-variable/plus-jakarta-sans\"": {},
+        "@import \"@fontsource-variable/dm-sans\"": {},
         "@import \"@fontsource-variable/jetbrains-mono\"": {}
       },
       "cssVars": {
         "theme": {
           "font-sans": "\"Plus Jakarta Sans Variable\", \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif",
           "font-mono": "\"JetBrains Mono Variable\", ui-monospace, monospace",
-          "font-heading": "\"Plus Jakarta Sans Variable\", \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif"
+          "font-heading": "\"Plus Jakarta Sans Variable\", \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif",
+          "font-data": "\"DM Sans Variable\", \"DM Sans\", ui-sans-serif, system-ui, sans-serif"
         },
         "light": {
           "background": "#F7F8FA",
@@ -400,6 +403,86 @@
       "files": [
         {
           "path": "components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "dependencies": [
+        "class-variance-authority",
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "dependencies": [
+        "class-variance-authority",
+        "radix-ui",
+        "cn"
+      ],
+      "registryDependencies": [
+        "toggle"
+      ],
+      "files": [
+        {
+          "path": "components/ui/toggle-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "dependencies": [
+        "recharts",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/chart.tsx",
           "type": "registry:ui"
         }
       ]
