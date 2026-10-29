@@ -28,7 +28,7 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 - [x] `SiteHeader` / `SiteFooter` render nothing on `/blocks/<id>`
 - [x] `components/blocks/_data/{tickets,team,channels,kpis,notifications}.ts` typed; obviously sample (Indonesian names, `#3xx` numbers)
 - [x] `components/blocks/channel-meta.ts`: id → label, lucide icon, brand colour (the only file with hex)
-- [x] `_parts/app-header.tsx`: logo · nav Ticket/Dashboard/Report/Setting (active from prop) · search Input with `/` Kbd hint opening a `CommandDialog` with the 9 "Search by" scopes · `AgentStatus` DropdownMenu (Available/Busy/Break/Offline with dot) · Notifications Popover · Help menu (Contact Us, Manual Book) · theme preset menu · Avatar menu (Setting, Change Password, Logout)
+- [x] `_parts/app-header.tsx` (replaced by `_parts/app-shell.tsx` floating sidebar at review 2026-10-30): logo · nav Ticket/Dashboard/Report/Setting (active from prop) · search Input with `/` Kbd hint opening a `CommandDialog` with the 9 "Search by" scopes · `AgentStatus` DropdownMenu (Available/Busy/Break/Offline with dot) · Notifications Popover · Help menu (Contact Us, Manual Book) · theme preset menu · Avatar menu (Setting, Change Password, Logout)
 - [x] Every icon-only button has `aria-label`; `/` focuses search from anywhere except text fields
 - [x] `scripts/check-blocks.mjs` + `npm run check:blocks`: fails on hex, `[#`, `rgb(`, palette colour classes, and non-allowlisted imports under `components/blocks/**` (except `channel-meta.ts`)
 - [x] ticket-inbox-01 stub exports `meta = { id, title, description, category: "Main pages" }` and renders the header

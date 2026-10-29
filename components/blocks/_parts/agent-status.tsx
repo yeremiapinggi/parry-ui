@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { ChevronDownIcon } from "lucide-react"
 
-import { currentAgent, type Presence } from "@/components/blocks/_data/team"
+import { cn } from "cn"
+
+import type { Presence } from "@/components/blocks/_data/team"
 import { PresenceDot, presenceMeta } from "@/components/blocks/_parts/presence-dot"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,27 +16,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function AgentStatus() {
-  const [presence, setPresence] = useState<Presence>(currentAgent.presence)
+export function AgentStatusItems({ value, onChange }: { value: Presence; onChange: (p: Presence) => void }) {
+  return (
+    <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(v as Presence)}>
+      {(Object.keys(presenceMeta) as Presence[]).map((p) => (
+        <DropdownMenuRadioItem key={p} value={p}>
+          <PresenceDot presence={p} />
+          {presenceMeta[p].label}
+        </DropdownMenuRadioItem>
+      ))}
+    </DropdownMenuRadioGroup>
+  )
+}
+
+// Top-bar pill: the agent's availability for new tickets.
+export function AgentStatus({ value, onChange, className }: { value: Presence; onChange: (p: Presence) => void; className?: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" aria-label={`Agent status: ${presenceMeta[presence].label}`}>
-          <PresenceDot presence={presence} />
-          <span className="hidden lg:inline">{presenceMeta[presence].label}</span>
-          <ChevronDownIcon className="hidden lg:block" />
+        <Button variant="outline" className={cn("h-9 rounded-full px-3", className)} aria-label={`Agent status: ${presenceMeta[value].label}`}>
+          <PresenceDot presence={value} />
+          {presenceMeta[value].label}
+          <ChevronDownIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44">
+      <DropdownMenuContent align="start" className="w-44">
         <DropdownMenuLabel>Agent status</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={presence} onValueChange={(v) => setPresence(v as Presence)}>
-          {(Object.keys(presenceMeta) as Presence[]).map((p) => (
-            <DropdownMenuRadioItem key={p} value={p}>
-              <PresenceDot presence={p} />
-              {presenceMeta[p].label}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+        <AgentStatusItems value={value} onChange={onChange} />
       </DropdownMenuContent>
     </DropdownMenu>
   )

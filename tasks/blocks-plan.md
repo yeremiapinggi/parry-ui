@@ -85,6 +85,10 @@ Full acceptance criteria in `tasks/blocks-todo.md`. Each task ends with a commit
 ### Checkpoint A — STOP: show the user ticket-inbox-01 (screenshots ×4 themes ×3 widths) and wait for approval.
 Review 2026-10-30: the conversation is not shown on the page. The inbox is rail + full-width list, and clicking a ticket
 opens the conversation (with ticket details) as a full-screen Dialog. This replaces the spec's four-pane grid.
+Review 2026-10-30 (2): the top AppHeader became `_parts/app-shell.tsx`, a floating-sidebar shell after a reference
+screenshot: brand, search (/ or ⌘K), Workspace nav (Ticket, Dashboard, Report), General (Setting, Help & docs) and a
+profile menu with agent status in a collapsible sidebar; top bar with collapse toggle, agent-status pill, notifications
+and theme; page title + description + actions above the content. Every block uses `<AppShell active title …>`.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

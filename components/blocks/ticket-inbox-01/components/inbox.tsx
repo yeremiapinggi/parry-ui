@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeftIcon, MenuIcon, PanelRightIcon } from "lucide-react"
+import { ArrowLeftIcon, DownloadIcon, ListFilterIcon, PanelRightIcon } from "lucide-react"
 
 import { channels } from "@/components/blocks/_data/channels"
 import { currentAgent } from "@/components/blocks/_data/team"
 import { tickets, views } from "@/components/blocks/_data/tickets"
-import { AppHeader } from "@/components/blocks/_parts/app-header"
+import { AppShell } from "@/components/blocks/_parts/app-shell"
 import { QueueRail, type QueueKey } from "@/components/blocks/_parts/queue-rail"
 import { channelMeta } from "@/components/blocks/channel-meta"
 import { ContextPanel } from "@/components/blocks/ticket-inbox-01/components/context-panel"
@@ -15,6 +15,7 @@ import { TicketList } from "@/components/blocks/ticket-inbox-01/components/ticke
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const inQueue = (key: QueueKey) => {
   const [kind, id] = key.split(":")
@@ -30,34 +31,49 @@ const queueTitle = (key: QueueKey) => {
   return kind === "view" ? views.find((v) => v.id === id)!.label : channelMeta[id as keyof typeof channelMeta].label
 }
 
-// The page is rail + list; a ticket opens as a full-screen dialog (conversation, plus details from 1280 or in a Sheet).
-// Rail: full from 1024, icons from 768, in a Sheet below that.
+// The page is queue rail + ticket list inside the app shell; a ticket opens as a full-screen dialog
+// (conversation, plus details from 1280 or in a Sheet). Below 1024 the rail moves into a Sheet.
 export function Inbox() {
   const [queue, setQueue] = useState<QueueKey>("view:progress")
   const [selectedId, setSelectedId] = useState<number>()
   const [openId, setOpenId] = useState<number | null>(null)
   const [queuesOpen, setQueuesOpen] = useState(false)
+  const [mode, setMode] = useState("conversation")
   const [detailsOpen, setDetailsOpen] = useState(false)
   const shown = inQueue(queue)
   const ticket = tickets.find((t) => t.id === openId)
 
   return (
-    <div className="flex h-dvh flex-col bg-background text-foreground">
-      <AppHeader active="ticket" />
-      <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[56px_minmax(0,1fr)] lg:grid-cols-[232px_minmax(0,1fr)]">
-        <QueueRail selected={queue} onSelect={setQueue} counts={counts} className="max-md:hidden" />
+    <AppShell
+      active="ticket"
+      title="Tickets"
+      description="Handle customer conversations from every channel in one queue."
+      actions={
+        <>
+          <ToggleGroup type="single" variant="outline" spacing={0} value={mode} onValueChange={(v) => v && setMode(v)} aria-label="List mode">
+            <ToggleGroupItem value="conversation">Conversation</ToggleGroupItem>
+            <ToggleGroupItem value="ticket">Ticket</ToggleGroupItem>
+          </ToggleGroup>
+          <Button>
+            <DownloadIcon />
+            Download Excel
+          </Button>
+        </>
+      }
+    >
+      <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <QueueRail selected={queue} onSelect={setQueue} counts={counts} className="max-lg:hidden" />
         <TicketList
           title={queueTitle(queue)}
           leading={
-            <Button variant="ghost" size="icon-sm" className="md:hidden" aria-label="Open queues" onClick={() => setQueuesOpen(true)}>
-              <MenuIcon />
+            <Button variant="outline" size="icon-sm" className="mr-1 lg:hidden" aria-label="Open queues" onClick={() => setQueuesOpen(true)}>
+              <ListFilterIcon />
             </Button>
           }
           tickets={shown}
           selectedId={selectedId}
           onSelect={setSelectedId}
           onOpen={setOpenId}
-          className="border-r-0"
         />
       </div>
 
@@ -112,7 +128,7 @@ export function Inbox() {
       </Dialog>
 
       <Sheet open={queuesOpen} onOpenChange={setQueuesOpen}>
-        <SheetContent side="left" className="w-72 gap-0 p-0">
+        <SheetContent side="left" className="w-72 gap-0 overflow-y-auto p-4">
           <SheetHeader className="sr-only">
             <SheetTitle>Ticket queues</SheetTitle>
           </SheetHeader>
@@ -123,10 +139,9 @@ export function Inbox() {
               setQueuesOpen(false)
             }}
             counts={counts}
-            className="h-full border-r-0"
           />
         </SheetContent>
       </Sheet>
-    </div>
+    </AppShell>
   )
 }
