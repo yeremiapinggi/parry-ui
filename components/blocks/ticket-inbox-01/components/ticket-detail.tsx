@@ -172,7 +172,14 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
       </div>
 
       <Sheet open={detailsOpen && !isXl} onOpenChange={setDetailsOpen}>
-        <SheetContent side="right" className="gap-0 p-0 data-[side=right]:w-full sm:data-[side=right]:w-[22rem] sm:data-[side=right]:max-w-[22rem]">
+        <SheetContent
+          side="right"
+          className="gap-0 p-0 data-[side=right]:w-full sm:data-[side=right]:w-[22rem] sm:data-[side=right]:max-w-[22rem]"
+          // Esc in an inline edit cancels that edit only.
+          onEscapeKeyDown={(e) => {
+            if ((e.target as HTMLElement | null)?.closest("[data-inline-edit]")) e.preventDefault()
+          }}
+        >
           <SheetHeader className="border-b">
             <SheetTitle>Ticket details</SheetTitle>
           </SheetHeader>

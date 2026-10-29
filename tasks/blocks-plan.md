@@ -123,6 +123,10 @@ Review 2026-10-30 (11): inbound bubbles drop the channel icon. Sidebar reworked:
 information" is an accordion (open by default) merging the old summary and "Ticket details" (Status, Assignee,
 Priority, Category, Sentiment, Group as uniform fields + Created / Age / SLA tiles); every section uses one
 label/value grid; Contact rows read icon · value · type with Tags above the actions; details Sheet is full width on phones.
+Review 2026-10-30 (12): sidebar is text-first. Editable values (status, assignee, priority, category, sentiment, custom
+fields, email/phone/added contact fields) read as text with a dashed underline, show an outline + chevron/pencil on
+hover or focus, and become a select or input on click (Enter/blur saves, Esc cancels without closing the dialog via
+data-inline-edit). Read-only values are plain text. Labels that repeat an icon became the icon's tooltip.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

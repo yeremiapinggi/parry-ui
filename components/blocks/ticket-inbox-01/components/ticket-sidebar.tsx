@@ -12,6 +12,7 @@ import {
   MailIcon,
   MapPinIcon,
   MessageCircleIcon,
+  PencilIcon,
   PhoneIcon,
   PlusIcon,
   ShieldAlertIcon,
@@ -48,21 +49,27 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Timeline, TimelineItem } from "@/components/ui/timeline"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
-const customFields = [
-  { id: "caller-case", label: "Caller case", options: ["Customer", "Dealer", "KTB"], value: "Customer" },
-  { id: "warranty", label: "Warranty", options: ["Active", "Expired"], value: "Active" },
-  { id: "sub-1", label: "Sub category 1", options: ["After sales", "Sales"], value: "After sales" },
-  { id: "sub-2", label: "Sub category 2", options: ["Service", "Spare part", "Warranty claim"] },
-  { id: "sub-3", label: "Sub category 3", options: ["AC", "Engine", "Body"] },
-]
+/*
+ * Values read as text. Editable ones carry a dashed underline; hover or focus shows the field outline and a chevron
+ * (or pencil), and a click turns them into a select or an input. Read-only values are plain text.
+ */
+const editable =
+  "group/edit -mx-2 flex h-8 w-[calc(100%+1rem)] min-w-0 items-center justify-between gap-2 rounded-md border border-transparent bg-transparent px-2 text-left text-sm font-normal shadow-none transition-colors outline-none hover:border-input hover:bg-background focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=open]:border-input data-[state=open]:bg-background"
+const editableValue = "truncate underline decoration-muted-foreground/50 decoration-dashed underline-offset-4"
+const editIcon =
+  "size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/edit:opacity-100 group-focus-visible/edit:opacity-100 group-data-[state=open]/edit:opacity-100"
+// The DS SelectTrigger renders its own chevron; these classes give it the same text-first look.
+const selectEditable = cn(
+  editable,
+  "data-[size=default]:h-8 [&>svg]:opacity-0 hover:[&>svg]:opacity-100 focus-visible:[&>svg]:opacity-100 data-[state=open]:[&>svg]:opacity-100",
+  "*:data-[slot=select-value]:underline *:data-[slot=select-value]:decoration-muted-foreground/50 *:data-[slot=select-value]:decoration-dashed *:data-[slot=select-value]:underline-offset-4 data-placeholder:*:data-[slot=select-value]:no-underline"
+)
 
-// One label/value grid for every section, so labels line up down the whole sidebar.
 const rowGrid = "grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-x-3"
 
-function Row({ label, htmlFor, labelId, children }: { label: string; htmlFor?: string; labelId?: string; children: React.ReactNode }) {
+function Row({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (
     <div className={cn(rowGrid, "min-h-8")}>
       {htmlFor ? (
@@ -70,20 +77,18 @@ function Row({ label, htmlFor, labelId, children }: { label: string; htmlFor?: s
           {label}
         </Label>
       ) : (
-        <span id={labelId} className="text-xs text-muted-foreground">
-          {label}
-        </span>
+        <span className="text-xs text-muted-foreground">{label}</span>
       )}
       <div className="min-w-0">{children}</div>
     </div>
   )
 }
 
-function Field({ id, label, options, value }: { id: string; label: string; options: string[]; value?: string }) {
+function EditableSelect({ id, label, options, value }: { id: string; label: string; options: string[]; value?: string }) {
   return (
     <Row label={label} htmlFor={id}>
       <Select defaultValue={value}>
-        <SelectTrigger id={id} size="sm" className="h-8 w-full">
+        <SelectTrigger id={id} className={selectEditable}>
           <SelectValue placeholder="Empty" />
         </SelectTrigger>
         <SelectContent>
@@ -98,8 +103,54 @@ function Field({ id, label, options, value }: { id: string; label: string; optio
   )
 }
 
-// Menu triggers styled like the Select fields next to them.
-const fieldTrigger = "h-8 w-full justify-between gap-2 px-2.5 font-normal"
+// Text that turns into an input on click; Enter or blur saves, Esc cancels (data-inline-edit keeps Esc off the dialog).
+function EditableText({ value, label, onSave }: { value: string; label: string; onSave: (value: string) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(value)
+  const commit = () => {
+    const v = draft.trim()
+    if (v && v !== value) onSave(v)
+    setEditing(false)
+  }
+
+  if (editing)
+    return (
+      <Input
+        autoFocus
+        data-inline-edit
+        aria-label={label}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onFocus={(e) => e.currentTarget.select()}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            commit()
+          } else if (e.key === "Escape") {
+            e.preventDefault()
+            setDraft(value)
+            setEditing(false)
+          }
+        }}
+        className="-mx-2 h-8 w-[calc(100%+1rem)] px-2"
+      />
+    )
+  return (
+    <button
+      type="button"
+      className={editable}
+      aria-label={`${label}: ${value}, edit`}
+      onClick={() => {
+        setDraft(value)
+        setEditing(true)
+      }}
+    >
+      <span className={editableValue}>{value}</span>
+      <PencilIcon aria-hidden="true" className={editIcon} />
+    </button>
+  )
+}
 
 const Section = ({ value, title, count, children }: { value: string; title: string; count?: number; children: React.ReactNode }) => (
   <AccordionItem value={value} className="border-b px-4 last:border-b-0">
@@ -113,7 +164,7 @@ const Section = ({ value, title, count, children }: { value: string; title: stri
         )}
       </span>
     </AccordionTrigger>
-    <AccordionContent className="flex flex-col gap-2 pb-4">{children}</AccordionContent>
+    <AccordionContent className="flex flex-col gap-1 pb-4">{children}</AccordionContent>
   </AccordionItem>
 )
 
@@ -141,20 +192,15 @@ function AssigneeMenu({
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={fieldTrigger}
-              aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}
-            >
+            <button type="button" className={editable} aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}>
               <span className="flex min-w-0 items-center gap-2">
                 <Avatar size="sm" className="size-5">
                   <AvatarFallback className="text-[0.625rem]">{assignee ? initialsOf(assignee) : "?"}</AvatarFallback>
                 </Avatar>
-                <span className="truncate">{assignee ?? "Unassigned"}</span>
+                <span className={editableValue}>{assignee ?? "Unassigned"}</span>
               </span>
-              <ChevronDownIcon className="text-muted-foreground" />
-            </Button>
+              <ChevronDownIcon aria-hidden="true" className={editIcon} />
+            </button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
         <TooltipContent className="flex items-center gap-2">
@@ -186,13 +232,13 @@ function StatusMenu({ status, onChange }: { status: TicketStatus; onChange: (s: 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className={fieldTrigger} aria-label={`Status: ${statusMeta[status].label}, change`}>
-          <span className="flex items-center gap-2">
-            <span aria-hidden="true" className={cn("size-2 rounded-full", statusMeta[status].dot)} />
-            {statusMeta[status].label}
+        <button type="button" className={editable} aria-label={`Status: ${statusMeta[status].label}, change`}>
+          <span className="flex min-w-0 items-center gap-2">
+            <span aria-hidden="true" className={cn("size-2 shrink-0 rounded-full", statusMeta[status].dot)} />
+            <span className={editableValue}>{statusMeta[status].label}</span>
           </span>
-          <ChevronDownIcon className="text-muted-foreground" />
-        </Button>
+          <ChevronDownIcon aria-hidden="true" className={editIcon} />
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-44">
         <DropdownMenuLabel>Status</DropdownMenuLabel>
@@ -209,6 +255,37 @@ function StatusMenu({ status, onChange }: { status: TicketStatus; onChange: (s: 
   )
 }
 
+function SentimentSelect({ value, onChange }: { value: Sentiment; onChange: (s: Sentiment) => void }) {
+  return (
+    <Row label="Sentiment" htmlFor="sentiment">
+      <Select value={value} onValueChange={(v) => onChange(v as Sentiment)}>
+        <SelectTrigger id="sentiment" className={selectEditable}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {(Object.keys(sentimentMeta) as Sentiment[]).map((s) => {
+            const M = sentimentMeta[s]
+            return (
+              <SelectItem key={s} value={s}>
+                <M.icon className={M.tone} />
+                {M.label}
+              </SelectItem>
+            )
+          })}
+        </SelectContent>
+      </Select>
+    </Row>
+  )
+}
+
+const customFields = [
+  { id: "caller-case", label: "Caller case", options: ["Customer", "Dealer", "KTB"], value: "Customer" },
+  { id: "warranty", label: "Warranty", options: ["Active", "Expired"], value: "Active" },
+  { id: "sub-1", label: "Sub category 1", options: ["After sales", "Sales"], value: "After sales" },
+  { id: "sub-2", label: "Sub category 2", options: ["Service", "Spare part", "Warranty claim"] },
+  { id: "sub-3", label: "Sub category 3", options: ["AC", "Engine", "Body"] },
+]
+
 const contactFieldTypes: { id: string; label: string; icon: typeof MailIcon }[] = [
   { id: "email", label: "Email", icon: MailIcon },
   { id: "phone", label: "Phone", icon: PhoneIcon },
@@ -218,8 +295,9 @@ const contactFieldTypes: { id: string; label: string; icon: typeof MailIcon }[] 
   { id: "birthday", label: "Birthday", icon: CakeIcon },
   { id: "customer-id", label: "Customer ID", icon: IdCardIcon },
 ]
+const fieldMeta = (id: string) => contactFieldTypes.find((f) => f.id === id)!
 
-// Icon · value · type label; rows the agent added get a remove button.
+// The icon carries the type (tooltip and screen-reader text), so no separate type label is shown.
 function ContactRow({
   icon,
   type,
@@ -232,19 +310,25 @@ function ContactRow({
   children: React.ReactNode
 }) {
   return (
-    <li className="flex min-h-8 items-center gap-2.5 text-sm">
-      <span aria-hidden="true" className="grid size-4 shrink-0 place-items-center text-muted-foreground">
-        {icon}
-      </span>
-      <span className="min-w-0 flex-1 truncate">
-        <span className="sr-only">{type}: </span>
-        {children}
-      </span>
-      <span aria-hidden="true" className="shrink-0 text-xs text-muted-foreground">
-        {type}
-      </span>
+    <li className="group/row flex min-h-8 items-center gap-2.5 text-sm">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="grid size-4 shrink-0 place-items-center text-muted-foreground">
+            {icon}
+            <span className="sr-only">{type}</span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="left">{type}</TooltipContent>
+      </Tooltip>
+      <div className="min-w-0 flex-1">{children}</div>
       {onRemove && (
-        <Button variant="ghost" size="icon-xs" aria-label={`Remove ${type}`} className="-mr-1 text-muted-foreground" onClick={onRemove}>
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          aria-label={`Remove ${type}`}
+          className="-mr-1 text-muted-foreground opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100"
+          onClick={onRemove}
+        >
           <XIcon />
         </Button>
       )}
@@ -253,21 +337,23 @@ function ContactRow({
 }
 
 /**
- * Channel identities, email and phone, plus contact data the agent adds during the session (local state only).
+ * Channel identities are read-only; email, phone and fields the agent adds are inline-editable (session-local state).
  * Identities that repeat the email or phone are skipped so each value shows once.
  */
 function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
-  const [extra, setExtra] = useState<{ type: string; value: string }[]>([])
+  const [fields, setFields] = useState(() => [
+    ...(c.email ? [{ type: "email", value: c.email, added: false }] : []),
+    ...(c.phone ? [{ type: "phone", value: c.phone, added: false }] : []),
+  ])
   const [adding, setAdding] = useState(false)
   const [type, setType] = useState(contactFieldTypes[3].id)
   const [value, setValue] = useState("")
   const identities = c.identities.filter((id) => id.handle !== c.email && id.handle !== c.phone)
-  const meta = (id: string) => contactFieldTypes.find((f) => f.id === id)!
 
   const save = (e: React.FormEvent) => {
     e.preventDefault()
     if (!value.trim()) return
-    setExtra((x) => [...x, { type, value: value.trim() }])
+    setFields((x) => [...x, { type, value: value.trim(), added: true }])
     setValue("")
     setAdding(false)
   }
@@ -281,31 +367,23 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
             icon={<ChannelIcon channel={id.channel} className="size-4 [&_svg]:size-2.5" />}
             type={channelMeta[id.channel].label}
           >
-            {id.handle}
+            <span className="block truncate">{id.handle}</span>
           </ContactRow>
         ))}
-        {c.email && (
-          <ContactRow icon={<MailIcon className="size-4" />} type="Email">
-            <a href={`mailto:${c.email}`} className="text-link hover:underline">
-              {c.email}
-            </a>
-          </ContactRow>
-        )}
-        {c.phone && (
-          <ContactRow icon={<PhoneIcon className="size-4" />} type="Phone">
-            <span className="tabular-nums">{c.phone}</span>
-          </ContactRow>
-        )}
-        {extra.map((f, i) => {
-          const M = meta(f.type)
+        {fields.map((f, i) => {
+          const M = fieldMeta(f.type)
           return (
             <ContactRow
               key={i}
               icon={<M.icon className="size-4" />}
               type={M.label}
-              onRemove={() => setExtra((x) => x.filter((_, j) => j !== i))}
+              onRemove={f.added ? () => setFields((x) => x.filter((_, j) => j !== i)) : undefined}
             >
-              {f.value}
+              <EditableText
+                value={f.value}
+                label={M.label}
+                onSave={(v) => setFields((x) => x.map((g, j) => (j === i ? { ...g, value: v } : g)))}
+              />
             </ContactRow>
           )
         })}
@@ -325,7 +403,7 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
       </Row>
 
       {adding ? (
-        <form onSubmit={save} aria-label="Add contact information" className="flex flex-col gap-2 rounded-lg border bg-background p-2">
+        <form onSubmit={save} aria-label="Add contact information" className="mt-1 flex flex-col gap-2 rounded-lg border bg-background p-2">
           <div className="flex gap-2">
             <Select value={type} onValueChange={setType}>
               <SelectTrigger size="sm" aria-label="Field type" className="w-32 shrink-0">
@@ -342,8 +420,9 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
             </Select>
             <Input
               autoFocus
-              aria-label={`${meta(type).label} value`}
-              placeholder={meta(type).label}
+              data-inline-edit
+              aria-label={`${fieldMeta(type).label} value`}
+              placeholder={fieldMeta(type).label}
               value={value}
               onChange={(e) => setValue(e.target.value)}
               className="h-8"
@@ -359,7 +438,7 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
           </div>
         </form>
       ) : (
-        <div className="flex items-center gap-1">
+        <div className="mt-1 flex items-center gap-1">
           <Button variant="ghost" size="xs" className="text-muted-foreground" onClick={() => setAdding(true)}>
             <PlusIcon />
             Add contact info
@@ -407,7 +486,6 @@ export function TicketSidebar({
 }) {
   const notes = thread.filter((i) => i.kind === "note").sort((a, b) => byTime(b, a))
   const activity = activityOf(thread)
-  const c = t.contact
   const facts: [string, React.ReactNode][] = [
     [
       "Created",
@@ -449,8 +527,16 @@ export function TicketSidebar({
         <div className="flex min-w-0 flex-col">
           <h3 className="truncate font-heading font-semibold">{t.customer}</h3>
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
-            {channelMeta[t.channel].typeLabel} · {t.history.length + 1} {t.history.length ? "tickets" : "ticket"}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex">
+                  <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
+                  <span className="sr-only">{channelMeta[t.channel].typeLabel}</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{channelMeta[t.channel].typeLabel}</TooltipContent>
+            </Tooltip>
+            {t.history.length + 1} {t.history.length ? "tickets" : "ticket"}
           </p>
         </div>
       </div>
@@ -463,39 +549,19 @@ export function TicketSidebar({
           <Row label="Assignee">
             <AssigneeMenu assignee={assignee} onAssign={onAssign} open={assignOpen} onOpenChange={onAssignOpenChange} />
           </Row>
-          <Field id="priority" label="Priority" options={["Low", "Medium", "High", "Urgent"]} value={t.priority} />
-          <Field
+          <EditableSelect id="priority" label="Priority" options={["Low", "Medium", "High", "Urgent"]} value={t.priority} />
+          <EditableSelect
             id="category"
             label="Category"
             options={["Complaint", "Inquiry", "Request", "Warranty claim", "Billing"]}
             value={t.category}
           />
-          <Row label="Sentiment" labelId="sentiment-label">
-            <ToggleGroup
-              type="single"
-              variant="outline"
-              size="sm"
-              spacing={0}
-              value={sentiment}
-              onValueChange={(v) => v && onSentimentChange(v as Sentiment)}
-              aria-labelledby="sentiment-label"
-              className="w-full"
-            >
-              {(Object.keys(sentimentMeta) as Sentiment[]).map((s) => {
-                const M = sentimentMeta[s]
-                return (
-                  <ToggleGroupItem key={s} value={s} aria-label={M.label} title={M.label} className="h-8 flex-1">
-                    <M.icon className={M.tone} />
-                  </ToggleGroupItem>
-                )
-              })}
-            </ToggleGroup>
-          </Row>
+          <SentimentSelect value={sentiment} onChange={onSentimentChange} />
           <Row label="Group">
-            <span className="text-sm">{t.group}</span>
+            <span className="block truncate text-sm">{t.group}</span>
           </Row>
-          {/* Read-only timing facts as compact tiles under the editable fields. */}
-          <dl className="mt-1 grid grid-cols-[1.5fr_1fr_1fr] gap-2">
+          {/* Read-only timing facts as compact tiles under the fields. */}
+          <dl className="mt-2 grid grid-cols-[1.5fr_1fr_1fr] gap-2">
             {facts.map(([k, v]) => (
               <div key={k} className="flex min-w-0 flex-col gap-0.5 rounded-lg border bg-background px-2.5 py-2">
                 <dt className="text-xs text-muted-foreground">{k}</dt>
@@ -506,12 +572,12 @@ export function TicketSidebar({
         </Section>
 
         <Section value="contact" title="Contact">
-          <ContactInfo contact={c} />
+          <ContactInfo contact={t.contact} />
         </Section>
 
         <Section value="custom-fields" title="Custom fields" count={customFields.length}>
           {customFields.map((f) => (
-            <Field key={f.id} {...f} />
+            <EditableSelect key={f.id} {...f} />
           ))}
         </Section>
 

@@ -72,6 +72,10 @@ export function Inbox() {
             e.preventDefault()
             ;(e.currentTarget as HTMLElement).focus()
           }}
+          // Esc in an inline edit cancels that edit only.
+          onEscapeKeyDown={(e) => {
+            if ((e.target as HTMLElement | null)?.closest("[data-inline-edit]")) e.preventDefault()
+          }}
           // Opened from state, not a DialogTrigger, so hand focus back to the ticket row ourselves.
           onCloseAutoFocus={(e) => {
             e.preventDefault()
