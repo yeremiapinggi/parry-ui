@@ -24,7 +24,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 2: Actions
 - [x] T4 kbd (platform-aware combos), button-group (split button, toolbar), spinner (also used for Button loading). (S)
-- [ ] T5 border-button (animated border variants), social-button, login-button (provider SVG icons), github-stars (count, tooltip; static data, no API call). Depends on T4. (M)
+- [x] T5 border-button (animated border variants), social-button, login-button (provider SVG icons), github-stars (count, tooltip; static data, no API call). Depends on T4. (M)
 - [ ] **Checkpoint A: Foundations + Actions reviewed by user**
 
 ## Phase 3: Form & Input

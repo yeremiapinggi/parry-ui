@@ -4,18 +4,22 @@ import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownI
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { BorderButton } from "@/components/ui/border-button"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { GithubStars } from "@/components/ui/github-stars"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
+import { LoginButton } from "@/components/ui/login-button"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
@@ -241,6 +245,50 @@ export function SpinnerCatalogPreview() {
         <Spinner />
         Saving
       </Button>
+    </div>
+  )
+}
+
+export function BorderButtonCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      <BorderButton>Beam</BorderButton>
+      <BorderButton border="gradient">Gradient</BorderButton>
+      <BorderButton border="dashed">Dashed</BorderButton>
+    </div>
+  )
+}
+
+export function SocialButtonCatalogPreview() {
+  return (
+    <div className="flex w-full max-w-64 flex-col gap-2">
+      <SocialButton provider="google" className="w-full" />
+      <SocialButton provider="github" variant="default" className="w-full" />
+      <div className="flex justify-center gap-2">
+        <SocialButton provider="google" iconOnly />
+        <SocialButton provider="microsoft" iconOnly />
+        <SocialButton provider="github" iconOnly />
+      </div>
+    </div>
+  )
+}
+
+export function LoginButtonCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <LoginButton />
+      <LoginButton intent="email" variant="outline" />
+      <LoginButton intent="signup" variant="secondary" />
+      <LoginButton provider="github" variant="outline">Login with GitHub</LoginButton>
+    </div>
+  )
+}
+
+export function GithubStarsCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <GithubStars repo="shadcn-ui/ui" stars={98400} />
+      <GithubStars repo="shadcn-ui/ui" stars={98400} showRepo />
     </div>
   )
 }

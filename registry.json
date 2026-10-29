@@ -263,7 +263,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "button"
+        "@parry/button"
       ],
       "files": [
         {
@@ -463,7 +463,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "toggle"
+        "@parry/toggle"
       ],
       "files": [
         {
@@ -541,7 +541,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@parry/button"
       ],
       "files": [
         {
@@ -560,7 +560,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@parry/button"
       ],
       "files": [
         {
@@ -593,7 +593,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "separator"
+        "@parry/separator"
       ],
       "files": [
         {
@@ -613,6 +613,74 @@
       "files": [
         {
           "path": "components/ui/spinner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "social-button",
+      "type": "registry:ui",
+      "title": "Social Button",
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/social-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "login-button",
+      "type": "registry:ui",
+      "title": "Login Button",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/social-button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/login-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "border-button",
+      "type": "registry:ui",
+      "title": "Border Button",
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/border-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "github-stars",
+      "type": "registry:ui",
+      "title": "Github Stars",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/social-button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/github-stars.tsx",
           "type": "registry:ui"
         }
       ]

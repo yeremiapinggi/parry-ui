@@ -6,13 +6,17 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
   AspectRatioCatalogPreview,
+  BorderButtonCatalogPreview,
   ButtonGroupCatalogPreview,
   ChartCatalogPreview,
+  GithubStarsCatalogPreview,
   KbdCatalogPreview,
+  LoginButtonCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
+  SocialButtonCatalogPreview,
   SpinnerCatalogPreview,
   ToggleGroupCatalogPreview,
 } from "@/components/component-catalog-previews";
@@ -60,6 +64,10 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
         ),
       },
       { name: "button-group", preview: <ButtonGroupCatalogPreview /> },
+      { name: "border-button", preview: <BorderButtonCatalogPreview /> },
+      { name: "social-button", preview: <SocialButtonCatalogPreview /> },
+      { name: "login-button", preview: <LoginButtonCatalogPreview /> },
+      { name: "github-stars", preview: <GithubStarsCatalogPreview /> },
       { name: "kbd", preview: <KbdCatalogPreview /> },
       {
         name: "theme-toggle",
