@@ -20,6 +20,8 @@ import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
+import { Dropzone } from "@/components/ui/dropzone"
+import { FileUpload } from "@/components/ui/file-upload"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -552,4 +554,34 @@ const brandSwatches = ["#171C24", "#3366E0", "#5B8DEF", "#93C5FD", "#15803D", "#
 export function ColorPickerCatalogPreview() {
   const [color, setColor] = useState("#3366E0")
   return <ColorPicker aria-label="Brand color" value={color} onValueChange={setColor} swatches={brandSwatches} />
+}
+
+export function DropzoneCatalogPreview() {
+  const [file, setFile] = useState<File>()
+  const [error, setError] = useState("")
+  return (
+    <div className="flex w-full max-w-64 flex-col gap-2 text-sm">
+      <Dropzone
+        accept="image/*"
+        maxSize={2 * 1024 * 1024}
+        title={file ? file.name : "Upload a logo"}
+        description="PNG, JPG or SVG up to 2 MB"
+        onFiles={([next]) => {
+          setFile(next)
+          setError("")
+        }}
+        onReject={([rejection]) => setError(rejection.reason)}
+      />
+      {error && <p role="alert" className="text-destructive">{error}</p>}
+    </div>
+  )
+}
+
+export function FileUploadCatalogPreview() {
+  const [files, setFiles] = useState<File[]>([])
+  return (
+    <div className="w-full max-w-64">
+      <FileUpload value={files} onValueChange={setFiles} accept=".pdf,.csv,image/*" maxSize={10 * 1024 * 1024} maxFiles={3} description="PDF, CSV or images, up to 3 files" />
+    </div>
+  )
 }

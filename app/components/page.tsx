@@ -16,7 +16,9 @@ import {
   ComboboxCatalogPreview,
   CommandCatalogPreview,
   DatePickerCatalogPreview,
+  DropzoneCatalogPreview,
   FieldCatalogPreview,
+  FileUploadCatalogPreview,
   GithubStarsCatalogPreview,
   InputGroupCatalogPreview,
   InputOTPCatalogPreview,
@@ -122,6 +124,8 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "rating", preview: <RatingCatalogPreview /> },
       { name: "tags-input", preview: <TagsInputCatalogPreview /> },
       { name: "color-picker", preview: <ColorPickerCatalogPreview /> },
+      { name: "dropzone", preview: <DropzoneCatalogPreview /> },
+      { name: "file-upload", preview: <FileUploadCatalogPreview /> },
       {
         name: "input",
         preview: (

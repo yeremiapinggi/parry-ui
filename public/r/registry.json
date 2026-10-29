@@ -936,6 +936,40 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "dropzone",
+      "type": "registry:ui",
+      "title": "Dropzone",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/dropzone.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "title": "File Upload",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/dropzone"
+      ],
+      "files": [
+        {
+          "path": "components/ui/file-upload.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
