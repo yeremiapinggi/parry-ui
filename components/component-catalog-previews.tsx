@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, MailIcon, UserPlusIcon, CheckCircle2Icon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -27,6 +28,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
+import { Comparison } from "@/components/ui/comparison"
 import { Counter } from "@/components/ui/counter"
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
@@ -51,6 +53,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { List, ListGroup, ListHeader, ListItem, ListItems } from "@/components/ui/list"
+import { ListPanel, ListPanelItem } from "@/components/ui/list-panel"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
 import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "@/components/ui/menubar"
@@ -80,6 +83,8 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsTrigger } from "@/components/ui/tabs"
 import { TagsInput } from "@/components/ui/tags-input"
 import { Ticker } from "@/components/ui/ticker"
+import { Timeline, TimelineItem } from "@/components/ui/timeline"
+import { Tree } from "@/components/ui/tree"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -1327,4 +1332,58 @@ const filterSections = [
 export function FilterPanelCatalogPreview() {
   const [filters, setFilters] = useState<Record<string, string[]>>({ status: ["open"] })
   return <FilterPanel sections={filterSections} value={filters} onValueChange={setFilters} className="max-w-56" />
+}
+
+export function ListPanelCatalogPreview() {
+  return (
+    <ListPanel title="Recent activity" action={<Button variant="link" size="sm" className="h-auto p-0">View all</Button>} className="w-full max-w-72">
+      <ListPanelItem leading={<MailIcon />} title="Invoice sent" description="INV-1046 to Dewi Kurnia" meta="2m" />
+      <ListPanelItem leading={<UserPlusIcon />} title="New agent" description="Made Nugraha joined Support" meta="1h" />
+      <ListPanelItem
+        leading={<CheckCircle2Icon className="text-success" />}
+        title="Ticket resolved"
+        description="Refund for order 8812"
+        trailing={<Button variant="ghost" size="xs">Reopen</Button>}
+      />
+    </ListPanel>
+  )
+}
+
+const fileTree = [
+  {
+    id: "app",
+    label: "app",
+    children: [
+      { id: "components", label: "components", children: [{ id: "page.tsx", label: "page.tsx" }] },
+      { id: "layout.tsx", label: "layout.tsx" },
+    ],
+  },
+  { id: "components-ui", label: "components/ui", children: [{ id: "button.tsx", label: "button.tsx" }, { id: "tree.tsx", label: "tree.tsx" }] },
+  { id: "registry.json", label: "registry.json" },
+]
+
+export function TreeCatalogPreview() {
+  const [file, setFile] = useState("page.tsx")
+  return <Tree aria-label="Project files" items={fileTree} defaultExpanded={["app", "components"]} selected={file} onSelect={setFile} className="w-full max-w-56" />
+}
+
+export function TimelineCatalogPreview() {
+  return (
+    <Timeline className="w-full max-w-64">
+      <TimelineItem title="Conversation opened" time="09:12">Via WhatsApp from Rina Wijaya</TimelineItem>
+      <TimelineItem title="Assigned to Budi" time="09:14" />
+      <TimelineItem title="Resolved" time="09:31" icon={<CheckCircle2Icon className="text-success" />}>CSAT 5/5</TimelineItem>
+    </Timeline>
+  )
+}
+
+export function ComparisonCatalogPreview() {
+  return (
+    <Comparison
+      label="Before and after theme"
+      className="aspect-video w-full max-w-72"
+      before={<Image src="/images/settings-panels-thumbnail.png" alt="Settings panels in grayscale" width={640} height={360} className="object-cover grayscale" />}
+      after={<Image src="/images/settings-panels-thumbnail.png" alt="Settings panels with the Parry theme" width={640} height={360} className="object-cover" />}
+    />
+  )
 }

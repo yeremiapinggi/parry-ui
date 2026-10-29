@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "comparison",
+  "title": "Comparison",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/comparison.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { GripVerticalIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\n// Before/after slider. A native range input sits on top, so mouse, touch and arrow keys all move the divider.\nfunction Comparison({\n  before,\n  after,\n  defaultPosition = 50,\n  label = \"Comparison position\",\n  className,\n}: {\n  before: React.ReactNode\n  after: React.ReactNode\n  defaultPosition?: number\n  label?: string\n  className?: string\n}) {\n  const [position, setPosition] = React.useState(defaultPosition)\n\n  return (\n    <div data-slot=\"comparison\" className={cn(\"relative isolate overflow-hidden rounded-lg border select-none has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-ring/50\", className)}>\n      <div className=\"[&>*]:size-full\">{before}</div>\n      <div className=\"absolute inset-0 [&>*]:size-full\" style={{ clipPath: `inset(0 0 0 ${position}%)` }}>\n        {after}\n      </div>\n      <div aria-hidden className=\"pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-background shadow\" style={{ left: `${position}%` }}>\n        <span className=\"absolute top-1/2 left-1/2 flex size-7 -translate-1/2 items-center justify-center rounded-full border bg-background text-muted-foreground shadow-sm\">\n          <GripVerticalIcon className=\"size-4\" />\n        </span>\n      </div>\n      <input\n        type=\"range\"\n        min={0}\n        max={100}\n        value={position}\n        aria-label={label}\n        onChange={(e) => setPosition(Number(e.target.value))}\n        className=\"absolute inset-0 size-full cursor-ew-resize opacity-0\"\n      />\n    </div>\n  )\n}\n\nexport { Comparison }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

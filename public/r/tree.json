@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tree",
+  "title": "Tree",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/tree.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { ChevronRightIcon, FileIcon, FolderIcon, FolderOpenIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\ntype TreeNode = { id: string; label: string; icon?: React.ReactNode; children?: TreeNode[] }\n\n// Nested disclosure list: folders toggle open, leaves are selectable. Each row is a real button, so Tab and\n// Enter/Space work without a roving-focus tree widget.\nfunction Tree({\n  items,\n  defaultExpanded = [],\n  selected,\n  onSelect,\n  showIcons = true,\n  className,\n  \"aria-label\": ariaLabel,\n}: {\n  items: TreeNode[]\n  defaultExpanded?: string[]\n  selected?: string\n  onSelect?: (id: string) => void\n  showIcons?: boolean\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const [expanded, setExpanded] = React.useState(() => new Set(defaultExpanded))\n  const toggle = (id: string) =>\n    setExpanded((prev) => {\n      const next = new Set(prev)\n      if (next.has(id)) next.delete(id)\n      else next.add(id)\n      return next\n    })\n\n  const render = (nodes: TreeNode[], depth: number): React.ReactNode => (\n    <ul className={cn(depth > 0 && \"ml-3.5 border-l pl-1.5\")}>\n      {nodes.map((node) => {\n        const isFolder = !!node.children?.length\n        const isOpen = expanded.has(node.id)\n        const icon = node.icon ?? (isFolder ? isOpen ? <FolderOpenIcon /> : <FolderIcon /> : <FileIcon />)\n        return (\n          <li key={node.id}>\n            <button\n              type=\"button\"\n              aria-expanded={isFolder ? isOpen : undefined}\n              aria-current={!isFolder && node.id === selected ? \"true\" : undefined}\n              onClick={() => (isFolder ? toggle(node.id) : onSelect?.(node.id))}\n              className=\"flex w-full items-center gap-1.5 rounded-md px-1.5 py-1 text-left text-sm outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-[current=true]:bg-muted aria-[current=true]:font-medium\"\n            >\n              <ChevronRightIcon className={cn(\"size-3.5 shrink-0 text-muted-foreground transition-transform\", isOpen && \"rotate-90\", !isFolder && \"invisible\")} />\n              {showIcons && <span className=\"text-muted-foreground [&_svg]:size-4\">{icon}</span>}\n              <span className=\"truncate\">{node.label}</span>\n            </button>\n            {isFolder && isOpen && render(node.children!, depth + 1)}\n          </li>\n        )\n      })}\n    </ul>\n  )\n\n  return (\n    <nav data-slot=\"tree\" aria-label={ariaLabel} className={className}>\n      {render(items, 0)}\n    </nav>\n  )\n}\n\nexport { Tree, type TreeNode }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

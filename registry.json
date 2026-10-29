@@ -1510,6 +1510,64 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "list-panel",
+      "type": "registry:ui",
+      "title": "List Panel",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/list-panel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "type": "registry:ui",
+      "title": "Tree",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/tree.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "comparison",
+      "type": "registry:ui",
+      "title": "Comparison",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/comparison.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
