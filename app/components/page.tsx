@@ -4,7 +4,15 @@ import type { ReactNode } from "react";
 import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-react";
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
-import { ChartCatalogPreview, PopoverCatalogPreview, RadioGroupCatalogPreview, ToggleGroupCatalogPreview } from "@/components/component-catalog-previews";
+import {
+  AspectRatioCatalogPreview,
+  ChartCatalogPreview,
+  PopoverCatalogPreview,
+  RadioGroupCatalogPreview,
+  ResizableCatalogPreview,
+  ScrollAreaCatalogPreview,
+  ToggleGroupCatalogPreview,
+} from "@/components/component-catalog-previews";
 import { ProductSwitcher } from "@/components/product-theme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -204,6 +212,9 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     title: "Layout & data",
     items: [
       { name: "chart", preview: <ChartCatalogPreview /> },
+      { name: "aspect-ratio", preview: <AspectRatioCatalogPreview /> },
+      { name: "scroll-area", preview: <ScrollAreaCatalogPreview /> },
+      { name: "resizable", preview: <ResizableCatalogPreview /> },
       { name: "card", preview: <ComponentCountPreview /> },
       {
         name: "tabs",

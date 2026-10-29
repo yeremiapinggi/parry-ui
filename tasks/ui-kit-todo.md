@@ -18,7 +18,8 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] **Checkpoint 0: user approves granularity rule and the T1 sheet update**
 
 ## Phase 1: Foundations & Theming
-- [ ] T2 aspect-ratio, scroll-area, resizable (`shadcn add`; dep `react-resizable-panels`). (S)
+- [x] T2 aspect-ratio, scroll-area, resizable (`shadcn add`; dep `react-resizable-panels`). Sheet: 3/7, 4/8, 4/9 Selesai. (S)
+  - Note: pnpm isn't installed here and `shadcn add` calls pnpm (pnpm-lock.yaml exists). Run it with a `pnpm` shim to `corepack pnpm`, then `npm install --package-lock-only` and `npm ci` to keep both lockfiles and an npm-layout `node_modules`.
 - [ ] T3 theme-toggle (icon / labeled / outline × default/outline/ghost), theme-switcher (light/dark/system, settings row) — refactor `components/theme-mode-picker.tsx` into these, keep its callers working. (S)
 
 ## Phase 2: Actions

@@ -486,6 +486,50 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect Ratio",
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/ui/aspect-ratio.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/scroll-area.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "dependencies": [
+        "react-resizable-panels",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/resizable.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

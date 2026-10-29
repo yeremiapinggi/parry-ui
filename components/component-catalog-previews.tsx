@@ -3,12 +3,16 @@
 import { ChevronDownIcon } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -94,5 +98,72 @@ export function ToggleGroupCatalogPreview() {
       <ToggleGroupItem value="grid">Grid</ToggleGroupItem>
       <ToggleGroupItem value="list">List</ToggleGroupItem>
     </ToggleGroup>
+  )
+}
+
+export function AspectRatioCatalogPreview() {
+  return (
+    <div className="grid w-full max-w-72 grid-cols-3 items-end gap-3">
+      {[
+        { label: "16:9", ratio: 16 / 9 },
+        { label: "4:3", ratio: 4 / 3 },
+        { label: "1:1", ratio: 1 },
+      ].map(({ label, ratio }) => (
+        <AspectRatio key={label} ratio={ratio} className="flex items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
+          {label}
+        </AspectRatio>
+      ))}
+    </div>
+  )
+}
+
+const releases = ["v2.4.0", "v2.3.2", "v2.3.1", "v2.3.0", "v2.2.4", "v2.2.3", "v2.2.0", "v2.1.0"]
+const channels = ["WhatsApp", "Instagram", "Facebook", "Email", "Live Chat", "Telegram", "X", "TikTok"]
+
+export function ScrollAreaCatalogPreview() {
+  return (
+    <div className="flex w-full max-w-60 flex-col gap-3">
+      <ScrollArea className="h-32 rounded-md border">
+        <div className="p-3 text-sm">
+          <p className="pb-2 text-xs font-medium text-muted-foreground">Releases</p>
+          {releases.map((release, i) => (
+            <div key={release}>
+              {i > 0 && <Separator className="my-2" />}
+              {release}
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+      <ScrollArea className="w-full rounded-md border whitespace-nowrap">
+        <div className="flex gap-2 p-2">
+          {channels.map((channel) => (
+            <span key={channel} className="rounded-full bg-muted px-2.5 py-1 text-xs">{channel}</span>
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
+  )
+}
+
+export function ResizableCatalogPreview() {
+  return (
+    <ResizablePanelGroup orientation="horizontal" className="min-h-36 max-w-72 rounded-md border text-sm">
+      <ResizablePanel defaultSize="40" minSize="25">
+        <div className="flex h-full items-center justify-center p-3 text-muted-foreground">Sidebar</div>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize="60">
+        <ResizablePanelGroup orientation="vertical">
+          <ResizablePanel defaultSize="60">
+            <div className="flex h-full items-center justify-center p-3 text-muted-foreground">Editor</div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize="40">
+            <div className="flex h-full items-center justify-center p-3 text-muted-foreground">Terminal</div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   )
 }
