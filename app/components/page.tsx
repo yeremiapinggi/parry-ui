@@ -6,11 +6,14 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
   AspectRatioCatalogPreview,
+  ButtonGroupCatalogPreview,
   ChartCatalogPreview,
+  KbdCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
+  SpinnerCatalogPreview,
   ToggleGroupCatalogPreview,
 } from "@/components/component-catalog-previews";
 import { ProductSwitcher } from "@/components/product-theme";
@@ -56,6 +59,8 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
           </div>
         ),
       },
+      { name: "button-group", preview: <ButtonGroupCatalogPreview /> },
+      { name: "kbd", preview: <KbdCatalogPreview /> },
       {
         name: "theme-toggle",
         preview: (
@@ -207,6 +212,7 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
         ),
       },
       { name: "sonner", preview: <ToastDemo /> },
+      { name: "spinner", preview: <SpinnerCatalogPreview /> },
       {
         name: "skeleton",
         preview: (

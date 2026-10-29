@@ -23,7 +23,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T3 theme-toggle (icon / labeled / outline × default/outline/ghost), theme-switcher (light/dark/system, settings row) — refactor `components/theme-mode-picker.tsx` into these, keep its callers working. (S)
 
 ## Phase 2: Actions
-- [ ] T4 kbd (platform-aware combos), button-group (split button, toolbar), spinner (also used for Button loading). (S)
+- [x] T4 kbd (platform-aware combos), button-group (split button, toolbar), spinner (also used for Button loading). (S)
 - [ ] T5 border-button (animated border variants), social-button, login-button (provider SVG icons), github-stars (count, tooltip; static data, no API call). Depends on T4. (M)
 - [ ] **Checkpoint A: Foundations + Actions reviewed by user**
 

@@ -1,18 +1,22 @@
 "use client"
 
-import { ChevronDownIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, MinusIcon, PlusIcon } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Spinner } from "@/components/ui/spinner"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -165,5 +169,78 @@ export function ResizableCatalogPreview() {
         </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>
+  )
+}
+
+export function KbdCatalogPreview() {
+  return (
+    <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <KbdGroup>
+          <Kbd>⌘</Kbd>
+          <Kbd>K</Kbd>
+        </KbdGroup>
+        <KbdGroup>
+          <Kbd>Ctrl</Kbd>
+          <span>+</span>
+          <Kbd>C</Kbd>
+        </KbdGroup>
+        <KbdGroup aria-label="Arrow keys">
+          <Kbd><ArrowLeftIcon /></Kbd>
+          <Kbd><ArrowUpIcon /></Kbd>
+          <Kbd><ArrowDownIcon /></Kbd>
+          <Kbd><ArrowRightIcon /></Kbd>
+        </KbdGroup>
+      </div>
+      <p>
+        Press <Kbd>Enter</Kbd> to send
+      </p>
+    </div>
+  )
+}
+
+export function ButtonGroupCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <div className="flex flex-col items-center gap-3">
+        <ButtonGroup aria-label="Message actions">
+          <Button variant="outline">Archive</Button>
+          <Button variant="outline">Report</Button>
+          <Button variant="outline">Snooze</Button>
+        </ButtonGroup>
+        <ButtonGroup aria-label="Publish">
+          <Button>Publish</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" aria-label="More publish options" className="border-l border-primary-foreground/20">
+                <ChevronDownIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Schedule</DropdownMenuItem>
+              <DropdownMenuItem>Save as draft</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ButtonGroup>
+      </div>
+      <ButtonGroup orientation="vertical" aria-label="Zoom">
+        <Button variant="outline" size="icon" aria-label="Zoom in"><PlusIcon /></Button>
+        <Button variant="outline" size="icon" aria-label="Zoom out"><MinusIcon /></Button>
+      </ButtonGroup>
+    </div>
+  )
+}
+
+export function SpinnerCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <Spinner className="size-3" />
+      <Spinner />
+      <Spinner className="size-6" />
+      <Button disabled>
+        <Spinner />
+        Saving
+      </Button>
+    </div>
   )
 }
