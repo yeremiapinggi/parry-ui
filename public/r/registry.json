@@ -754,6 +754,65 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "dependencies": [
+        "react-day-picker",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "dependencies": [
+        "date-fns",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/calendar",
+        "@parry/popover"
+      ],
+      "files": [
+        {
+          "path": "components/ui/date-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "mini-calendar",
+      "type": "registry:ui",
+      "title": "Mini Calendar",
+      "dependencies": [
+        "date-fns",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/mini-calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

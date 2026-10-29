@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { addDays } from "date-fns"
+import type { DateRange } from "react-day-picker"
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, MinusIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
@@ -8,9 +10,11 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { BorderButton } from "@/components/ui/border-button"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { DatePicker } from "@/components/ui/date-picker"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -20,6 +24,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
+import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
@@ -425,4 +430,34 @@ export function SliderCatalogPreview() {
       </div>
     </div>
   )
+}
+
+// Fixed demo date: prerendering can't read the current time (cacheComponents).
+const demoToday = new Date(2026, 9, 29)
+
+export function CalendarCatalogPreview() {
+  const [range, setRange] = useState<DateRange | undefined>({ from: demoToday, to: addDays(demoToday, 4) })
+
+  return (
+    <Calendar
+      mode="range"
+      selected={range}
+      onSelect={setRange}
+      captionLayout="dropdown"
+      today={demoToday}
+      defaultMonth={demoToday}
+      disabled={{ before: demoToday }}
+      className="rounded-lg border"
+    />
+  )
+}
+
+export function DatePickerCatalogPreview() {
+  const [date, setDate] = useState<Date>()
+  return <DatePicker date={date} onDateChange={setDate} placeholder="Pick a due date" />
+}
+
+export function MiniCalendarCatalogPreview() {
+  const [date, setDate] = useState(demoToday)
+  return <MiniCalendar value={date} onValueChange={setDate} />
 }

@@ -30,7 +30,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 ## Phase 3: Form & Input
 - [x] T6 field, input-group. shadcn's `form` item is now empty (forms are built from Field), so no `form` component or react-hook-form/zod deps; Form rows set to Review with that note. Sheet: Field 2/43, Input Group 6/39. Install with `yes n |` so shadcn doesn't overwrite the themed button/input/textarea. (M)
 - [x] T7 input-otp (dep `input-otp`), slider (single + range). (S)
-- [ ] T8 calendar, date-picker, mini-calendar (dep `react-day-picker`, `date-fns`). (M)
+- [x] T8 calendar, date-picker, mini-calendar (dep `react-day-picker`, `date-fns`). Previews use a fixed demo date: with `cacheComponents`, prerender fails on `new Date()`/`Date.now()` in render. Sheet: 3/16, 1/8, 3/5. (M)
 - [ ] T9 command (dep `cmdk`), combobox (single/multi, grouped, clear), autocomplete. Reuse pattern from `components/searchable-record-select.tsx`. (M)
 - [ ] T10 choicebox, rating, form-star-rating, tags, color-picker. (M)
 - [ ] T11 file-upload, dropzone, image-crop (dep `react-image-crop`; optional per Open Question #3). (M)
