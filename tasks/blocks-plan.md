@@ -89,6 +89,9 @@ Review 2026-10-30 (2): the top AppHeader became `_parts/app-shell.tsx`, a floati
 screenshot: brand, search (/ or ⌘K), Workspace nav (Ticket, Dashboard, Report), General (Setting, Help & docs) and a
 profile menu with agent status in a collapsible sidebar; top bar with collapse toggle, agent-status pill, notifications
 and theme; page title + description + actions above the content. Every block uses `<AppShell active title …>`.
+Review 2026-10-30 (3): sidebar removed again; its contents moved back into a top navbar (brand, Ticket/Dashboard/Report/
+Setting with an underline on the active tab, search, agent-status pill, notifications, help, theme, avatar menu).
+The page title area, queue column and ticket card stay.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

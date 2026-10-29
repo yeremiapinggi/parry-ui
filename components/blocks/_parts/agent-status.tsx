@@ -16,19 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function AgentStatusItems({ value, onChange }: { value: Presence; onChange: (p: Presence) => void }) {
-  return (
-    <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(v as Presence)}>
-      {(Object.keys(presenceMeta) as Presence[]).map((p) => (
-        <DropdownMenuRadioItem key={p} value={p}>
-          <PresenceDot presence={p} />
-          {presenceMeta[p].label}
-        </DropdownMenuRadioItem>
-      ))}
-    </DropdownMenuRadioGroup>
-  )
-}
-
 // Top-bar pill: the agent's availability for new tickets.
 export function AgentStatus({ value, onChange, className }: { value: Presence; onChange: (p: Presence) => void; className?: string }) {
   return (
@@ -42,7 +29,14 @@ export function AgentStatus({ value, onChange, className }: { value: Presence; o
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-44">
         <DropdownMenuLabel>Agent status</DropdownMenuLabel>
-        <AgentStatusItems value={value} onChange={onChange} />
+        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(v as Presence)}>
+          {(Object.keys(presenceMeta) as Presence[]).map((p) => (
+            <DropdownMenuRadioItem key={p} value={p}>
+              <PresenceDot presence={p} />
+              {presenceMeta[p].label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
