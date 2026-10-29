@@ -236,7 +236,7 @@ export function Report() {
             <div className="lg:hidden">
               {filter("Report type", report, (v) => setReport(v as ReportId), reportTypes.map((r) => ({ value: r.id, label: r.label })))}
             </div>
-            <h2 className="font-heading text-lg font-semibold max-lg:sr-only">{current.label}</h2>
+            <h2 className="font-heading text-base font-semibold max-lg:sr-only">{current.label}</h2>
             <p className="text-sm text-muted-foreground">{current.description}</p>
           </div>
 

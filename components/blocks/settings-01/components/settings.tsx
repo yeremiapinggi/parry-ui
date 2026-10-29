@@ -239,7 +239,7 @@ export function Settings() {
 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="flex flex-col gap-1">
-              <h2 id="settings-section-title" className="font-heading text-lg font-semibold">
+              <h2 id="settings-section-title" className="font-heading text-base font-semibold">
                 {section === "channel" ? "Channels" : current.label}
               </h2>
               {section === "channel" && (
