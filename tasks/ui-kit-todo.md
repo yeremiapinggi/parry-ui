@@ -62,7 +62,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] **Checkpoint D: data display + layout reviewed, bundle size checked in `npm run build` output**
 
 ## Phase 9: Media & Dev (light components only, decision 2026-10-29)
-- [ ] T23 code-block, snippet. Sandbox and editor out of scope. (S)
+- [x] T23 code-block (no highlighter dep; copy, filename, line numbers), snippet (tabs + copy). Clipboard "Copied" state not verifiable in the preview pane (clipboard-write denied there). Sheet: 5/6, 3/6. (S)
 - [ ] T24 qr-code, credit-card, logo. Emoji picker out of scope. (M)
 - [ ] T25 image-zoom. Video player out of scope. (S)
 - [ ] **Checkpoint E: 111/111 components present or explicitly marked out of scope in the sheet; README component list updated**

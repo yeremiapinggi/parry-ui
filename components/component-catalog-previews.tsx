@@ -28,6 +28,7 @@ import { AvatarStack } from "@/components/ui/avatar-stack"
 import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { CodeBlock } from "@/components/ui/code-block"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
@@ -80,6 +81,7 @@ import { ScrollableTabsList } from "@/components/ui/scrollable-tabs-list"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import { Snippet } from "@/components/ui/snippet"
 import { SocialButton } from "@/components/ui/social-button"
 import { Sparkline } from "@/components/ui/sparkline"
 import { Spinner } from "@/components/ui/spinner"
@@ -87,7 +89,7 @@ import { Stat } from "@/components/ui/stat"
 import { Status } from "@/components/ui/status"
 import { Stepper } from "@/components/ui/stepper"
 import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TagsInput } from "@/components/ui/tags-input"
 import { Ticker } from "@/components/ui/ticker"
 import { Timeline, TimelineItem } from "@/components/ui/timeline"
@@ -1492,4 +1494,44 @@ export function BentoCatalogPreview() {
       <BentoTile title="CSAT" description="4.6" />
     </BentoGrid>
   )
+}
+
+const webhookHandler = `export async function POST(request: Request) {
+  const event = await request.json()
+  if (event.type === "conversation.resolved") {
+    await notifyTeam(event.data)
+  }
+  return new Response(null, { status: 204 })
+}`
+
+const webhookConfig = `{
+  "url": "https://api.example.com/hooks",
+  "events": ["conversation.resolved"]
+}`
+
+export function CodeBlockCatalogPreview() {
+  return (
+    <Tabs defaultValue="route.ts" className="w-full max-w-80 gap-2">
+      <TabsList>
+        <TabsTrigger value="route.ts">route.ts</TabsTrigger>
+        <TabsTrigger value="webhook.json">webhook.json</TabsTrigger>
+      </TabsList>
+      <TabsContent value="route.ts">
+        <CodeBlock filename="app/api/hooks/route.ts" language="ts" code={webhookHandler} showLineNumbers />
+      </TabsContent>
+      <TabsContent value="webhook.json">
+        <CodeBlock filename="webhook.json" language="json" code={webhookConfig} />
+      </TabsContent>
+    </Tabs>
+  )
+}
+
+const installCommands = [
+  { label: "npm", code: "npx shadcn@latest add @parry/button" },
+  { label: "pnpm", code: "pnpm dlx shadcn@latest add @parry/button" },
+  { label: "bun", code: "bunx shadcn@latest add @parry/button" },
+]
+
+export function SnippetCatalogPreview() {
+  return <Snippet commands={installCommands} className="w-full max-w-80" />
 }

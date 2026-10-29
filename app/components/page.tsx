@@ -21,6 +21,7 @@ import {
   CarouselCatalogPreview,
   ChartCatalogPreview,
   ChoiceboxCatalogPreview,
+  CodeBlockCatalogPreview,
   CollapsibleCatalogPreview,
   ColorPickerCatalogPreview,
   ComboboxCatalogPreview,
@@ -67,6 +68,7 @@ import {
   ScrollableTabsListCatalogPreview,
   SheetCatalogPreview,
   SliderCatalogPreview,
+  SnippetCatalogPreview,
   SocialButtonCatalogPreview,
   SparklineCatalogPreview,
   StatCatalogPreview,
@@ -342,6 +344,13 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "scrollable-tabs-list", preview: <ScrollableTabsListCatalogPreview /> },
       { name: "accordion", preview: <AccordionCatalogPreview /> },
       { name: "collapsible", preview: <CollapsibleCatalogPreview /> },
+    ],
+  },
+  {
+    title: "Media & dev",
+    items: [
+      { name: "code-block", preview: <CodeBlockCatalogPreview /> },
+      { name: "snippet", preview: <SnippetCatalogPreview /> },
     ],
   },
   {
