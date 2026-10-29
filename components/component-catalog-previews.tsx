@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, PencilIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -17,18 +17,24 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
+import { DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { DialogStack, DialogStackFooter, DialogStackNext, DialogStackPrevious } from "@/components/ui/dialog-stack"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Dropzone } from "@/components/ui/dropzone"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
+import { Glimpse, GlimpseContent, GlimpseDescription, GlimpseImage, GlimpseTitle, GlimpseTrigger } from "@/components/ui/glimpse"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
 import { Input } from "@/components/ui/input"
@@ -740,5 +746,107 @@ export function DrawerCatalogPreview() {
         </div>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+export function HoverCardCatalogPreview() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button variant="link">@rina.wijaya</Button>
+      </HoverCardTrigger>
+      <HoverCardContent className="flex w-72 gap-3">
+        <Avatar>
+          <AvatarFallback>RW</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col gap-1 text-sm">
+          <p className="font-semibold">Rina Wijaya</p>
+          <p className="text-muted-foreground">Support lead · handles VIP escalations for the Jakarta team.</p>
+          <p className="text-xs text-muted-foreground">Joined March 2024</p>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+
+export function ContextMenuCatalogPreview() {
+  const [pinned, setPinned] = useState(true)
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-28 w-full max-w-60 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
+        Right-click here
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuItem>
+          <PencilIcon /> Rename <ContextMenuShortcut>F2</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem>
+          <CopyIcon /> Duplicate <ContextMenuShortcut>⌘D</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuSub>
+          <ContextMenuSubTrigger>Move to</ContextMenuSubTrigger>
+          <ContextMenuSubContent>
+            <ContextMenuItem>Inbox</ContextMenuItem>
+            <ContextMenuItem>Archive</ContextMenuItem>
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+        <ContextMenuSeparator />
+        <ContextMenuCheckboxItem checked={pinned} onCheckedChange={setPinned}>Pinned</ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem variant="destructive">
+          <Trash2Icon /> Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
+
+export function GlimpseCatalogPreview() {
+  return (
+    <p className="max-w-60 text-center text-sm text-muted-foreground">
+      Read the{" "}
+      <Glimpse>
+        <GlimpseTrigger asChild>
+          <a href="#glimpse" className="font-medium text-link underline-offset-4 hover:underline">settings guide</a>
+        </GlimpseTrigger>
+        <GlimpseContent>
+          <GlimpseImage src="/images/settings-panels-thumbnail.png" />
+          <GlimpseTitle>Settings panels</GlimpseTitle>
+          <GlimpseDescription>Group preferences into panels with clear save and reset actions.</GlimpseDescription>
+        </GlimpseContent>
+      </Glimpse>{" "}
+      before changing workspace defaults.
+    </p>
+  )
+}
+
+const onboardingSteps = [
+  { title: "Connect a channel", description: "Link WhatsApp, Instagram or email so messages land in one inbox." },
+  { title: "Invite your team", description: "Agents you invite can reply, assign and tag conversations." },
+  { title: "Set office hours", description: "Outside these hours, customers get your away message." },
+]
+
+export function DialogStackCatalogPreview() {
+  return (
+    <DialogStack
+      trigger={
+        <DialogTrigger asChild>
+          <Button variant="outline">Start setup</Button>
+        </DialogTrigger>
+      }
+    >
+      {onboardingSteps.map((step) => (
+        <div key={step.title} className="flex flex-col gap-4">
+          <DialogHeader>
+            <DialogTitle>{step.title}</DialogTitle>
+            <DialogDescription>{step.description}</DialogDescription>
+          </DialogHeader>
+          <DialogStackFooter>
+            <DialogStackPrevious>Back</DialogStackPrevious>
+            <DialogStackNext>Next</DialogStackNext>
+          </DialogStackFooter>
+        </div>
+      ))}
+    </DialogStack>
   )
 }

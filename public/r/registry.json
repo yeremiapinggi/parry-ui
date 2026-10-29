@@ -1100,6 +1100,72 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "dependencies": [
+        "radix-ui",
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "glimpse",
+      "type": "registry:ui",
+      "title": "Glimpse",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/hover-card"
+      ],
+      "files": [
+        {
+          "path": "components/ui/glimpse.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog-stack",
+      "type": "registry:ui",
+      "title": "Dialog Stack",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/dialog"
+      ],
+      "files": [
+        {
+          "path": "components/ui/dialog-stack.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

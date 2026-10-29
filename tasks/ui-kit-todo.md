@@ -42,7 +42,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 5: Overlay
 - [x] T13 alert-dialog, sheet, drawer (dep `vaul`). Keyboard open, initial focus and Escape-return-focus checked. Sheet: 2/39, 2/31, 1/22. (S)
-- [ ] T14 hover-card, context-menu, glimpse (link preview card), dialog-stack. Depends on T13. (M)
+- [x] T14 hover-card, context-menu, glimpse (HoverCard link preview, no fetching), dialog-stack (Dialog stepping through child panels, `trigger` prop). Sheet: 1/20, 5/27, 3/5, 1/4. (M)
 
 ## Phase 6: Navigation
 - [ ] T15 breadcrumb, pagination, navigation-menu, menubar. (M)
