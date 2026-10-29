@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import {
   ActivityIcon,
   BellIcon,
@@ -364,6 +364,8 @@ export function MobileNavigationDrawer({
   workspaceName,
   onWorkspaceChange,
   showWorkspace = true,
+  brandName = "Northstar",
+  footerContent,
   className,
 }: {
   groups: NavigationGroupConfig[]
@@ -372,6 +374,8 @@ export function MobileNavigationDrawer({
   workspaceName: string
   onWorkspaceChange: (value: string) => void
   showWorkspace?: boolean
+  brandName?: string
+  footerContent?: ReactNode
   className?: string
 }) {
   const [open, setOpen] = useState(false)
@@ -383,7 +387,7 @@ export function MobileNavigationDrawer({
           <MenuIcon />
         </Button>
       </DialogTrigger>
-      <DialogContent className="inset-y-0 left-0 top-0 flex h-dvh w-[min(20rem,calc(100vw-2.5rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-y-auto rounded-none border-r p-0 sm:max-w-none">
+      <DialogContent className="dark inset-y-0 left-0 top-0 flex h-dvh w-[min(20rem,calc(100vw-2.5rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-y-auto rounded-none border-r border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none">
         <DialogHeader className="sr-only">
           <DialogTitle>Application navigation</DialogTitle>
           <DialogDescription>Choose a section in the Northstar application.</DialogDescription>
@@ -395,6 +399,8 @@ export function MobileNavigationDrawer({
           workspaceName={workspaceName}
           onWorkspaceChange={onWorkspaceChange}
           showWorkspace={showWorkspace}
+          brandName={brandName}
+          footerContent={footerContent}
           onCollapseChange={() => undefined}
           collapsible={false}
           className="min-h-full w-full border-r-0"
@@ -417,6 +423,8 @@ export function AppSidebar({
   collapsible = true,
   expandedItems,
   onItemExpandedChange,
+  brandName = "Northstar",
+  footerContent,
   className,
 }: {
   groups: NavigationGroupConfig[]
@@ -431,6 +439,8 @@ export function AppSidebar({
   collapsible?: boolean
   expandedItems?: Record<string, boolean>
   onItemExpandedChange?: (id: string, expanded: boolean) => void
+  brandName?: string
+  footerContent?: ReactNode
   className?: string
 }) {
   const selectedRoot = groups.flatMap((group) => group.items).find((item) => containsActiveItem(item, activeItemId))
@@ -439,7 +449,7 @@ export function AppSidebar({
     <aside aria-label={contextual ? "Contextual navigation" : "Application sidebar"} className={cn("flex shrink-0 flex-col bg-card text-card-foreground", className)}>
       <div className={cn("flex min-h-16 items-center gap-2 border-b px-3 py-3", collapsed && "flex-col justify-center px-2")}>
         <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground" aria-hidden="true">{contextual && selectedRoot?.icon ? <selectedRoot.icon className="size-5" /> : <BlocksIcon className="size-5" />}</span>
-        {!collapsed ? <div className="flex min-w-0 flex-1 flex-col"><span className="truncate font-data text-sm font-semibold">{contextual ? selectedRoot?.label : "Northstar"}</span><span className="truncate text-xs text-muted-foreground">{contextual ? "Module navigation" : "Workspace"}</span></div> : null}
+        {!collapsed ? <div className="flex min-w-0 flex-1 flex-col"><span className="truncate font-data text-sm font-semibold">{contextual ? selectedRoot?.label : brandName}</span><span className="truncate text-xs text-muted-foreground">{contextual ? "Module navigation" : "Workspace"}</span></div> : null}
         {collapsible ? (
           <Button type="button" variant="ghost" size="icon-sm" aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} aria-expanded={!collapsed} onClick={() => onCollapseChange(!collapsed)} className={cn("shrink-0", collapsed && "mt-1")}>
             {collapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
@@ -464,6 +474,7 @@ export function AppSidebar({
             <NavigationGroup key={group.label} label={group.label} items={group.items} activeItemId={activeItemId} onNavigate={onNavigate} collapsed={collapsed} expandedItems={expandedItems} onItemExpandedChange={onItemExpandedChange} />
           ))
         )}
+        {footerContent ? <div className="mt-auto w-full border-t pt-3">{footerContent}</div> : null}
       </div>
     </aside>
   )
