@@ -45,7 +45,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T14 hover-card, context-menu, glimpse (HoverCard link preview, no fetching), dialog-stack (Dialog stepping through child panels, `trigger` prop). Sheet: 1/20, 5/27, 3/5, 1/4. (M)
 
 ## Phase 6: Navigation
-- [ ] T15 breadcrumb, pagination, navigation-menu, menubar. (M)
+- [x] T15 breadcrumb, pagination, navigation-menu, menubar (new "Navigation" group on /components). Sheet: 2/14, 6/19, 1/20, 1/10. (M)
 - [ ] T16 stepper, scrollable-tabslist, collapsible, accordion. (M)
 - [ ] **Checkpoint C: feedback, overlay, navigation reviewed (keyboard + focus checked on overlays)**
 

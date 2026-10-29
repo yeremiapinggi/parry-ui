@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, PencilIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, PencilIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -13,6 +13,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
 import { Banner } from "@/components/ui/banner"
 import { BorderButton } from "@/components/ui/border-button"
+import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { ButtonGroup } from "@/components/ui/button-group"
@@ -42,7 +43,10 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
+import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "@/components/ui/menubar"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -848,5 +852,158 @@ export function DialogStackCatalogPreview() {
         </div>
       ))}
     </DialogStack>
+  )
+}
+
+export function BreadcrumbCatalogPreview() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="#breadcrumb" aria-label="Home">
+            <HomeIcon className="size-4" />
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbEllipsis />
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="#breadcrumb">Contacts</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Rina Wijaya</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+export function PaginationCatalogPreview() {
+  const total = 10
+  const [page, setPage] = useState(2)
+  // Pages around the current one; 1 and the last page stay reachable through the ellipses.
+  const pages = page <= 3 ? [1, 2, 3, 4] : page >= total - 2 ? [total - 3, total - 2, total - 1, total] : [page - 1, page, page + 1]
+  const link = (n: number) => (
+    <PaginationItem key={n}>
+      <PaginationLink
+        href="#pagination"
+        isActive={n === page}
+        onClick={(e) => {
+          e.preventDefault()
+          setPage(n)
+        }}
+      >
+        {n}
+      </PaginationLink>
+    </PaginationItem>
+  )
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href="#pagination"
+            aria-disabled={page === 1}
+            onClick={(e) => {
+              e.preventDefault()
+              setPage(Math.max(1, page - 1))
+            }}
+          />
+        </PaginationItem>
+        {pages[0] > 1 && (
+          <>
+            {link(1)}
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          </>
+        )}
+        {pages.map(link)}
+        {pages[pages.length - 1] < total && (
+          <>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            {link(total)}
+          </>
+        )}
+        <PaginationItem>
+          <PaginationNext
+            href="#pagination"
+            aria-disabled={page === total}
+            onClick={(e) => {
+              e.preventDefault()
+              setPage(Math.min(total, page + 1))
+            }}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+
+const productLinks = [
+  { title: "Inbox", description: "Every channel in one queue." },
+  { title: "Analytics", description: "Response times and CSAT trends." },
+  { title: "Developer Portal", description: "API keys, webhooks and logs." },
+]
+
+export function NavigationMenuCatalogPreview() {
+  return (
+    <NavigationMenu viewport={false}>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-64 gap-1">
+              {productLinks.map((link) => (
+                <li key={link.title}>
+                  <NavigationMenuLink href="#navigation-menu" className="flex-col items-start gap-0.5">
+                    <span className="font-medium">{link.title}</span>
+                    <span className="text-muted-foreground">{link.description}</span>
+                  </NavigationMenuLink>
+                </li>
+              ))}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="#navigation-menu" className={navigationMenuTriggerStyle()}>Pricing</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  )
+}
+
+export function MenubarCatalogPreview() {
+  const [wrap, setWrap] = useState(true)
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>New report <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+          <MenubarItem>Export CSV <MenubarShortcut>⌘E</MenubarShortcut></MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Print</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>Undo <MenubarShortcut>⌘Z</MenubarShortcut></MenubarItem>
+          <MenubarItem>Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut></MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>View</MenubarTrigger>
+        <MenubarContent>
+          <MenubarCheckboxItem checked={wrap} onCheckedChange={setWrap}>Wrap long rows</MenubarCheckboxItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
   )
 }
