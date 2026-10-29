@@ -113,7 +113,7 @@ export function ControlSizeShowcase() {
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           <PopoverWidthExample label="Match trigger" widthMode="match-trigger" />
-          <PopoverWidthExample label="Auto width" widthMode="auto" />
+          <PopoverWidthExample label="Hug content" widthMode="fit-content" />
           <PopoverWidthExample label="Custom wide" widthMode="custom" />
         </div>
       </div>
@@ -181,7 +181,7 @@ function PopoverWidthExample({
   widthMode,
 }: {
   label: string
-  widthMode: "match-trigger" | "auto" | "custom"
+  widthMode: "match-trigger" | "fit-content" | "custom"
 }) {
   return (
     <Popover>
@@ -198,8 +198,8 @@ function PopoverWidthExample({
         <p className="text-xs leading-relaxed text-muted-foreground">
           {widthMode === "match-trigger"
             ? "The content follows the trigger width."
-            : widthMode === "auto"
-              ? "The content uses its natural width."
+            : widthMode === "fit-content"
+              ? "The content hugs its text, within the 200–320px range."
               : "The content can be wider without stretching the trigger."}
         </p>
       </PopoverContent>

@@ -44,13 +44,13 @@ export function ChartCatalogPreview() {
 export function PopoverCatalogPreview() {
   return (
     <Popover>
-      <div className="w-56">
+      <div className="w-full max-w-72">
         <PopoverTrigger asChild>
           <Button type="button" variant="outline" controlSize="sm" className="w-full">
             Filter status <ChevronDownIcon data-icon="inline-end" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent widthMode="match-trigger" align="start" className="p-3">
+        <PopoverContent>
           <PopoverHeader>
             <PopoverTitle>Status</PopoverTitle>
             <PopoverDescription>Choose which records to show.</PopoverDescription>

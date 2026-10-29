@@ -33,15 +33,16 @@ function PopoverTrigger({
 }
 
 type PopoverContentProps = React.ComponentProps<typeof PopoverPrimitive.Content> & {
-  widthMode?: "match-trigger" | "auto" | "custom"
+  widthMode?: "match-trigger" | "fit-content" | "auto" | "custom"
 }
 
 function PopoverContent({
   className,
-  align = "center",
+  align = "start",
   sideOffset = 4,
   collisionPadding = 8,
-  widthMode = "auto",
+  avoidCollisions = true,
+  widthMode = "fit-content",
   ...props
 }: PopoverContentProps) {
   return (
@@ -51,10 +52,15 @@ function PopoverContent({
         align={align}
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
+        avoidCollisions={avoidCollisions}
         className={cn(
-          "z-50 flex max-w-[calc(100vw-1rem)] origin-(--radix-popover-content-transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          widthMode === "match-trigger" && "w-[var(--radix-popover-trigger-width)]",
-          widthMode === "auto" && "w-auto",
+          "z-50 flex origin-(--radix-popover-content-transform-origin) flex-col gap-2.5 rounded-lg border border-border bg-popover p-4 text-sm text-popover-foreground shadow-sm outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          widthMode === "fit-content" &&
+            "w-fit min-w-[min(200px,calc(100vw-1rem))] max-w-[min(320px,calc(100vw-1rem))]",
+          widthMode === "match-trigger" &&
+            "w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-1rem)]",
+          widthMode === "auto" && "w-auto max-w-[calc(100vw-1rem)]",
+          widthMode === "custom" && "max-w-[calc(100vw-1rem)]",
           className
         )}
         {...props}
