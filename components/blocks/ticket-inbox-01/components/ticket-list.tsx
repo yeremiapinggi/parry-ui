@@ -30,6 +30,7 @@ export function TicketList({
   tickets,
   selectedId,
   onSelect,
+  onOpen,
   className,
 }: {
   title: string
@@ -37,6 +38,7 @@ export function TicketList({
   tickets: Ticket[]
   selectedId?: number
   onSelect: (id: number) => void
+  onOpen: (id: number) => void
   className?: string
 }) {
   const [mode, setMode] = useState("conversation")
@@ -44,7 +46,7 @@ export function TicketList({
   const shownChecked = checked.filter((id) => tickets.some((t) => t.id === id))
   const allChecked = tickets.length > 0 && shownChecked.length === tickets.length
 
-  // ↑/↓ move the selection between rows and keep focus on the row that was selected.
+  // ↑/↓ move the highlight between rows (focus follows); Enter or click opens the ticket.
   const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return
     const rows = [...e.currentTarget.querySelectorAll<HTMLButtonElement>("[data-ticket-row]")]
@@ -116,7 +118,10 @@ export function TicketList({
                 active={t.id === selectedId}
                 checked={checked.includes(t.id)}
                 onCheckedChange={(v) => setChecked((ids) => (v ? [...ids, t.id] : ids.filter((id) => id !== t.id)))}
-                onSelect={() => onSelect(t.id)}
+                onSelect={() => {
+                  onSelect(t.id)
+                  onOpen(t.id)
+                }}
                 menu={<TicketActionMenuItems />}
               />
             ))}

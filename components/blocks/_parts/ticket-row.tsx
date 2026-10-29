@@ -73,7 +73,7 @@ export function TicketRow({
             <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
             {channelMeta[t.channel].typeLabel}
           </Badge>
-          <Badge variant="outline" className="max-w-32 truncate">
+          <Badge variant="outline" className="max-w-48 truncate">
             {t.account}
           </Badge>
           {stateBadge(t)}

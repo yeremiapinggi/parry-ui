@@ -83,6 +83,8 @@ Full acceptance criteria in `tasks/blocks-todo.md`. Each task ends with a commit
 - **T5** Context panel (KPI grid, ticket facts, sentiment, classification, escalation) (S)
 - **T6** Inbox responsive behaviour + keyboard model (M)
 ### Checkpoint A — STOP: show the user ticket-inbox-01 (screenshots ×4 themes ×3 widths) and wait for approval.
+Review 2026-10-30: the conversation is not shown on the page. The inbox is rail + full-width list, and clicking a ticket
+opens the conversation (with ticket details) as a full-screen Dialog. This replaces the spec's four-pane grid.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

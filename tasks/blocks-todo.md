@@ -91,7 +91,7 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 6: Inbox — responsive + keyboard
 **Acceptance criteria:**
-- [x] ≥1280: four panes · 1024–1279: context in a `Sheet` opened from a labelled header button · 768–1023: rail icon-only with Tooltips · <768: list ↔ conversation stack with back button
+- [x] Page = rail + full-width list; a ticket opens as a full-screen Dialog (conversation + details from 1280, details in a `Sheet` below) — changed at Checkpoint A review (2026-10-30) · 768–1023: rail icon-only with Tooltips · <768: rail in a Sheet
 - [x] No horizontal page scroll at 1440, 1024, 390
 - [x] Tab order header → rail → list → composer; ↑/↓ moves ticket selection within the list; `/` focuses search; focus ring visible everywhere
 
