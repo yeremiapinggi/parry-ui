@@ -63,6 +63,6 @@ Every task below has the same acceptance criteria and verification unless noted:
 
 ## Phase 9: Media & Dev (light components only, decision 2026-10-29)
 - [x] T23 code-block (no highlighter dep; copy, filename, line numbers), snippet (tabs + copy). Clipboard "Copied" state not verifiable in the preview pane (clipboard-write denied there). Sheet: 5/6, 3/6. (S)
-- [ ] T24 qr-code, credit-card, logo. Emoji picker out of scope. (M)
+- [x] T24 qr-code (dep `uqr`, pinned 0.1.3 to match both lockfiles; decode-checked with BarcodeDetector), credit-card (display only, last 4 digits, flip), logo. Sheet: 4/4, 5/6, 2/3. (M)
 - [ ] T25 image-zoom. Video player out of scope. (S)
 - [ ] **Checkpoint E: 111/111 components present or explicitly marked out of scope in the sheet; README component list updated**

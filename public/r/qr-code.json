@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "qr-code",
+  "title": "QR Code",
+  "dependencies": [
+    "uqr",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/qr-code.tsx",
+      "content": "import * as React from \"react\"\nimport { encode } from \"uqr\"\n\nimport { cn } from \"cn\"\n\n// QR code as an SVG path. Modules are always black on white, whatever the theme, so phones can scan it.\nfunction QRCode({\n  value,\n  ecc = \"M\",\n  label,\n  className,\n}: {\n  value: string\n  // Error correction: L ~7%, M ~15%, Q ~25%, H ~30% of the code can be damaged and still scan.\n  ecc?: \"L\" | \"M\" | \"Q\" | \"H\"\n  label?: string\n  className?: string\n}) {\n  const { data } = encode(value, { ecc, border: 2 })\n  const size = data.length\n  const path = data\n    .flatMap((row, y) => row.map((dark, x) => (dark ? `M${x} ${y}h1v1h-1z` : \"\")))\n    .join(\"\")\n\n  return (\n    <svg\n      data-slot=\"qr-code\"\n      viewBox={`0 0 ${size} ${size}`}\n      role=\"img\"\n      aria-label={label ?? `QR code for ${value}`}\n      shapeRendering=\"crispEdges\"\n      className={cn(\"size-32 rounded-md bg-white\", className)}\n    >\n      <path d={path} fill=\"#000\" />\n    </svg>\n  )\n}\n\nexport { QRCode }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -29,6 +29,7 @@ import {
   CommandCatalogPreview,
   ComparisonCatalogPreview,
   ContributionGraphCatalogPreview,
+  CreditCardCatalogPreview,
   CounterCatalogPreview,
   DataTableCatalogPreview,
   DatePickerCatalogPreview,
@@ -50,6 +51,7 @@ import {
   ListCatalogPreview,
   ListPanelCatalogPreview,
   LoginButtonCatalogPreview,
+  LogoCatalogPreview,
   MarqueeCatalogPreview,
   MenubarCatalogPreview,
   MiniCalendarCatalogPreview,
@@ -57,6 +59,7 @@ import {
   PaginationCatalogPreview,
   PillCatalogPreview,
   PriceCatalogPreview,
+  QRCodeCatalogPreview,
   PopoverCatalogPreview,
   RadioGroupCatalogPreview,
   ProgressCatalogPreview,
@@ -351,6 +354,9 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     items: [
       { name: "code-block", preview: <CodeBlockCatalogPreview /> },
       { name: "snippet", preview: <SnippetCatalogPreview /> },
+      { name: "qr-code", preview: <QRCodeCatalogPreview /> },
+      { name: "credit-card", preview: <CreditCardCatalogPreview /> },
+      { name: "logo", preview: <LogoCatalogPreview /> },
     ],
   },
   {

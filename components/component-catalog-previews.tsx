@@ -29,6 +29,7 @@ import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { CodeBlock } from "@/components/ui/code-block"
+import { CreditCard } from "@/components/ui/credit-card"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
@@ -62,6 +63,7 @@ import { List, ListGroup, ListHeader, ListItem, ListItems } from "@/components/u
 import { ListPanel, ListPanelItem } from "@/components/ui/list-panel"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
+import { Logo } from "@/components/ui/logo"
 import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "@/components/ui/menubar"
 import { Marquee } from "@/components/ui/marquee"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
@@ -71,6 +73,7 @@ import { Pill, PillButton, PillDelta, PillIndicator } from "@/components/ui/pill
 import { Price } from "@/components/ui/price"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Progress } from "@/components/ui/progress"
+import { QRCode } from "@/components/ui/qr-code"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Rating } from "@/components/ui/rating"
 import { Reel } from "@/components/ui/reel"
@@ -1534,4 +1537,34 @@ const installCommands = [
 
 export function SnippetCatalogPreview() {
   return <Snippet commands={installCommands} className="w-full max-w-80" />
+}
+
+export function QRCodeCatalogPreview() {
+  return (
+    <div className="flex items-end gap-4">
+      <QRCode value="https://parry.ivosights.com/components" ecc="H" label="QR code linking to the Parry component library" />
+      <QRCode value="WIFI:T:WPA;S:Ivosights Guest;P:demo-only;;" className="size-20" label="QR code for guest Wi-Fi" />
+    </div>
+  )
+}
+
+export function CreditCardCatalogPreview() {
+  const [flipped, setFlipped] = useState(false)
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <CreditCard last4="4242" name="Rina Wijaya" expiry="08/29" brand="mastercard" flipped={flipped} className="w-64" />
+      <Button variant="outline" size="sm" aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
+        {flipped ? "Show front" : "Show back"}
+      </Button>
+    </div>
+  )
+}
+
+export function LogoCatalogPreview() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Logo href="#logo" mark={<span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">P</span>} name="Parry UI" />
+      <Logo href="#logo" name="parry" className="text-2xl" aria-label="Parry home" />
+    </div>
+  )
 }
