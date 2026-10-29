@@ -150,10 +150,10 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 10: Gallery + BlockFrame
 **Acceptance criteria:**
-- [ ] `app/blocks/page.tsx`: title "Blocks", category Tabs (Main pages), grid of `BlockFrame` from the registry
-- [ ] `components/blocks/block-frame.tsx`: title, description, theme Select (4 presets), viewport ToggleGroup (Desktop 1440 / Tablet 1024 / Mobile 390), "Open full page" link, "View code" showing the file path (`Snippet`)
-- [ ] Preview is an `<iframe loading="lazy">` at the chosen width, scaled to fit the card; has a `title`
-- [ ] "Blocks" added to `siteNav`
+- [x] `app/blocks/page.tsx`: title "Blocks", category Tabs (Main pages), grid of `BlockFrame` from the registry
+- [x] `components/blocks/block-frame.tsx`: title, description, theme Select (4 presets), viewport ToggleGroup (Desktop 1440 / Tablet 1024 / Mobile 390), "Open full page" link, "View code" showing the file path (`Snippet`)
+- [x] Preview is an `<iframe loading="lazy">` at the chosen width, scaled to fit the card; has a `title`
+- [x] "Blocks" added to `siteNav`
 
 **Verification:** Browser: each control changes the preview; theme switch reaches popovers inside the iframe; tsc, lint
 **Dependencies:** Tasks 7–9
