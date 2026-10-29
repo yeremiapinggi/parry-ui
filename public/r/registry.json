@@ -1742,6 +1742,23 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "image-zoom",
+      "type": "registry:ui",
+      "title": "Image Zoom",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/dialog"
+      ],
+      "files": [
+        {
+          "path": "components/ui/image-zoom.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

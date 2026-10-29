@@ -44,6 +44,7 @@ import {
   GithubStarsCatalogPreview,
   GlimpseCatalogPreview,
   HoverCardCatalogPreview,
+  ImageZoomCatalogPreview,
   InputGroupCatalogPreview,
   InputOTPCatalogPreview,
   ItemCatalogPreview,
@@ -357,6 +358,7 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "qr-code", preview: <QRCodeCatalogPreview /> },
       { name: "credit-card", preview: <CreditCardCatalogPreview /> },
       { name: "logo", preview: <LogoCatalogPreview /> },
+      { name: "image-zoom", preview: <ImageZoomCatalogPreview /> },
     ],
   },
   {

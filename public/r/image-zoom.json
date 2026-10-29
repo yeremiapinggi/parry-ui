@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "image-zoom",
+  "title": "Image Zoom",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/dialog"
+  ],
+  "files": [
+    {
+      "path": "components/ui/image-zoom.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { Dialog, DialogContent, DialogTitle, DialogTrigger } from \"@/components/ui/dialog\"\n\n// Click-to-zoom: the image is a button that opens the full-size version in a Dialog (Esc or click outside closes).\n// Pass `open` + `onOpenChange` to control it.\nfunction ImageZoom({\n  src,\n  zoomSrc,\n  alt,\n  open,\n  onOpenChange,\n  className,\n  zoomClassName,\n}: {\n  src: string\n  // Larger file for the zoomed view; defaults to `src`.\n  zoomSrc?: string\n  alt: string\n  open?: boolean\n  onOpenChange?: (open: boolean) => void\n  className?: string\n  zoomClassName?: string\n}) {\n  return (\n    <Dialog open={open} onOpenChange={onOpenChange}>\n      <DialogTrigger asChild>\n        <button\n          type=\"button\"\n          data-slot=\"image-zoom\"\n          aria-label={`Zoom image: ${alt}`}\n          className={cn(\"cursor-zoom-in overflow-hidden rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50\", className)}\n        >\n          {/* eslint-disable-next-line @next/next/no-img-element -- registry component, must work outside Next.js */}\n          <img src={src} alt={alt} className=\"size-full object-cover\" />\n        </button>\n      </DialogTrigger>\n      <DialogContent className={cn(\"w-auto max-w-[calc(100vw-2rem)] p-2 sm:max-w-[min(90vw,64rem)]\", zoomClassName)}>\n        <DialogTitle className=\"sr-only\">{alt}</DialogTitle>\n        {/* eslint-disable-next-line @next/next/no-img-element -- registry component, must work outside Next.js */}\n        <img src={zoomSrc ?? src} alt={alt} className=\"max-h-[85vh] w-auto rounded-md object-contain\" />\n      </DialogContent>\n    </Dialog>\n  )\n}\n\nexport { ImageZoom }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

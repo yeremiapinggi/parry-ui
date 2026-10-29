@@ -54,6 +54,7 @@ import { GithubStars } from "@/components/ui/github-stars"
 import { Glimpse, GlimpseContent, GlimpseDescription, GlimpseImage, GlimpseTitle, GlimpseTrigger } from "@/components/ui/glimpse"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ImageZoom } from "@/components/ui/image-zoom"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
 import { Input } from "@/components/ui/input"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
@@ -1566,5 +1567,14 @@ export function LogoCatalogPreview() {
       <Logo href="#logo" mark={<span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">P</span>} name="Parry UI" />
       <Logo href="#logo" name="parry" className="text-2xl" aria-label="Parry home" />
     </div>
+  )
+}
+
+export function ImageZoomCatalogPreview() {
+  return (
+    <figure className="flex w-full max-w-56 flex-col gap-2 rounded-lg border p-2">
+      <ImageZoom src="/images/settings-panels-thumbnail.png" alt="Settings panels template" className="aspect-video w-full" />
+      <figcaption className="text-xs text-muted-foreground">Settings panels · click to zoom</figcaption>
+    </figure>
   )
 }
