@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeftIcon, DownloadIcon, ListFilterIcon, PanelRightIcon } from "lucide-react"
+import { ArrowLeftIcon, DownloadIcon, PanelLeftOpenIcon, PanelRightIcon } from "lucide-react"
 
 import { channels } from "@/components/blocks/_data/channels"
 import { currentAgent } from "@/components/blocks/_data/team"
@@ -15,7 +15,9 @@ import { TicketList } from "@/components/blocks/ticket-inbox-01/components/ticke
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const inQueue = (key: QueueKey) => {
   const [kind, id] = key.split(":")
@@ -44,31 +46,32 @@ export function Inbox() {
   const ticket = tickets.find((t) => t.id === openId)
 
   return (
-    <AppShell
-      active="ticket"
-      title="Tickets"
-      description="Handle customer conversations from every channel in one queue."
-      actions={
-        <>
-          <ToggleGroup type="single" variant="outline" spacing={0} value={mode} onValueChange={(v) => v && setMode(v)} aria-label="List mode">
-            <ToggleGroupItem value="conversation">Conversation</ToggleGroupItem>
-            <ToggleGroupItem value="ticket">Ticket</ToggleGroupItem>
-          </ToggleGroup>
-          <Button>
-            <DownloadIcon />
-            Download Excel
-          </Button>
-        </>
-      }
-    >
+    <AppShell active="ticket" title="Tickets" hideHeader>
       <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
         <QueueRail selected={queue} onSelect={setQueue} counts={counts} className="max-lg:hidden" />
         <TicketList
           title={queueTitle(queue)}
           leading={
             <Button variant="outline" size="icon-sm" className="mr-1 lg:hidden" aria-label="Open queues" onClick={() => setQueuesOpen(true)}>
-              <ListFilterIcon />
+              <PanelLeftOpenIcon />
             </Button>
+          }
+          trailing={
+            <>
+              <Separator orientation="vertical" className="mx-1.5 h-5!" />
+              <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={mode} onValueChange={(v) => v && setMode(v)} aria-label="List mode">
+                <ToggleGroupItem value="conversation">Conversation</ToggleGroupItem>
+                <ToggleGroupItem value="ticket">Ticket</ToggleGroupItem>
+              </ToggleGroup>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" className="ml-0.5 text-muted-foreground" aria-label="Download Excel">
+                    <DownloadIcon />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download Excel</TooltipContent>
+              </Tooltip>
+            </>
           }
           tickets={shown}
           selectedId={selectedId}

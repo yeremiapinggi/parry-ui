@@ -80,19 +80,22 @@ const isTyping = (el: EventTarget | null) =>
 
 /**
  * App shell shared by every block: a top navbar (brand, nav, search, agent status, notifications, help, theme,
- * profile) and a page title area with actions above the content.
+ * profile) and a page title area with actions above the content. `hideHeader` keeps the title for screen readers only,
+ * for pages whose content carries its own toolbar.
  */
 export function AppShell({
   active,
   title,
   description,
   actions,
+  hideHeader,
   children,
 }: {
   active: AppSection
   title: string
   description?: string
   actions?: React.ReactNode
+  hideHeader?: boolean
   children: React.ReactNode
 }) {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -309,15 +312,21 @@ export function AppShell({
         <div className="sm:hidden">
           <AgentStatus value={presence} onChange={setPresence} className="mt-4" />
         </div>
-        <header className="flex flex-wrap items-start justify-between gap-4 pt-6 pb-5">
-          <div className="flex min-w-0 flex-col gap-1">
-            <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
-            {description && <p className="text-muted-foreground">{description}</p>}
-          </div>
-          {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
-        </header>
-        <Separator className="mb-5" />
-        {children}
+        {hideHeader ? (
+          <h1 className="sr-only">{title}</h1>
+        ) : (
+          <>
+            <header className="flex flex-wrap items-start justify-between gap-4 pt-6 pb-5">
+              <div className="flex min-w-0 flex-col gap-1">
+                <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
+                {description && <p className="text-muted-foreground">{description}</p>}
+              </div>
+              {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+            </header>
+            <Separator className="mb-5" />
+          </>
+        )}
+        <div className={cn(hideHeader && "pt-5")}>{children}</div>
       </main>
 
       <CommandDialog open={searchOpen} onOpenChange={setSearchOpen} title="Search" description="Search tickets by scope">

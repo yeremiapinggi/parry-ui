@@ -1,17 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { InboxIcon, SearchIcon } from "lucide-react"
+import { CalendarIcon, CircleDotIcon, InboxIcon, LockIcon, SmileIcon, UserIcon, WaypointsIcon } from "lucide-react"
 
 import { cn } from "cn"
 
 import type { Ticket } from "@/components/blocks/_data/tickets"
-import { FilterChips, type FilterChip } from "@/components/blocks/_parts/filter-chips"
+import { team } from "@/components/blocks/_data/team"
+import { ViewToolbar, type ActiveFilter, type FilterField, type SortOption } from "@/components/blocks/_parts/view-toolbar"
+import { channelMeta } from "@/components/blocks/channel-meta"
 import { TicketRow } from "@/components/blocks/_parts/ticket-row"
 import { BulkActions, TicketActionMenuItems } from "@/components/blocks/ticket-inbox-01/components/ticket-actions"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
 import {
   Pagination,
@@ -22,18 +23,55 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-const filters: FilterChip[] = [
-  { id: "date", label: "Date range", value: "Today" },
-  { id: "assignee", label: "Assignee", value: "Anyone" },
-  { id: "sort", label: "Sort", value: "Newest" },
-  { id: "sentiment", label: "Sentiment", value: "All" },
-  { id: "channel", label: "Channel type", value: "All" },
-  { id: "lock", label: "Lock", value: "Unlocked" },
+const stateLabels: Record<Ticket["state"], string> = { replied: "Replied", unreplied: "Unreplied", pending: "Pending", "out-sla": "Out SLA" }
+
+const fields: FilterField[] = [
+  { id: "date", label: "Date range", icon: CalendarIcon, options: ["Today", "Last 7 days", "Last 30 days"] },
+  { id: "state", label: "Status", icon: CircleDotIcon, options: Object.values(stateLabels) },
+  { id: "assignee", label: "Assignee", icon: UserIcon, options: team.map((a) => a.name) },
+  { id: "sentiment", label: "Sentiment", icon: SmileIcon, options: ["Positive", "Neutral", "Negative"] },
+  { id: "channel", label: "Channel type", icon: WaypointsIcon, options: Object.values(channelMeta).map((c) => c.label) },
+  { id: "lock", label: "Lock", icon: LockIcon, options: ["Unlocked", "Locked"] },
 ]
+
+const sortOptions: SortOption[] = [
+  { id: "newest", label: "Newest first" },
+  { id: "oldest", label: "Oldest first" },
+  { id: "sla", label: "SLA risk first" },
+  { id: "replies", label: "Most replies" },
+]
+
+// Sample tickets carry relative times; anything in days ("1d") is older than today.
+const matches = (t: Ticket, { id, value }: ActiveFilter) => {
+  switch (id) {
+    case "date":
+      return value !== "Today" || !t.time.endsWith("d")
+    case "state":
+      return stateLabels[t.state] === value
+    case "assignee":
+      return t.assignee === value
+    case "sentiment":
+      return t.sentiment === value.toLowerCase()
+    case "channel":
+      return channelMeta[t.channel].label === value
+    case "lock":
+      return (value === "Locked") === Boolean(t.lockedBy)
+    default:
+      return true
+  }
+}
+
+const slaRank: Record<Ticket["state"], number> = { "out-sla": 0, unreplied: 1, pending: 2, replied: 3 }
+const sorters: Record<string, (a: Ticket, b: Ticket) => number> = {
+  newest: () => 0,
+  sla: (a, b) => slaRank[a.state] - slaRank[b.state],
+  replies: (a, b) => b.replies - a.replies,
+}
 
 export function TicketList({
   title,
   leading,
+  trailing,
   tickets: all,
   selectedId,
   onSelect,
@@ -42,6 +80,7 @@ export function TicketList({
 }: {
   title: string
   leading?: React.ReactNode
+  trailing?: React.ReactNode
   tickets: Ticket[]
   selectedId?: number
   onSelect: (id: number) => void
@@ -49,9 +88,16 @@ export function TicketList({
   className?: string
 }) {
   const [query, setQuery] = useState("")
+  const [filters, setFilters] = useState<ActiveFilter[]>([])
+  const [sort, setSort] = useState(sortOptions[0].id)
   const [checked, setChecked] = useState<number[]>([])
-  const q = query.trim().toLowerCase()
-  const tickets = q ? all.filter((t) => t.customer.toLowerCase().includes(q) || String(t.id).includes(q.replace("#", ""))) : all
+  const q = query.trim().toLowerCase().replace("#", "")
+  const found = all.filter(
+    (t) => (!q || t.customer.toLowerCase().includes(q) || String(t.id).includes(q)) && filters.every((f) => matches(t, f))
+  )
+  // Data is newest first, so "oldest" is a reverse; the rest are stable sorts on top of that order.
+  const tickets = sort === "oldest" ? [...found].reverse() : [...found].sort(sorters[sort])
+  const narrowed = Boolean(q) || filters.length > 0
   const shownChecked = checked.filter((id) => tickets.some((t) => t.id === id))
   const allChecked = tickets.length > 0 && shownChecked.length === tickets.length
 
@@ -70,23 +116,27 @@ export function TicketList({
 
   return (
     <section aria-label={`${title} tickets`} className={cn("flex min-w-0 flex-col gap-3", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-1">
-          {leading}
-          <h2 className="truncate text-muted-foreground">
-            <span className="font-medium text-foreground tabular-nums">{all.length}</span> tickets in{" "}
-            <span className="font-medium text-foreground">{title}</span>
-          </h2>
-        </div>
-        <InputGroup className="h-9 w-full bg-card sm:w-72">
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-          <InputGroupInput aria-label="Search tickets by customer or number" placeholder="Search by customer or #ticket" value={query} onChange={(e) => setQuery(e.target.value)} />
-        </InputGroup>
-      </div>
-
-      <FilterChips filters={filters} />
+      <ViewToolbar
+        leading={
+          <>
+            {leading}
+            <h2 className="truncate text-muted-foreground">
+              <span className="font-medium text-foreground tabular-nums">{tickets.length}</span>
+              {narrowed && <span className="tabular-nums"> of {all.length}</span>} tickets in <span className="font-medium text-foreground">{title}</span>
+            </h2>
+          </>
+        }
+        trailing={trailing}
+        fields={fields}
+        filters={filters}
+        onFiltersChange={setFilters}
+        sortOptions={sortOptions}
+        sort={sort}
+        onSortChange={setSort}
+        query={query}
+        onQueryChange={setQuery}
+        searchPlaceholder="Search customer or #ticket"
+      />
 
       <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
         <div className="flex min-h-11 flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-1.5">
@@ -118,9 +168,9 @@ export function TicketList({
               <EmptyMedia variant="icon">
                 <InboxIcon />
               </EmptyMedia>
-              <EmptyTitle>{q ? "No matching tickets" : `No tickets in ${title}`}</EmptyTitle>
+              <EmptyTitle>{narrowed ? "No matching tickets" : `No tickets in ${title}`}</EmptyTitle>
               <EmptyDescription>
-                {q ? "Try another customer name or ticket number." : "Tickets that match this view and your filters will show up here."}
+                {narrowed ? "Try another search or remove a filter." : "Tickets in this view will show up here."}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
