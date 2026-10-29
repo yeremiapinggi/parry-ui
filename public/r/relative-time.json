@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "relative-time",
+  "title": "Relative Time",
+  "files": [
+    {
+      "path": "components/ui/relative-time.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nconst units: [Intl.RelativeTimeFormatUnit, number][] = [\n  [\"year\", 31536000],\n  [\"month\", 2592000],\n  [\"week\", 604800],\n  [\"day\", 86400],\n  [\"hour\", 3600],\n  [\"minute\", 60],\n  [\"second\", 1],\n]\n\nfunction formatRelative(date: Date, now: number, locale: string) {\n  const seconds = Math.round((date.getTime() - now) / 1000)\n  const [unit, size] = units.find(([, s]) => Math.abs(seconds) >= s) ?? [\"second\", 1]\n  return new Intl.RelativeTimeFormat(locale, { numeric: \"auto\" }).format(Math.round(seconds / size), unit)\n}\n\n// \"3 minutes ago\", refreshed every minute. The current time is read after mount (it can't be read while\n// prerendering), so the first paint shows the absolute date. Pass `now` to pin it, e.g. in demos and tests.\nfunction RelativeTime({\n  date,\n  now: nowProp,\n  locale = \"en\",\n  className,\n}: {\n  date: Date | string\n  now?: Date\n  locale?: string\n  className?: string\n}) {\n  const value = typeof date === \"string\" ? new Date(date) : date\n  const [clock, setClock] = React.useState<number | null>(null)\n\n  React.useEffect(() => {\n    if (nowProp) return\n    const tick = () => setClock(Date.now())\n    tick()\n    const id = setInterval(tick, 60_000)\n    return () => clearInterval(id)\n  }, [nowProp])\n\n  const now = nowProp?.getTime() ?? clock\n  const absolute = new Intl.DateTimeFormat(locale, { dateStyle: \"medium\", timeStyle: \"short\" }).format(value)\n\n  return (\n    <time data-slot=\"relative-time\" dateTime={value.toISOString()} title={absolute} className={className}>\n      {now === null ? absolute : formatRelative(value, now, locale)}\n    </time>\n  )\n}\n\nexport { RelativeTime, formatRelative }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

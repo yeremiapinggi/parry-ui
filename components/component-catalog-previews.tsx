@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -26,6 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
+import { Counter } from "@/components/ui/counter"
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
@@ -53,10 +54,12 @@ import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Pill, PillButton, PillDelta, PillIndicator } from "@/components/ui/pill"
+import { Price } from "@/components/ui/price"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Rating } from "@/components/ui/rating"
+import { RelativeTime } from "@/components/ui/relative-time"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { ScrollableTabsList } from "@/components/ui/scrollable-tabs-list"
@@ -64,12 +67,15 @@ import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
+import { Sparkline } from "@/components/ui/sparkline"
 import { Spinner } from "@/components/ui/spinner"
+import { Stat } from "@/components/ui/stat"
 import { Status } from "@/components/ui/status"
 import { Stepper } from "@/components/ui/stepper"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsTrigger } from "@/components/ui/tabs"
 import { TagsInput } from "@/components/ui/tags-input"
+import { Ticker } from "@/components/ui/ticker"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const weeklyRequests = [
@@ -1190,5 +1196,64 @@ export function ListCatalogPreview() {
         </ListGroup>
       ))}
     </List>
+  )
+}
+
+const weeklyConversations = [120, 132, 101, 154, 190, 176, 210]
+
+export function StatCatalogPreview() {
+  return (
+    <Stat label="Conversations" value="1,083" delta={12.4} icon={<MessageSquareIcon />} className="w-full max-w-56">
+      <Sparkline data={weeklyConversations} variant="area" aria-label="Conversations over the last 7 days, rising" className="w-full text-chart-3" />
+    </Stat>
+  )
+}
+
+export function SparklineCatalogPreview() {
+  return (
+    <div className="flex flex-wrap items-end justify-center gap-6">
+      <Sparkline data={weeklyConversations} aria-label="Line trend, rising" className="text-chart-3" />
+      <Sparkline data={weeklyConversations} variant="area" aria-label="Area trend, rising" className="text-success" />
+      <Sparkline data={[4, 7, 3, 8, 6, 9, 5]} variant="bar" aria-label="Daily bars" className="text-chart-2" />
+    </div>
+  )
+}
+
+export function CounterCatalogPreview() {
+  const [seats, setSeats] = useState(3)
+  return (
+    <div className="flex items-center gap-3 text-sm">
+      <span>Agent seats</span>
+      <Counter aria-label="Agent seats" value={seats} onValueChange={setSeats} min={1} max={10} />
+    </div>
+  )
+}
+
+export function PriceCatalogPreview() {
+  return (
+    <div className="flex flex-col items-center gap-2 text-lg">
+      <Price amount={49} />
+      <Price amount={399000} originalAmount={499000} currency="IDR" locale="id-ID" />
+    </div>
+  )
+}
+
+export function RelativeTimeCatalogPreview() {
+  return (
+    <ul className="flex flex-col gap-1 text-sm text-muted-foreground">
+      <li>Replied <RelativeTime date="2026-10-29T09:57:00+07:00" now={new Date("2026-10-29T10:00:00+07:00")} /></li>
+      <li>Assigned <RelativeTime date="2026-10-28T15:00:00+07:00" now={new Date("2026-10-29T10:00:00+07:00")} /></li>
+      <li>Dibuat <RelativeTime date="2026-10-22T10:00:00+07:00" now={new Date("2026-10-29T10:00:00+07:00")} locale="id" /></li>
+    </ul>
+  )
+}
+
+export function TickerCatalogPreview() {
+  return (
+    <div className="flex flex-col gap-2">
+      <Ticker symbol="BBCA" price={9875} change={1.28} currency="IDR" locale="id-ID" />
+      <Ticker symbol="GOTO" price={68} change={-2.86} currency="IDR" locale="id-ID" />
+      <Ticker symbol="AAPL" price={232.14} change={0.42} />
+    </div>
   )
 }

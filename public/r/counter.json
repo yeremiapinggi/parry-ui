@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "counter",
+  "title": "Counter",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/counter.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { MinusIcon, PlusIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\n\n// Quantity stepper: −/+ buttons around a value, clamped to [min, max].\nfunction Counter({\n  value,\n  onValueChange,\n  min = 0,\n  max = Infinity,\n  step = 1,\n  className,\n  \"aria-label\": ariaLabel = \"Quantity\",\n}: {\n  value: number\n  onValueChange: (value: number) => void\n  min?: number\n  max?: number\n  step?: number\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const set = (next: number) => onValueChange(Math.min(max, Math.max(min, next)))\n\n  return (\n    <div data-slot=\"counter\" role=\"group\" aria-label={ariaLabel} className={cn(\"inline-flex items-center rounded-lg border\", className)}>\n      <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Decrease\" disabled={value <= min} onClick={() => set(value - step)}>\n        <MinusIcon />\n      </Button>\n      <output aria-live=\"polite\" className=\"min-w-10 text-center text-sm font-medium tabular-nums\">\n        {value}\n      </output>\n      <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Increase\" disabled={value >= max} onClick={() => set(value + step)}>\n        <PlusIcon />\n      </Button>\n    </div>\n  )\n}\n\nexport { Counter }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
