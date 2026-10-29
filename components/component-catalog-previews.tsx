@@ -12,6 +12,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Announcement, AnnouncementTag, AnnouncementTitle } from "@/components/ui/announcement"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
+import { Badge } from "@/components/ui/badge"
 import { Banner } from "@/components/ui/banner"
 import { BorderButton } from "@/components/ui/border-button"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
@@ -29,12 +30,15 @@ import { Combobox } from "@/components/ui/combobox"
 import { Counter } from "@/components/ui/counter"
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
+import { DataTable, DataTableColumnHeader, type DataTableColumnDef } from "@/components/ui/data-table"
+import { DataToolbar } from "@/components/ui/data-toolbar"
 import { DatePicker } from "@/components/ui/date-picker"
 import { DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DialogStack, DialogStackFooter, DialogStackNext, DialogStackPrevious } from "@/components/ui/dialog-stack"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Dropzone } from "@/components/ui/dropzone"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
+import { FilterPanel } from "@/components/ui/filter-panel"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { GithubStars } from "@/components/ui/github-stars"
@@ -1256,4 +1260,71 @@ export function TickerCatalogPreview() {
       <Ticker symbol="AAPL" price={232.14} change={0.42} />
     </div>
   )
+}
+
+type Order = { id: string; customer: string; channel: string; status: "Paid" | "Pending" | "Refunded"; total: number }
+
+const orders: Order[] = [
+  { id: "INV-1042", customer: "Rina Wijaya", channel: "WhatsApp", status: "Paid", total: 1250000 },
+  { id: "INV-1043", customer: "Budi Tan", channel: "Instagram", status: "Pending", total: 480000 },
+  { id: "INV-1044", customer: "Sari Lestari", channel: "Email", status: "Paid", total: 2100000 },
+  { id: "INV-1045", customer: "Andi Pratama", channel: "WhatsApp", status: "Refunded", total: 350000 },
+  { id: "INV-1046", customer: "Dewi Kurnia", channel: "Telegram", status: "Paid", total: 990000 },
+  { id: "INV-1047", customer: "Made Nugraha", channel: "Instagram", status: "Pending", total: 1575000 },
+  { id: "INV-1048", customer: "Fajar Hidayat", channel: "Email", status: "Paid", total: 640000 },
+]
+
+const statusBadge = { Paid: "border-success/30 bg-success-soft text-success", Pending: "border-warning/30 bg-warning-soft text-warning", Refunded: "" }
+const idr = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 })
+
+const orderColumns: DataTableColumnDef<Order>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        aria-label="Select all rows on this page"
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(checked) => table.toggleAllPageRowsSelected(checked === true)}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox aria-label={`Select ${row.original.id}`} checked={row.getIsSelected()} onCheckedChange={(checked) => row.toggleSelected(checked === true)} />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  { accessorKey: "id", header: ({ column }) => <DataTableColumnHeader column={column} title="Invoice" />, enableHiding: false },
+  { accessorKey: "customer", header: "Customer" },
+  { accessorKey: "channel", header: "Channel" },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <Badge variant="outline" className={statusBadge[row.original.status]}>{row.original.status}</Badge>,
+  },
+  {
+    accessorKey: "total",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Total" />,
+    cell: ({ row }) => <span className="tabular-nums">{idr.format(row.original.total)}</span>,
+  },
+]
+
+export function DataTableCatalogPreview() {
+  return (
+    <DataTable
+      columns={orderColumns}
+      data={orders}
+      pageSize={5}
+      toolbar={(table) => <DataToolbar table={table} searchPlaceholder="Search orders…" />}
+    />
+  )
+}
+
+const filterSections = [
+  { id: "status", title: "Status", options: [{ value: "open", label: "Open", count: 42 }, { value: "pending", label: "Pending", count: 17 }, { value: "resolved", label: "Resolved", count: 128 }] },
+  { id: "channel", title: "Channel", options: [{ value: "whatsapp", label: "WhatsApp", count: 96 }, { value: "instagram", label: "Instagram", count: 54 }, { value: "email", label: "Email", count: 37 }] },
+]
+
+export function FilterPanelCatalogPreview() {
+  const [filters, setFilters] = useState<Record<string, string[]>>({ status: ["open"] })
+  return <FilterPanel sections={filterSections} value={filters} onValueChange={setFilters} className="max-w-56" />
 }

@@ -1449,6 +1449,67 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/table"
+      ],
+      "files": [
+        {
+          "path": "components/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-toolbar",
+      "type": "registry:ui",
+      "title": "Data Toolbar",
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/data-table",
+        "@parry/dropdown-menu",
+        "@parry/input-group"
+      ],
+      "files": [
+        {
+          "path": "components/ui/data-toolbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "filter-panel",
+      "type": "registry:ui",
+      "title": "Filter Panel",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button",
+        "@parry/checkbox",
+        "@parry/label"
+      ],
+      "files": [
+        {
+          "path": "components/ui/filter-panel.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
