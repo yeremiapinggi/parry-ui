@@ -5,6 +5,7 @@ import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-
 
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
 import {
+  AlertDialogCatalogPreview,
   AnnouncementCatalogPreview,
   AspectRatioCatalogPreview,
   AutocompleteCatalogPreview,
@@ -18,6 +19,7 @@ import {
   ComboboxCatalogPreview,
   CommandCatalogPreview,
   DatePickerCatalogPreview,
+  DrawerCatalogPreview,
   DropzoneCatalogPreview,
   EmptyCatalogPreview,
   FieldCatalogPreview,
@@ -34,6 +36,7 @@ import {
   RatingCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
+  SheetCatalogPreview,
   SliderCatalogPreview,
   SocialButtonCatalogPreview,
   TagsInputCatalogPreview,
@@ -281,6 +284,9 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
     title: "Overlay",
     items: [
       { name: "dialog", preview: <DialogDemo /> },
+      { name: "alert-dialog", preview: <AlertDialogCatalogPreview /> },
+      { name: "sheet", preview: <SheetCatalogPreview /> },
+      { name: "drawer", preview: <DrawerCatalogPreview /> },
       { name: "dropdown-menu", preview: <DropdownMenuDemo /> },
       { name: "popover", preview: <PopoverCatalogPreview /> },
       { name: "tooltip", preview: <TooltipDemo /> },

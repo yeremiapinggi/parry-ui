@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, CopyIcon, InboxIcon, InfoIcon, SearchXIcon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Announcement, AnnouncementTag, AnnouncementTitle } from "@/components/ui/announcement"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
@@ -22,6 +23,7 @@ import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
 import { DatePicker } from "@/components/ui/date-picker"
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Dropzone } from "@/components/ui/dropzone"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { FileUpload } from "@/components/ui/file-upload"
@@ -42,6 +44,7 @@ import { Rating } from "@/components/ui/rating"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { SocialButton } from "@/components/ui/social-button"
 import { Spinner } from "@/components/ui/spinner"
@@ -658,5 +661,84 @@ export function StatusCatalogPreview() {
       <Status status="maintenance" />
       <Status status="offline" />
     </div>
+  )
+}
+
+export function AlertDialogCatalogPreview() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete segment</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogMedia className="bg-destructive-soft text-destructive">
+            <Trash2Icon />
+          </AlertDialogMedia>
+          <AlertDialogTitle>Delete &ldquo;VIP Jakarta&rdquo;?</AlertDialogTitle>
+          <AlertDialogDescription>1,240 contacts stay in your workspace, but campaigns using this segment will stop.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
+export function SheetCatalogPreview() {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Edit contact</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit contact</SheetTitle>
+          <SheetDescription>Changes are saved to the shared contact record.</SheetDescription>
+        </SheetHeader>
+        <FieldGroup className="px-4">
+          <Field>
+            <FieldLabel htmlFor="catalog-sheet-name">Name</FieldLabel>
+            <Input id="catalog-sheet-name" defaultValue="Rina Wijaya" />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="catalog-sheet-phone">Phone</FieldLabel>
+            <Input id="catalog-sheet-phone" defaultValue="+62 812 3456 7890" />
+          </Field>
+        </FieldGroup>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button>Save changes</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+export function DrawerCatalogPreview() {
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Open drawer</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mx-auto w-full max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle>Daily message goal</DrawerTitle>
+            <DrawerDescription>Set how many replies your team aims for each day.</DrawerDescription>
+          </DrawerHeader>
+          <p className="py-4 text-center text-5xl font-bold tabular-nums">350</p>
+          <DrawerFooter>
+            <Button>Save goal</Button>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }

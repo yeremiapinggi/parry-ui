@@ -1048,6 +1048,58 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "dependencies": [
+        "radix-ui",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "dependencies": [
+        "radix-ui",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "dependencies": [
+        "vaul",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

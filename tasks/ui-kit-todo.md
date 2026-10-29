@@ -41,7 +41,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T12 progress (fixed: shadcn's version didn't pass `value` to Radix, so `aria-valuenow` was missing), empty, banner, announcement, status. Sheet: 4/20, 2/22, 3/4, 3/6, 4/5. (M)
 
 ## Phase 5: Overlay
-- [ ] T13 alert-dialog, sheet, drawer (dep `vaul`). (S)
+- [x] T13 alert-dialog, sheet, drawer (dep `vaul`). Keyboard open, initial focus and Escape-return-focus checked. Sheet: 2/39, 2/31, 1/22. (S)
 - [ ] T14 hover-card, context-menu, glimpse (link preview card), dialog-stack. Depends on T13. (M)
 
 ## Phase 6: Navigation
