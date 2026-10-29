@@ -14,6 +14,7 @@ import { BulkActions, TicketActionMenuItems } from "@/components/blocks/ticket-i
 import { Checkbox } from "@/components/ui/checkbox"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Pagination,
   PaginationContent,
@@ -23,7 +24,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-const stateLabels: Record<Ticket["state"], string> = { replied: "Replied", unreplied: "Unreplied", pending: "Pending", "out-sla": "Out SLA" }
+const stateLabels: Record<Ticket["state"], string> = {
+  replied: "Replied",
+  unreplied: "Unreplied",
+  pending: "Pending",
+  "out-sla": "Out SLA",
+}
 
 const fields: FilterField[] = [
   { id: "date", label: "Date range", icon: CalendarIcon, options: ["Today", "Last 7 days", "Last 30 days"] },
@@ -115,14 +121,13 @@ export function TicketList({
   }
 
   return (
-    <section aria-label={`${title} tickets`} className={cn("flex min-w-0 flex-col gap-3", className)}>
+    <section aria-label={`${title} tickets`} className={cn("flex min-h-0 min-w-0 flex-col gap-3", className)}>
       <ViewToolbar
         leading={
           <>
             {leading}
             <h2 className="truncate text-sm text-muted-foreground">
-              <span className="font-medium text-foreground tabular-nums">{tickets.length}</span>
-              {narrowed && <span className="tabular-nums"> of {all.length}</span>} tickets in <span className="font-medium text-foreground">{title}</span>
+              Tickets in <span className="font-medium text-foreground">{title}</span>
             </h2>
           </>
         }
@@ -138,7 +143,8 @@ export function TicketList({
         searchPlaceholder="Search customer or #ticket"
       />
 
-      <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
+      {/* Grows with its rows up to the space left in the window; past that the rows scroll inside the card. */}
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
         <div className="flex min-h-11 flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-1.5">
           <Checkbox
             id="select-all-tickets"
@@ -175,22 +181,24 @@ export function TicketList({
             </EmptyHeader>
           </Empty>
         ) : (
-          <ul onKeyDown={onKeyDown} className="[&>li:last-child]:border-b-0">
-            {tickets.map((t) => (
-              <TicketRow
-                key={t.id}
-                ticket={t}
-                active={t.id === selectedId}
-                checked={checked.includes(t.id)}
-                onCheckedChange={(v) => setChecked((ids) => (v ? [...ids, t.id] : ids.filter((id) => id !== t.id)))}
-                onSelect={() => {
-                  onSelect(t.id)
-                  onOpen(t.id)
-                }}
-                menu={<TicketActionMenuItems />}
-              />
-            ))}
-          </ul>
+          <ScrollArea className="min-h-0 overflow-hidden [&_[data-slot=scroll-area-viewport]>div]:block!">
+            <ul onKeyDown={onKeyDown} className="[&>li:last-child]:border-b-0">
+              {tickets.map((t) => (
+                <TicketRow
+                  key={t.id}
+                  ticket={t}
+                  active={t.id === selectedId}
+                  checked={checked.includes(t.id)}
+                  onCheckedChange={(v) => setChecked((ids) => (v ? [...ids, t.id] : ids.filter((id) => id !== t.id)))}
+                  onSelect={() => {
+                    onSelect(t.id)
+                    onOpen(t.id)
+                  }}
+                  menu={<TicketActionMenuItems />}
+                />
+              ))}
+            </ul>
+          </ScrollArea>
         )}
 
         <div className="flex items-center justify-between gap-3 border-t px-4 py-2.5">

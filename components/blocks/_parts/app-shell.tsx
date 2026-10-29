@@ -81,7 +81,8 @@ const isTyping = (el: EventTarget | null) =>
 /**
  * App shell shared by every block: a top navbar (brand, nav, search, agent status, notifications, help, theme,
  * profile) and a page title area with actions above the content. `hideHeader` keeps the title for screen readers only,
- * for pages whose content carries its own toolbar.
+ * for pages whose content carries its own toolbar. `fill` stops the page from scrolling and gives the content the
+ * remaining window height, for layouts whose panes scroll on their own.
  */
 export function AppShell({
   active,
@@ -89,6 +90,7 @@ export function AppShell({
   description,
   actions,
   hideHeader,
+  fill,
   children,
 }: {
   active: AppSection
@@ -96,6 +98,7 @@ export function AppShell({
   description?: string
   actions?: React.ReactNode
   hideHeader?: boolean
+  fill?: boolean
   children: React.ReactNode
 }) {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -307,7 +310,7 @@ export function AppShell({
         </div>
       </header>
 
-      <main className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 md:px-6">
+      <main className={cn("min-h-0 flex-1 px-4 pb-6 md:px-6", fill ? "flex flex-col overflow-hidden" : "overflow-y-auto")}>
         {/* On phones the status pill does not fit the navbar, so it leads the page instead. */}
         <div className="sm:hidden">
           <AgentStatus value={presence} onChange={setPresence} className="mt-4" />
@@ -326,7 +329,7 @@ export function AppShell({
             <Separator className="mb-5" />
           </>
         )}
-        <div className={cn(hideHeader && "pt-5")}>{children}</div>
+        <div className={cn(hideHeader && "pt-5", fill && "flex min-h-0 flex-1 flex-col")}>{children}</div>
       </main>
 
       <CommandDialog open={searchOpen} onOpenChange={setSearchOpen} title="Search" description="Search tickets by scope">

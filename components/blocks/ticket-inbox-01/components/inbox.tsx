@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { DownloadIcon, PanelLeftOpenIcon } from "lucide-react"
+import { PanelLeftOpenIcon } from "lucide-react"
 
 import { cn } from "cn"
 
@@ -14,9 +14,8 @@ import { TicketDetail } from "@/components/blocks/ticket-inbox-01/components/tic
 import { TicketList } from "@/components/blocks/ticket-inbox-01/components/ticket-list"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { Separator } from "@/components/ui/separator"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const inQueue = (key: QueueKey) => {
   const [kind, id] = key.split(":")
@@ -44,28 +43,18 @@ export function Inbox() {
   const ticket = tickets.find((t) => t.id === openId)
 
   return (
-    <AppShell active="ticket" title="Tickets" hideHeader>
-      <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <QueueRail selected={queue} onSelect={setQueue} counts={counts} className="max-lg:hidden" />
+    <AppShell active="ticket" title="Tickets" hideHeader fill>
+      {/* Both columns are capped at the window height: the rail scrolls on its own, the ticket card scrolls its rows. */}
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <ScrollArea className="min-h-0 overflow-hidden max-lg:hidden [&_[data-slot=scroll-area-viewport]>div]:block!">
+          <QueueRail selected={queue} onSelect={setQueue} counts={counts} className="pr-3 pb-2" />
+        </ScrollArea>
         <TicketList
           title={queueTitle(queue)}
           leading={
             <Button variant="outline" size="icon-sm" className="mr-1 lg:hidden" aria-label="Open queues" onClick={() => setQueuesOpen(true)}>
               <PanelLeftOpenIcon />
             </Button>
-          }
-          trailing={
-            <>
-              <Separator orientation="vertical" className="mx-1.5 h-5!" />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" className="text-muted-foreground" aria-label="Download Excel">
-                    <DownloadIcon />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Download Excel</TooltipContent>
-              </Tooltip>
-            </>
           }
           tickets={shown}
           selectedId={selectedId}

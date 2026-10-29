@@ -116,6 +116,9 @@ Review 2026-10-30 (9): status selector moved from the header into the sidebar ti
 Custom fields is its own accordion section; quick-reply popover made compact (w-80, title + /code row, one-line
 preview); Contact can add extra data (email, phone, WhatsApp, company, address, birthday, customer ID; session-local)
 and no longer repeats an identity that equals the email or phone.
+Review 2026-10-30 (10): inbox drops the Download icon and the count in "Tickets in <view>"; `AppShell fill` stops page
+scroll so the queue rail (own ScrollArea) and the ticket card (rows in a ScrollArea, header and pagination fixed) are
+capped at the window height. ScrollArea roots need overflow-hidden here or their scrollbar layer leaks height to <main>.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)
