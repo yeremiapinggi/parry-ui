@@ -13,10 +13,12 @@ import {
   AvatarGroupCatalogPreview,
   AvatarStackCatalogPreview,
   BannerCatalogPreview,
+  BentoCatalogPreview,
   BorderButtonCatalogPreview,
   BreadcrumbCatalogPreview,
   ButtonGroupCatalogPreview,
   CalendarCatalogPreview,
+  CarouselCatalogPreview,
   ChartCatalogPreview,
   ChoiceboxCatalogPreview,
   CollapsibleCatalogPreview,
@@ -29,6 +31,7 @@ import {
   CounterCatalogPreview,
   DataTableCatalogPreview,
   DatePickerCatalogPreview,
+  DeckCatalogPreview,
   DialogStackCatalogPreview,
   DrawerCatalogPreview,
   DropzoneCatalogPreview,
@@ -46,6 +49,7 @@ import {
   ListCatalogPreview,
   ListPanelCatalogPreview,
   LoginButtonCatalogPreview,
+  MarqueeCatalogPreview,
   MenubarCatalogPreview,
   MiniCalendarCatalogPreview,
   NavigationMenuCatalogPreview,
@@ -56,6 +60,7 @@ import {
   RadioGroupCatalogPreview,
   ProgressCatalogPreview,
   RatingCatalogPreview,
+  ReelCatalogPreview,
   RelativeTimeCatalogPreview,
   ResizableCatalogPreview,
   ScrollAreaCatalogPreview,
@@ -425,6 +430,11 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "timeline", preview: <TimelineCatalogPreview /> },
       { name: "comparison", preview: <ComparisonCatalogPreview /> },
       { name: "contribution-graph", preview: <ContributionGraphCatalogPreview /> },
+      { name: "bento", preview: <BentoCatalogPreview /> },
+      { name: "carousel", preview: <CarouselCatalogPreview /> },
+      { name: "deck", preview: <DeckCatalogPreview /> },
+      { name: "marquee", preview: <MarqueeCatalogPreview /> },
+      { name: "reel", preview: <ReelCatalogPreview /> },
     ],
   },
 ];
@@ -488,7 +498,7 @@ export default function ComponentsPage() {
             <h2 id={`group-${g.title}`} className="font-heading text-xl font-semibold">{g.title}</h2>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {g.items.map(({ name, preview }) => (
-                <div key={name} id={name} className="flex scroll-mt-20 flex-col gap-2">
+                <div key={name} id={name} className="flex min-w-0 scroll-mt-20 flex-col gap-2">
                   <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
                   <div className="flex items-center justify-between gap-2 px-1">
                     <h3 className="text-sm font-medium capitalize">{label(name)}</h3>

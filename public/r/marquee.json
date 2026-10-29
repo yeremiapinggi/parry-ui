@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marquee",
+  "title": "Marquee",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/marquee.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\n\n// Endless horizontal scroll of its children. Driven by the Web Animations API, so consumers need no\n// @keyframes in their CSS; it stays still when the viewer prefers reduced motion. Inline-size containment\n// keeps the doubled track from widening the parent layout.\nfunction Marquee({\n  duration = 30,\n  reverse = false,\n  pauseOnHover = true,\n  fade = true,\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  // Seconds for one full loop; lower is faster.\n  duration?: number\n  reverse?: boolean\n  pauseOnHover?: boolean\n  fade?: boolean\n}) {\n  const trackRef = React.useRef<HTMLDivElement>(null)\n  const animationRef = React.useRef<Animation | null>(null)\n\n  React.useEffect(() => {\n    const track = trackRef.current\n    if (!track || window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return\n    const frames = [{ transform: \"translateX(0)\" }, { transform: \"translateX(-50%)\" }]\n    const animation = track.animate(reverse ? frames.reverse() : frames, { duration: duration * 1000, iterations: Infinity })\n    animationRef.current = animation\n    return () => animation.cancel()\n  }, [duration, reverse])\n\n  return (\n    <div\n      data-slot=\"marquee\"\n      className={cn(\"w-full overflow-hidden [contain:inline-size]\", fade && \"[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]\", className)}\n      onMouseEnter={pauseOnHover ? () => animationRef.current?.pause() : undefined}\n      onMouseLeave={pauseOnHover ? () => animationRef.current?.play() : undefined}\n      {...props}\n    >\n      <div ref={trackRef} className=\"flex w-max\">\n        <div className=\"flex shrink-0 items-center gap-6 pr-6\">{children}</div>\n        {/* Second copy makes the loop seamless; hidden from assistive tech so content is read once. */}\n        <div aria-hidden className=\"flex shrink-0 items-center gap-6 pr-6\">{children}</div>\n      </div>\n    </div>\n  )\n}\n\nexport { Marquee }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

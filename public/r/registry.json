@@ -1582,6 +1582,87 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "dependencies": [
+        "embla-carousel-react",
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marquee",
+      "type": "registry:ui",
+      "title": "Marquee",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/marquee.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bento",
+      "type": "registry:ui",
+      "title": "Bento",
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/bento.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "deck",
+      "type": "registry:ui",
+      "title": "Deck",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@parry/button"
+      ],
+      "files": [
+        {
+          "path": "components/ui/deck.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "reel",
+      "type": "registry:ui",
+      "title": "Reel",
+      "dependencies": [
+        "lucide-react",
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/reel.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

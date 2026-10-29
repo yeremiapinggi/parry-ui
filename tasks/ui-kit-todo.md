@@ -58,7 +58,7 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [ ] T21b gantt, kanban — deferred until Open Question #3 is answered; sheet rows stay Belum with a note.
 
 ## Phase 8: Layout
-- [ ] T22 bento-tile, deck, carousel (dep `embla-carousel-react`), marquee, reel. (M)
+- [x] T22 bento (BentoGrid + BentoTile; the 230 sheet variants are full marketing layouts, all Review), deck, carousel (dep `embla-carousel-react`; fixed shadcn's setState-in-effect lint error and missing `reInit` cleanup), marquee (Web Animations API, `contain: inline-size`), reel. Also `min-w-0` on /components grid cards: the marquee track had widened the whole grid to 1159px at 375px. Sheet: 0/230, 2/6, 1/4, 5/6, 3/4. (M)
 - [ ] **Checkpoint D: data display + layout reviewed, bundle size checked in `npm run build` output**
 
 ## Phase 9: Media & Dev (heavy, optional per Open Question #3)

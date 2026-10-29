@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { addDays } from "date-fns"
 import type { DateRange } from "react-day-picker"
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, MailIcon, UserPlusIcon, CheckCircle2Icon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon, CircleDotIcon, CopyIcon, PencilIcon, XIcon, HomeIcon, InboxIcon, InfoIcon, SearchXIcon, MessageSquareIcon, ZapIcon, MailIcon, UserPlusIcon, CheckCircle2Icon, MinusIcon, PlusIcon, SearchIcon, SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -15,14 +15,17 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Autocomplete } from "@/components/ui/autocomplete"
 import { Badge } from "@/components/ui/badge"
 import { Banner } from "@/components/ui/banner"
+import { BentoGrid, BentoTile } from "@/components/ui/bento"
 import { BorderButton } from "@/components/ui/border-button"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"
 import { AvatarStack } from "@/components/ui/avatar-stack"
+import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
@@ -36,6 +39,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { DataTable, DataTableColumnHeader, type DataTableColumnDef } from "@/components/ui/data-table"
 import { DataToolbar } from "@/components/ui/data-toolbar"
 import { DatePicker } from "@/components/ui/date-picker"
+import { Deck } from "@/components/ui/deck"
 import { DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DialogStack, DialogStackFooter, DialogStackNext, DialogStackPrevious } from "@/components/ui/dialog-stack"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
@@ -58,6 +62,7 @@ import { ListPanel, ListPanelItem } from "@/components/ui/list-panel"
 import { Label } from "@/components/ui/label"
 import { LoginButton } from "@/components/ui/login-button"
 import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "@/components/ui/menubar"
+import { Marquee } from "@/components/ui/marquee"
 import { MiniCalendar } from "@/components/ui/mini-calendar"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
@@ -67,6 +72,7 @@ import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitl
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Rating } from "@/components/ui/rating"
+import { Reel } from "@/components/ui/reel"
 import { RelativeTime } from "@/components/ui/relative-time"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
@@ -1402,4 +1408,88 @@ const activityDays = (() => {
 
 export function ContributionGraphCatalogPreview() {
   return <ContributionGraph data={activityDays} label="replies" />
+}
+
+const highlights = ["Unified inbox", "SLA timers", "CSAT surveys", "Auto-assign", "Webhooks"]
+
+export function CarouselCatalogPreview() {
+  return (
+    <Carousel className="w-full max-w-48" opts={{ loop: true }}>
+      <CarouselContent>
+        {highlights.map((item) => (
+          <CarouselItem key={item}>
+            <Card className="aspect-square items-center justify-center p-6 text-center text-sm font-medium">{item}</Card>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}
+
+const brands = ["Cognivo", "Sociomile", "Ripple10", "Agentics", "Ivosights"]
+
+export function MarqueeCatalogPreview() {
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <Marquee duration={20}>
+        {brands.map((brand) => (
+          <span key={brand} className="text-sm font-semibold text-muted-foreground">{brand}</span>
+        ))}
+      </Marquee>
+      <Marquee duration={30} reverse>
+        {highlights.map((item) => (
+          <Badge key={item} variant="secondary">{item}</Badge>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+
+const deckCards = [
+  { title: "Reply faster", body: "Saved replies cut first response time." },
+  { title: "Route smarter", body: "Assign by skill, language or channel." },
+  { title: "Measure CSAT", body: "Survey customers right after resolution." },
+]
+
+export function DeckCatalogPreview() {
+  return (
+    <Deck aria-label="Feature tips" className="w-full max-w-56">
+      {deckCards.map((card) => (
+        <Card key={card.title} className="gap-1 p-4">
+          <p className="text-sm font-semibold">{card.title}</p>
+          <p className="text-sm text-muted-foreground">{card.body}</p>
+        </Card>
+      ))}
+    </Deck>
+  )
+}
+
+const reelSegments = [
+  { title: "New: Developer Portal", tone: "bg-chart-4" },
+  { title: "Webhooks with retries", tone: "bg-chart-3" },
+  { title: "Usage analytics", tone: "bg-chart-2" },
+]
+
+export function ReelCatalogPreview() {
+  return (
+    <Reel aria-label="Product updates" duration={4} className="max-w-36">
+      {reelSegments.map((segment) => (
+        <div key={segment.title} className={`flex items-end p-3 text-sm font-semibold text-white ${segment.tone}`}>
+          {segment.title}
+        </div>
+      ))}
+    </Reel>
+  )
+}
+
+export function BentoCatalogPreview() {
+  return (
+    <BentoGrid className="w-full max-w-80 auto-rows-[6rem] grid-cols-3 sm:grid-cols-3">
+      <BentoTile size="large" title="Unified inbox" visual={<InboxIcon className="size-8 text-chart-3" />} />
+      <BentoTile title="SLA" visual={<ZapIcon className="size-5 text-warning" />} />
+      <BentoTile title="CSAT" description="4.6" />
+    </BentoGrid>
+  )
 }
