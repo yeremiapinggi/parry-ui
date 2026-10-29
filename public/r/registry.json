@@ -1568,6 +1568,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "contribution-graph",
+      "type": "registry:ui",
+      "title": "Contribution Graph",
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/ui/contribution-graph.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

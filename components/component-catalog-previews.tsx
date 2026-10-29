@@ -29,6 +29,7 @@ import { Choicebox, ChoiceboxItem } from "@/components/ui/choicebox"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { Combobox } from "@/components/ui/combobox"
 import { Comparison } from "@/components/ui/comparison"
+import { ContributionGraph } from "@/components/ui/contribution-graph"
 import { Counter } from "@/components/ui/counter"
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
@@ -1386,4 +1387,19 @@ export function ComparisonCatalogPreview() {
       after={<Image src="/images/settings-panels-thumbnail.png" alt="Settings panels with the Parry theme" width={640} height={360} className="object-cover" />}
     />
   )
+}
+
+// 18 weeks of deterministic demo activity ending 2026-10-24 (seeded, so prerender and hydration match).
+const activityDays = (() => {
+  let seed = 7
+  const end = Date.UTC(2026, 9, 24)
+  return Array.from({ length: 18 * 7 }, (_, i) => {
+    seed = (seed * 9301 + 49297) % 233280
+    const count = seed / 233280 < 0.25 ? 0 : Math.floor((seed / 233280) * 12)
+    return { date: new Date(end - (18 * 7 - 1 - i) * 86_400_000).toISOString().slice(0, 10), count }
+  })
+})()
+
+export function ContributionGraphCatalogPreview() {
+  return <ContributionGraph data={activityDays} label="replies" />
 }

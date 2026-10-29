@@ -54,7 +54,8 @@ Every task below has the same acceptance criteria and verification unless noted:
 - [x] T18 stat, counter (quantity stepper), price (Intl, discount), relative-time (reads the clock after mount; `now` prop pins it), ticker, sparkline (plain SVG, no recharts). Sheet: 3/3, 1/11, 2/2, 1/5, 3/8, 3/3. (M)
 - [x] T19 data-table (`@tanstack/react-table` **v9**: `tableFeatures` + `useTable`, not v8's `useReactTable`), data-toolbar (search + column visibility), filter-panel (faceted checkboxes). The template filter builder was too coupled to its lib types to extract. Sheet: 3/16, 2/3, 2/2.
 - [x] T20 list-panel, tree (nested disclosure buttons, not a roving-focus `role=tree`), timeline, comparison (native range input drives the divider). Sheet: 5/66, 4/6, 1/1, 2/4. (M)
-- [ ] T21 contribution-graph, gantt, kanban (Gantt/Kanban optional per Open Question #3). (L)
+- [x] T21a contribution-graph (UTC dates, ramp reversed in dark mode). Sheet: 1/4.
+- [ ] T21b gantt, kanban — deferred until Open Question #3 is answered; sheet rows stay Belum with a note.
 
 ## Phase 8: Layout
 - [ ] T22 bento-tile, deck, carousel (dep `embla-carousel-react`), marquee, reel. (M)

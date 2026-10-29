@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "contribution-graph",
+  "title": "Contribution Graph",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/contribution-graph.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\ntype ContributionDay = { date: string; count: number }\n\nconst DAY = 86_400_000\n// The chart ramp runs light → dark, so dark mode reverses it to keep \"more\" the highest-contrast shade.\nconst levelClass = [\n  \"bg-muted\",\n  \"bg-chart-1 dark:bg-chart-4\",\n  \"bg-chart-2 dark:bg-chart-3\",\n  \"bg-chart-3 dark:bg-chart-2\",\n  \"bg-chart-4 dark:bg-chart-1\",\n]\n\n// GitHub-style activity grid: one column per week (Sunday first), cell shade by count.\n// Dates are \"YYYY-MM-DD\" and handled in UTC so the grid doesn't shift with the viewer's time zone.\nfunction ContributionGraph({\n  data,\n  cellSize = 12,\n  showLegend = true,\n  label = \"activities\",\n  className,\n}: {\n  data: ContributionDay[]\n  cellSize?: number\n  showLegend?: boolean\n  label?: string\n  className?: string\n}) {\n  if (data.length === 0) return null\n  const counts = new Map(data.map((d) => [d.date, d.count]))\n  const times = data.map((d) => Date.parse(`${d.date}T00:00:00Z`))\n  const first = Math.min(...times)\n  const last = Math.max(...times)\n  const start = first - new Date(first).getUTCDay() * DAY\n  const weeks = Math.ceil((last - start + DAY) / (7 * DAY))\n  const max = Math.max(...data.map((d) => d.count), 1)\n  const level = (count: number) => (count === 0 ? 0 : Math.min(4, Math.ceil((count / max) * 4)))\n  const total = data.reduce((sum, d) => sum + d.count, 0)\n\n  return (\n    <figure data-slot=\"contribution-graph\" className={cn(\"flex flex-col gap-2\", className)}>\n      <div\n        role=\"img\"\n        aria-label={`${total} ${label} from ${new Date(first).toISOString().slice(0, 10)} to ${new Date(last).toISOString().slice(0, 10)}`}\n        className=\"grid grid-flow-col gap-[3px]\"\n        style={{ gridTemplateRows: `repeat(7, ${cellSize}px)`, gridAutoColumns: `${cellSize}px` }}\n      >\n        {Array.from({ length: weeks * 7 }, (_, i) => {\n          const time = start + i * DAY\n          if (time < first || time > last) return <span key={i} />\n          const date = new Date(time).toISOString().slice(0, 10)\n          const count = counts.get(date) ?? 0\n          return <span key={i} title={`${count} ${label} on ${date}`} className={cn(\"rounded-[3px]\", levelClass[level(count)])} />\n        })}\n      </div>\n      {showLegend && (\n        <figcaption className=\"flex items-center justify-end gap-1 text-xs text-muted-foreground\">\n          Less\n          {levelClass.map((cls) => (\n            <span key={cls} aria-hidden className={cn(\"rounded-[3px]\", cls)} style={{ width: cellSize, height: cellSize }} />\n          ))}\n          More\n        </figcaption>\n      )}\n    </figure>\n  )\n}\n\nexport { ContributionGraph, type ContributionDay }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

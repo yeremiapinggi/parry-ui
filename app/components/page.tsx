@@ -25,6 +25,7 @@ import {
   ContextMenuCatalogPreview,
   CommandCatalogPreview,
   ComparisonCatalogPreview,
+  ContributionGraphCatalogPreview,
   CounterCatalogPreview,
   DataTableCatalogPreview,
   DatePickerCatalogPreview,
@@ -423,6 +424,7 @@ const groups: { title: string; items: { name: string; preview: ReactNode }[] }[]
       { name: "tree", preview: <TreeCatalogPreview /> },
       { name: "timeline", preview: <TimelineCatalogPreview /> },
       { name: "comparison", preview: <ComparisonCatalogPreview /> },
+      { name: "contribution-graph", preview: <ContributionGraphCatalogPreview /> },
     ],
   },
 ];
