@@ -111,11 +111,11 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 7: dashboard-01
 **Acceptance criteria:**
-- [ ] AppHeader active = Dashboard; filter bar (DatePicker range + channel Select)
-- [ ] KPI row: ART, TR, ARR, Target, Open tickets, Out SLA (`KpiTile`)
-- [ ] DS `Chart`: tickets per channel (bar), response-time trend (line), sentiment split (stacked bar); colours from `chart-*` tokens only
-- [ ] Agent table (agent, status, handled, ART, ARR) with DS `Table`
-- [ ] `meta` exported and registered
+- [x] AppHeader active = Dashboard; filter bar (DatePicker range + channel Select)
+- [x] KPI row: ART, TR, ARR, Target, Open tickets, Out SLA (`KpiTile`)
+- [x] DS `Chart`: tickets per channel (bar), response-time trend (line), sentiment split (stacked bar); colours from `chart-*` tokens only
+- [x] Agent table (agent, status, handled, ART, ARR) with DS `Table`
+- [x] `meta` exported and registered
 
 **Verification:** Browser 4 themes at 1440 + 390; `check:blocks`, tsc, lint
 **Dependencies:** Checkpoint A
@@ -124,10 +124,10 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 8: report-01
 **Acceptance criteria:**
-- [ ] AppHeader active = Report; left list of report types (Ticket report, Agent performance, Channel report, SLA report, Sentiment) as buttons
-- [ ] Filter bar: date, group, channel, agent; "Download Excel" button
-- [ ] `DataTable` with sorting + pagination; empty state (`Empty`) and loading state (`Skeleton`) reachable from the UI
-- [ ] `meta` exported and registered
+- [x] AppHeader active = Report; left list of report types (Ticket report, Agent performance, Channel report, SLA report, Sentiment) as buttons
+- [x] Filter bar: date, group, channel, agent; "Download Excel" button
+- [x] `DataTable` with sorting + pagination; empty state (`Empty`) and loading state (`Skeleton`) reachable from the UI
+- [x] `meta` exported and registered
 
 **Verification:** Browser: sort, page, trigger empty + loading; 4 themes; `check:blocks`, tsc, lint
 **Dependencies:** Checkpoint A
@@ -136,17 +136,17 @@ Plan: `tasks/blocks-plan.md`. Commit after each task. Paths are relative to the 
 
 ## Task 9: settings-01
 **Acceptance criteria:**
-- [ ] AppHeader active = Setting; settings nav (General, User, Account, Channel active, Team & Group, SLA, Custom fields) — composed like the rail
-- [ ] Channel cards: icon, name, connected account, status Badge, Switch (labelled), "Manage" button
-- [ ] "Add channel" `Dialog`
-- [ ] `meta` exported and registered
+- [x] AppHeader active = Setting; settings nav (General, User, Account, Channel active, Team & Group, SLA, Custom fields) — composed like the rail
+- [x] Channel cards: icon, name, connected account, status Badge, Switch (labelled), "Manage" button
+- [x] "Add channel" `Dialog`
+- [x] `meta` exported and registered
 
 **Verification:** Browser 4 themes at 1440 + 390; `check:blocks`, tsc, lint
 **Dependencies:** Checkpoint A
 **Files:** `components/blocks/settings-01/**`, `components/blocks/registry.ts`
 **Scope:** S
 
-### Checkpoint: all four blocks render at `/blocks/<id>?theme=…`
+### Checkpoint: all four blocks render at `/blocks/<id>?theme=…` — done 2026-10-30
 
 ## Task 10: Gallery + BlockFrame
 **Acceptance criteria:**
