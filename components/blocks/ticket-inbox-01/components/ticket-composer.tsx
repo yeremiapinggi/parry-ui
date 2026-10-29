@@ -23,10 +23,11 @@ import { channels } from "@/components/blocks/_data/channels"
 import { quickReplies, type Ticket } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { channelMeta } from "@/components/blocks/channel-meta"
+import { EmojiPicker } from "@/components/blocks/ticket-inbox-01/components/emoji-picker"
 import { escalationGroups, shortcuts } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Kbd } from "@/components/ui/kbd"
 import { Pill } from "@/components/ui/pill"
@@ -100,6 +101,18 @@ export function TicketComposer({
 
   const expanded = focused || draft.length > 0 || files.length > 0
   const canSend = draft.trim().length > 0 && (mode !== "escalate" || Boolean(to))
+
+  // Insert at the caret (or replace the selection), then put the caret after the inserted text.
+  const insertAtCursor = (text: string) => {
+    const el = textareaRef.current
+    const start = el?.selectionStart ?? draft.length
+    const end = el?.selectionEnd ?? draft.length
+    setDraft((d) => d.slice(0, start) + text + d.slice(end))
+    requestAnimationFrame(() => {
+      el?.focus()
+      el?.setSelectionRange(start + text.length, start + text.length)
+    })
+  }
 
   const send = (close = false) => {
     if (!canSend) return
@@ -281,6 +294,7 @@ export function TicketComposer({
             <PaperclipIcon />
           </Button>
         </Hint>
+        <EmojiPicker onPick={insertAtCursor} onClose={() => textareaRef.current?.focus()} />
         {mode !== "note" && (
           <Popover open={templatesOpen} onOpenChange={setTemplatesOpen}>
             <Hint label="Templates" keys="/">
@@ -291,28 +305,55 @@ export function TicketComposer({
                 </Button>
               </PopoverTrigger>
             </Hint>
-            <PopoverContent align="start" side="top" className="w-80 p-0" onCloseAutoFocus={(e) => (e.preventDefault(), textareaRef.current?.focus())}>
+            <PopoverContent
+              align="start"
+              side="top"
+              className="w-[26rem] gap-0 overflow-hidden p-0"
+              onCloseAutoFocus={(e) => (e.preventDefault(), textareaRef.current?.focus())}
+            >
               <Command>
-                <CommandInput placeholder="Search quick replies…" />
-                <CommandList>
+                <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
+                  <p className="text-sm font-medium">Quick replies</p>
+                  <span className="text-xs text-muted-foreground tabular-nums">{quickReplies.length} templates</span>
+                </div>
+                <CommandInput placeholder="Search by name, text or /code…" />
+                <CommandList className="max-h-72">
                   <CommandEmpty>No template found.</CommandEmpty>
-                  <CommandGroup heading="Quick replies">
+                  <CommandGroup>
                     {quickReplies.map((t) => (
                       <CommandItem
                         key={t.id}
-                        value={`${t.title} ${t.body}`}
+                        value={`/${t.shortcut} ${t.title} ${t.body}`}
                         onSelect={() => {
-                          setDraft((d) => (d ? `${d}\n${t.body}` : t.body))
+                          insertAtCursor(draft ? `\n${t.body}` : t.body)
                           setTemplatesOpen(false)
                         }}
-                        className="flex-col items-start gap-0.5"
+                        className="items-start gap-3 px-2.5 py-2"
                       >
-                        <span className="font-medium">{t.title}</span>
-                        <span className="line-clamp-1 text-xs text-muted-foreground">{t.body}</span>
+                        <span aria-hidden="true" className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md border bg-background text-muted-foreground">
+                          <ZapIcon className="size-3.5" />
+                        </span>
+                        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                          <span className="text-sm font-medium">{t.title}</span>
+                          <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{t.body}</span>
+                        </span>
+                        <CommandShortcut className="mt-1 font-mono tracking-normal">/{t.shortcut}</CommandShortcut>
                       </CommandItem>
                     ))}
                   </CommandGroup>
                 </CommandList>
+                <div className="flex items-center gap-3 border-t px-3 py-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Kbd>↑</Kbd>
+                    <Kbd>↓</Kbd> navigate
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Kbd>Enter</Kbd> insert
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Kbd>Esc</Kbd> close
+                  </span>
+                </div>
               </Command>
             </PopoverContent>
           </Popover>

@@ -337,9 +337,10 @@ export const tickets: Ticket[] = [
   },
 ]
 
+// `shortcut` is the slash code shown in the picker and matched by its search.
 export const quickReplies = [
-  { id: "greeting", title: "Greeting", body: "Halo Kak, terima kasih sudah menghubungi Demo Motor. Ada yang bisa kami bantu?" },
-  { id: "vin", title: "Ask for VIN", body: "Boleh dibantu nomor rangka (VIN) kendaraannya, Kak?" },
-  { id: "follow-up", title: "Follow-up in 3 days", body: "Permintaan Kakak sedang kami proses, estimasi 3 hari kerja. Kami kabari lagi ya." },
-  { id: "closing", title: "Closing", body: "Terima kasih Kak, senang bisa membantu. Tiket ini akan kami tutup ya." },
+  { id: "greeting", shortcut: "greet", title: "Greeting", body: "Halo Kak, terima kasih sudah menghubungi Demo Motor. Ada yang bisa kami bantu?" },
+  { id: "vin", shortcut: "vin", title: "Ask for VIN", body: "Boleh dibantu nomor rangka (VIN) kendaraannya, Kak?" },
+  { id: "follow-up", shortcut: "followup", title: "Follow-up in 3 days", body: "Permintaan Kakak sedang kami proses, estimasi 3 hari kerja. Kami kabari lagi ya." },
+  { id: "closing", shortcut: "close", title: "Closing", body: "Terima kasih Kak, senang bisa membantu. Tiket ini akan kami tutup ya." },
 ]

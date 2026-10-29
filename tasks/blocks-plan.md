@@ -109,6 +109,9 @@ ToggleGroupItem overwrites its data-state, so tooltips go on the item's label.
 Review 2026-10-30 (7): header trimmed to ticket number, status and actions. Ticket info (sentiment, priority, created, age,
 SLA, group) moved to an always-visible summary at the top of the sidebar; channel and account moved to a "via …" line
 above the composer text box (the From picker when a channel has several accounts).
+Review 2026-10-30 (8): assignment moved from the header into the sidebar ticket info (Alt+A opens the details Sheet
+below 1280 first); composer gets an emoji picker (DS gap: no emoji picker, composed from Popover + Input + Buttons);
+quick-reply popover redone: header with count, items with icon / title / two-line preview / slash code, keyboard footer.
 
 ### Phase 3 — Remaining pages
 - **T7** dashboard-01 (M) · **T8** report-01 (M) · **T9** settings-01 (S)

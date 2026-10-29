@@ -1,24 +1,48 @@
 "use client"
 
-import { ArrowUpRightIcon, CircleDotIcon, GitMergeIcon, MailIcon, PhoneIcon, PlusIcon, ShieldAlertIcon, StickyNoteIcon } from "lucide-react"
+import {
+  ArrowUpRightIcon,
+  ChevronDownIcon,
+  CircleDotIcon,
+  GitMergeIcon,
+  MailIcon,
+  PhoneIcon,
+  PlusIcon,
+  ShieldAlertIcon,
+  StickyNoteIcon,
+  UserRoundXIcon,
+} from "lucide-react"
 
 import { cn } from "cn"
 
+import { team } from "@/components/blocks/_data/team"
 import type { Sentiment, ThreadItem, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { Stamp } from "@/components/blocks/_parts/message-bubble"
 import { age, byTime, clock, relativeTime, shortDateTime } from "@/components/blocks/_parts/time"
 import { channelMeta } from "@/components/blocks/channel-meta"
-import { sentimentMeta, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
+import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Kbd } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Timeline, TimelineItem } from "@/components/ui/timeline"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const customFields = [
   { id: "caller-case", label: "Caller case", options: ["Customer", "Dealer", "KTB"], value: "Customer" },
@@ -66,6 +90,63 @@ const Section = ({ value, title, count, children }: { value: string; title: stri
   </AccordionItem>
 )
 
+const initialsOf = (name: string) =>
+  name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+
+function AssigneeMenu({
+  assignee,
+  onAssign,
+  open,
+  onOpenChange,
+}: {
+  assignee: string | null
+  onAssign: (agent: string | null) => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  return (
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="-ml-2 h-7 max-w-full gap-2 px-2" aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}>
+              <Avatar size="sm">
+                <AvatarFallback>{assignee ? initialsOf(assignee) : "?"}</AvatarFallback>
+              </Avatar>
+              <span className="truncate">{assignee ?? "Unassigned"}</span>
+              <ChevronDownIcon className="text-muted-foreground" />
+            </Button>
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent className="flex items-center gap-2">
+          Reassign <Kbd>{shortcuts.assign}</Kbd>
+        </TooltipContent>
+      </Tooltip>
+      <DropdownMenuContent align="start" className="w-56">
+        <DropdownMenuLabel>Assign to agent</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={assignee ?? ""} onValueChange={(v) => onAssign(v)}>
+          {team.map((a) => (
+            <DropdownMenuRadioItem key={a.id} value={a.name} disabled={a.presence === "offline"}>
+              {a.name}
+              {a.presence === "offline" && <span className="ml-auto text-xs text-muted-foreground">Offline</span>}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem disabled={!assignee} onSelect={() => onAssign(null)}>
+          <UserRoundXIcon />
+          Release assignment
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 // Activity log = lifecycle events from the thread (system events and escalations), newest first.
 const activityOf = (thread: ThreadItem[]) =>
   thread.filter((i) => i.kind === "system" || i.kind === "escalation").sort((a, b) => byTime(b, a))
@@ -73,6 +154,10 @@ const activityOf = (thread: ThreadItem[]) =>
 export function TicketSidebar({
   ticket: t,
   status,
+  assignee,
+  onAssign,
+  assignOpen,
+  onAssignOpenChange,
   thread,
   sentiment,
   onSentimentChange,
@@ -81,6 +166,10 @@ export function TicketSidebar({
 }: {
   ticket: Ticket
   status: TicketStatus
+  assignee: string | null
+  onAssign: (agent: string | null) => void
+  assignOpen: boolean
+  onAssignOpenChange: (open: boolean) => void
   thread: ThreadItem[]
   sentiment: Sentiment
   onSentimentChange: (s: Sentiment) => void
@@ -101,6 +190,7 @@ export function TicketSidebar({
     )
   // Always-visible ticket summary (kept out of the header so the header stays clean).
   const summary: [string, React.ReactNode][] = [
+    ["Assignee", <AssigneeMenu key="as" assignee={assignee} onAssign={onAssign} open={assignOpen} onOpenChange={onAssignOpenChange} />],
     [
       "Sentiment",
       <Badge key="s" variant="outline" className={cn("gap-1", S.tone)}>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { LockIcon, RotateCcwIcon } from "lucide-react"
 
 import { currentAgent } from "@/components/blocks/_data/team"
@@ -18,10 +18,19 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 
 const me = currentAgent.id
 
+// The sidebar is inline from 1280px and a Sheet below; mount only one so shared state (the assign menu) has one target.
+const XL = "(min-width: 1280px)"
+const subscribeXl = (onChange: () => void) => {
+  const mq = window.matchMedia(XL)
+  mq.addEventListener("change", onChange)
+  return () => mq.removeEventListener("change", onChange)
+}
+const useIsXl = () => useSyncExternalStore(subscribeXl, () => window.matchMedia(XL).matches, () => true)
+
 /**
  * Ticket detail: header with metadata and inline actions, filterable timeline, composer, and a context sidebar
  * (a Sheet below 1280px). State is local to the open ticket; actions are logged into the thread as system events.
- * Shortcuts: Alt+1/2/3 composer mode, Alt+C close/reopen, Alt+A assign; Ctrl/⌘+Enter sends (in the composer).
+ * Shortcuts: Alt+1/2/3 composer mode, Alt+C close/reopen, Alt+A assign (in the sidebar); Ctrl/⌘+Enter sends.
  */
 export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: Ticket; expanded: boolean; onToggleExpanded: () => void }) {
   const [status, setStatus] = useState<TicketStatus>(ticket.status)
@@ -33,6 +42,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
   const [assignOpen, setAssignOpen] = useState(false)
   const [detailsOpen, setDetailsOpen] = useState(false)
   const textarea = useRef<HTMLTextAreaElement>(null)
+  const isXl = useIsXl()
 
   const closed = status === "closed"
   const lockedBy = ticket.lockedBy && ticket.lockedBy !== currentAgent.name ? ticket.lockedBy : undefined
@@ -50,6 +60,12 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
   const changeSentiment = (s: Sentiment) => {
     setSentiment(s)
     log(`Sentiment set to ${sentimentMeta[s].label} by ${me}`)
+  }
+  // Below 1280 the assign menu lives in the details Sheet: open the Sheet first, then the menu once it has mounted.
+  const openAssign = () => {
+    if (isXl) return setAssignOpen(true)
+    setDetailsOpen(true)
+    setTimeout(() => setAssignOpen(true), 250)
   }
   const focusComposer = (m: ComposerMode) => {
     setMode(m)
@@ -76,7 +92,7 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
       const modeKey: Record<string, ComposerMode> = { Digit1: "reply", Digit2: "escalate", Digit3: "note" }
       if (modeKey[e.code]) focusComposer(modeKey[e.code])
       else if (e.code === "KeyC") changeStatus(closed ? "open" : "closed")
-      else if (e.code === "KeyA") setAssignOpen(true)
+      else if (e.code === "KeyA") openAssign()
       else return
       e.preventDefault()
     }
@@ -85,7 +101,14 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
   })
 
   const sidebar = (
-    <TicketSidebar ticket={ticket} status={status} thread={thread} sentiment={sentiment} onSentimentChange={changeSentiment} onAddNote={() => focusComposer("note")} className="min-h-0 flex-1" />
+    <TicketSidebar
+      ticket={ticket}
+      status={status}
+      assignee={assignee}
+      onAssign={assign}
+      assignOpen={assignOpen}
+      onAssignOpenChange={setAssignOpen}
+      thread={thread} sentiment={sentiment} onSentimentChange={changeSentiment} onAddNote={() => focusComposer("note")} className="min-h-0 flex-1" />
   )
 
   return (
@@ -94,10 +117,6 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
         ticket={ticket}
         status={status}
         onStatusChange={changeStatus}
-        assignee={assignee}
-        onAssign={assign}
-        assignOpen={assignOpen}
-        onAssignOpenChange={setAssignOpen}
         sentiment={sentiment}
         onSentimentChange={changeSentiment}
         bookmarked={bookmarked}
@@ -144,12 +163,14 @@ export function TicketDetail({ ticket, expanded, onToggleExpanded }: { ticket: T
           </div>
         </section>
 
-        <aside aria-label="Ticket details" className="hidden min-h-0 flex-col border-l xl:flex">
-          {sidebar}
-        </aside>
+        {isXl && (
+          <aside aria-label="Ticket details" className="flex min-h-0 flex-col border-l">
+            {sidebar}
+          </aside>
+        )}
       </div>
 
-      <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
+      <Sheet open={detailsOpen && !isXl} onOpenChange={setDetailsOpen}>
         <SheetContent side="right" className="w-[22rem] gap-0 p-0 sm:max-w-[22rem]">
           <SheetHeader className="border-b">
             <SheetTitle>Ticket details</SheetTitle>

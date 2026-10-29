@@ -13,16 +13,13 @@ import {
   Minimize2Icon,
   PanelRightIcon,
   RotateCcwIcon,
-  UserRoundXIcon,
   XIcon,
 } from "lucide-react"
 
 import { cn } from "cn"
 
-import { team } from "@/components/blocks/_data/team"
 import type { Sentiment, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
 import { sentimentMeta, shortcuts, statusMeta } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DialogClose, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -41,14 +38,6 @@ import {
 import { Kbd } from "@/components/ui/kbd"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
-const initialsOf = (name: string) =>
-  name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
-
 function Hint({ label, keys, children }: { label: string; keys?: string; children: React.ReactElement }) {
   return (
     <Tooltip>
@@ -65,10 +54,6 @@ export function TicketHeader({
   ticket: t,
   status,
   onStatusChange,
-  assignee,
-  onAssign,
-  assignOpen,
-  onAssignOpenChange,
   sentiment,
   onSentimentChange,
   bookmarked,
@@ -80,10 +65,6 @@ export function TicketHeader({
   ticket: Ticket
   status: TicketStatus
   onStatusChange: (s: TicketStatus) => void
-  assignee: string | null
-  onAssign: (agent: string | null) => void
-  assignOpen: boolean
-  onAssignOpenChange: (open: boolean) => void
   sentiment: Sentiment
   onSentimentChange: (s: Sentiment) => void
   bookmarked: boolean
@@ -125,35 +106,6 @@ export function TicketHeader({
         </DropdownMenu>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <DropdownMenu open={assignOpen} onOpenChange={onAssignOpenChange}>
-            <Hint label="Reassign" keys={shortcuts.assign}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2 pl-1" aria-label={assignee ? `Assignee: ${assignee}, reassign` : "Unassigned, assign"}>
-                  <Avatar size="sm">
-                    <AvatarFallback>{assignee ? initialsOf(assignee) : "?"}</AvatarFallback>
-                  </Avatar>
-                  <span className="max-w-32 truncate max-sm:hidden">{assignee ?? "Unassigned"}</span>
-                  <ChevronDownIcon />
-                </Button>
-              </DropdownMenuTrigger>
-            </Hint>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Assign to agent</DropdownMenuLabel>
-              <DropdownMenuRadioGroup value={assignee ?? ""} onValueChange={(v) => onAssign(v)}>
-                {team.map((a) => (
-                  <DropdownMenuRadioItem key={a.id} value={a.name} disabled={a.presence === "offline"}>
-                    {a.name}
-                    {a.presence === "offline" && <span className="ml-auto text-xs text-muted-foreground">Offline</span>}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem disabled={!assignee} onSelect={() => onAssign(null)}>
-                <UserRoundXIcon />
-                Release assignment
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           <Hint label={closed ? "Reopen ticket" : "Close ticket"} keys={shortcuts.closeReopen}>
             <Button size="sm" variant={closed ? "default" : "outline"} onClick={() => onStatusChange(closed ? "open" : "closed")}>
