@@ -151,9 +151,9 @@ function SizeRow({
           <span>Status</span>
           <ChevronDownIcon aria-hidden="true" className={controlIconSizeClasses[size]} />
         </PopoverTrigger>
-        <PopoverContent widthMode="match-trigger" align="start" className="p-3">
+        <PopoverContent widthMode="fit-content" align="start" className="p-3">
           <p className="text-sm font-medium">Filter status</p>
-          <p className="text-xs text-muted-foreground">This content matches its trigger width.</p>
+          <p className="text-xs text-muted-foreground">This content hugs its text instead of stretching to match the trigger.</p>
         </PopoverContent>
       </Popover>
       <WorkspaceSwitcher
