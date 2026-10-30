@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import {
   AtSignIcon,
@@ -142,12 +143,10 @@ export function AppShell({
         </DropdownMenu>
 
         <Link href="/blocks" className="flex shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
-          <span aria-hidden="true" className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <MessagesSquareIcon className="size-5" />
-          </span>
+          <Image src="/images/blocks/sociomile-mark.svg" alt="" width={36} height={36} className="size-9" />
           <span className="flex flex-col max-sm:sr-only">
             <span className="font-heading text-base leading-tight font-semibold">Sociomile</span>
-            <span className="text-xs text-muted-foreground">Omnichannel Inbox</span>
+            <span className="text-xs text-muted-foreground">Omnichannel</span>
           </span>
         </Link>
 
