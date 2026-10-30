@@ -144,7 +144,7 @@ export function TicketList({
       />
 
       {/* Grows with its rows up to the space left in the window; past that the rows scroll inside the card. */}
-      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-card text-card-foreground shadow-xs">
         <div className="flex min-h-11 flex-wrap items-center gap-2 px-4 py-1.5">
           <Checkbox
             id="select-all-tickets"
