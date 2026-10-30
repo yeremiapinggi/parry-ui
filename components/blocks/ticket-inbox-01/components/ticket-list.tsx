@@ -144,8 +144,8 @@ export function TicketList({
       />
 
       {/* Grows with its rows up to the space left in the window; past that the rows scroll inside the card. */}
-      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
-        <div className="flex min-h-11 flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-1.5">
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-muted/50 text-card-foreground">
+        <div className="flex min-h-11 flex-wrap items-center gap-2 px-4 py-1.5">
           <Checkbox
             id="select-all-tickets"
             checked={allChecked ? true : shownChecked.length > 0 ? "indeterminate" : false}
@@ -153,8 +153,8 @@ export function TicketList({
             onCheckedChange={() => setChecked(allChecked ? [] : tickets.map((t) => t.id))}
           />
           {shownChecked.length === 0 ? (
-            <Label htmlFor="select-all-tickets" className="text-sm font-normal text-muted-foreground">
-              Select all · <span className="tabular-nums">{tickets.length}</span> shown
+            <Label htmlFor="select-all-tickets" className="gap-2 text-sm font-medium">
+              Select All <span className="font-normal text-muted-foreground tabular-nums">Shown {tickets.length}</span>
             </Label>
           ) : (
             <>
@@ -182,7 +182,7 @@ export function TicketList({
           </Empty>
         ) : (
           <ScrollArea className="min-h-0 overflow-hidden [&_[data-slot=scroll-area-viewport]>div]:block!">
-            <ul onKeyDown={onKeyDown} className="[&>li:last-child]:border-b-0">
+            <ul onKeyDown={onKeyDown} className="flex flex-col gap-2 px-2 pb-2">
               {tickets.map((t) => (
                 <TicketRow
                   key={t.id}
@@ -201,7 +201,7 @@ export function TicketList({
           </ScrollArea>
         )}
 
-        <div className="flex items-center justify-between gap-3 border-t px-4 py-2.5">
+        <div className="flex items-center justify-between gap-3 border-t bg-card px-4 py-2.5">
           <p className="text-sm text-muted-foreground tabular-nums">
             {tickets.length ? `1–${tickets.length}` : "0"} of {tickets.length}
           </p>
