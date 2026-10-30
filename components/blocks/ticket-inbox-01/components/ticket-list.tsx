@@ -144,7 +144,7 @@ export function TicketList({
       />
 
       {/* Grows with its rows up to the space left in the window; past that the rows scroll inside the card. */}
-      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-card text-card-foreground shadow-xs">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-card text-card-foreground shadow-xs">
         <div className="flex min-h-11 flex-wrap items-center gap-2 px-4 py-1.5">
           <Checkbox
             id="select-all-tickets"
@@ -169,7 +169,7 @@ export function TicketList({
         </div>
 
         {tickets.length === 0 ? (
-          <Empty className="py-16">
+          <Empty className="flex-1 py-16">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <InboxIcon />
@@ -181,7 +181,7 @@ export function TicketList({
             </EmptyHeader>
           </Empty>
         ) : (
-          <ScrollArea className="min-h-0 overflow-hidden [&_[data-slot=scroll-area-viewport]>div]:block!">
+          <ScrollArea className="min-h-0 flex-1 overflow-hidden [&_[data-slot=scroll-area-viewport]>div]:block!">
             <ul onKeyDown={onKeyDown} className="flex flex-col gap-2 px-2 pb-2">
               {tickets.map((t) => (
                 <TicketRow
