@@ -202,7 +202,7 @@ export function TicketList({
         )}
 
         <div className="flex items-center justify-between gap-3 border-t px-4 py-2.5">
-          <p className="text-sm text-muted-foreground tabular-nums">
+          <p className="text-xs text-muted-foreground tabular-nums">
             {tickets.length ? `1–${tickets.length}` : "0"} of {tickets.length}
           </p>
           {/* shortcut: one static page of sample data; wire real paging when a block needs more rows */}
@@ -212,7 +212,7 @@ export function TicketList({
                 <PaginationPrevious href="#" aria-disabled="true" tabIndex={-1} className="pointer-events-none opacity-50" text="" />
               </PaginationItem>
               <PaginationItem>
-                <PaginationLink href="#" isActive>
+                <PaginationLink href="#" isActive size="icon-sm">
                   1
                 </PaginationLink>
               </PaginationItem>
