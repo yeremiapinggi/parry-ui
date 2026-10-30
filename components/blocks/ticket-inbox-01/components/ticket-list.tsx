@@ -144,7 +144,7 @@ export function TicketList({
       />
 
       {/* Grows with its rows up to the space left in the window; past that the rows scroll inside the card. */}
-      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-muted/50 text-card-foreground">
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
         <div className="flex min-h-11 flex-wrap items-center gap-2 px-4 py-1.5">
           <Checkbox
             id="select-all-tickets"
@@ -153,12 +153,12 @@ export function TicketList({
             onCheckedChange={() => setChecked(allChecked ? [] : tickets.map((t) => t.id))}
           />
           {shownChecked.length === 0 ? (
-            <Label htmlFor="select-all-tickets" className="gap-2 text-sm font-medium">
+            <Label htmlFor="select-all-tickets" className="gap-1.5 text-xs font-medium">
               Select All <span className="font-normal text-muted-foreground tabular-nums">Shown {tickets.length}</span>
             </Label>
           ) : (
             <>
-              <Label htmlFor="select-all-tickets" className="text-sm font-medium tabular-nums">
+              <Label htmlFor="select-all-tickets" className="text-xs font-medium tabular-nums">
                 {shownChecked.length} selected
               </Label>
               <div role="toolbar" aria-label="Bulk actions" className="ml-auto flex flex-wrap gap-1">
@@ -201,7 +201,7 @@ export function TicketList({
           </ScrollArea>
         )}
 
-        <div className="flex items-center justify-between gap-3 border-t bg-card px-4 py-2.5">
+        <div className="flex items-center justify-between gap-3 border-t px-4 py-2.5">
           <p className="text-sm text-muted-foreground tabular-nums">
             {tickets.length ? `1–${tickets.length}` : "0"} of {tickets.length}
           </p>

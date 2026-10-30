@@ -56,7 +56,7 @@ export function TicketRow({
       data-active={active}
       className="group relative flex flex-col gap-2 rounded-lg border bg-card p-3 text-card-foreground shadow-xs hover:border-ring/50 data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary"
     >
-      <div className="flex items-center gap-2 pr-9 text-xs text-muted-foreground">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Checkbox
           className="relative z-10"
           checked={checked}
@@ -68,6 +68,7 @@ export function TicketRow({
           <AvatarFallback>{t.initials}</AvatarFallback>
         </Avatar>
         <span className="truncate font-medium text-foreground">{t.customer}</span>
+        <span className="ml-auto shrink-0 tabular-nums">{t.time}</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -106,10 +107,9 @@ export function TicketRow({
           <MessageSquareIcon aria-hidden="true" className="size-3.5" />
           {t.replies}
         </span>
-        <span>{t.time}</span>
       </div>
 
-      {/* Shown on hover/focus; always visible on touch screens, which have no hover. */}
+      {/* Shown on hover/focus over the time; always visible on touch screens, which have no hover. */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
