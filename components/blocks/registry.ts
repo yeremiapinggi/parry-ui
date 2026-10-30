@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 
+import Contacts01, { meta as contacts01 } from "@/components/blocks/contacts-01/page"
 import Dashboard01, { meta as dashboard01 } from "@/components/blocks/dashboard-01/page"
 import Report01, { meta as report01 } from "@/components/blocks/report-01/page"
 import Settings01, { meta as settings01 } from "@/components/blocks/settings-01/page"
@@ -9,6 +10,7 @@ export type BlockMeta = { id: string; title: string; description: string; catego
 
 export const blocks: { meta: BlockMeta; Component: () => ReactNode; path: string }[] = [
   { meta: ticketInbox01, Component: TicketInbox01, path: "components/blocks/ticket-inbox-01/page.tsx" },
+  { meta: contacts01, Component: Contacts01, path: "components/blocks/contacts-01/page.tsx" },
   { meta: dashboard01, Component: Dashboard01, path: "components/blocks/dashboard-01/page.tsx" },
   { meta: report01, Component: Report01, path: "components/blocks/report-01/page.tsx" },
   { meta: settings01, Component: Settings01, path: "components/blocks/settings-01/page.tsx" },
