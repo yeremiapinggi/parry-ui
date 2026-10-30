@@ -54,7 +54,7 @@ export function TicketRow({
   return (
     <li
       data-active={active}
-      className="group relative flex flex-col gap-2 rounded-lg border bg-card p-3 text-card-foreground shadow hover:border-ring/50 data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary"
+      className="group relative flex flex-col gap-2 rounded-lg border bg-card p-3 text-card-foreground shadow-xs hover:border-ring/50 data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary"
     >
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Checkbox
@@ -83,7 +83,7 @@ export function TicketRow({
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1 [&_[data-slot=badge]]:rounded-md">
         <Badge variant="outline">
           {t.priority}
           <span className="sr-only">priority</span>
