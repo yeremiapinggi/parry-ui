@@ -76,10 +76,12 @@ export function Inbox() {
           onEscapeKeyDown={(e) => {
             if ((e.target as HTMLElement | null)?.closest("[data-inline-edit]")) e.preventDefault()
           }}
-          // Opened from state, not a DialogTrigger, so hand focus back to the ticket row ourselves.
+          // Opened from state, not a DialogTrigger, so hand focus back to the ticket row ourselves, then drop the
+          // active highlight: it only marks the ticket while its detail is open.
           onCloseAutoFocus={(e) => {
             e.preventDefault()
             document.querySelector<HTMLElement>('[data-ticket-row][aria-current="true"]')?.focus()
+            setSelectedId(undefined)
           }}
           className={cn(
             "flex max-w-none gap-0 overflow-hidden bg-background p-0 sm:max-w-none data-open:zoom-in-100 data-closed:zoom-out-100",
