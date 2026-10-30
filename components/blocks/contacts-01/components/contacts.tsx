@@ -1,12 +1,14 @@
 "use client"
 
+import { useState } from "react"
 import { UsersIcon } from "lucide-react"
 
-import { tickets, type Contact } from "@/components/blocks/_data/tickets"
+import { tickets } from "@/components/blocks/_data/tickets"
 import { AppShell } from "@/components/blocks/_parts/app-shell"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { monthDay } from "@/components/blocks/_parts/time"
 import { channelMeta } from "@/components/blocks/channel-meta"
+import { ContactDetail, type ContactRow } from "@/components/blocks/contacts-01/components/contact-detail"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -14,20 +16,18 @@ import { DataTable, DataTableColumnHeader, type DataTableColumnDef } from "@/com
 import { DataToolbar } from "@/components/ui/data-toolbar"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 
-type ContactRow = Contact & { name: string; initials: string; tickets: number; lastTicket: number; lastAt: string }
-
-// One row per customer, built from the sample tickets (newest first, so the first hit is the latest ticket).
+// One row per customer, built from the sample tickets (newest first, so tickets[0] is the latest).
 const contacts: ContactRow[] = Object.values(
   tickets.reduce<Record<string, ContactRow>>((acc, t) => {
     const row = acc[t.customer]
-    if (row) row.tickets += 1
-    else acc[t.customer] = { ...t.contact, name: t.customer, initials: t.initials, tickets: 1, lastTicket: t.id, lastAt: t.createdAt }
+    if (row) row.tickets.push(t)
+    else acc[t.customer] = { ...t.contact, name: t.customer, initials: t.initials, tickets: [t] }
     return acc
   }, {})
 )
 
-// Module scope: DataTable rebuilds its row models when `columns` changes identity.
-const columns: DataTableColumnDef<ContactRow>[] = [
+// Built once with the page's opener; DataTable rebuilds its row models when `columns` changes identity.
+const buildColumns = (open: (c: ContactRow, trigger: HTMLElement) => void): DataTableColumnDef<ContactRow>[] => [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -36,7 +36,13 @@ const columns: DataTableColumnDef<ContactRow>[] = [
         <Avatar size="sm" aria-hidden="true">
           <AvatarFallback>{row.original.initials}</AvatarFallback>
         </Avatar>
-        <span className="font-medium">{row.original.name}</span>
+        <button
+          type="button"
+          onClick={(e) => open(row.original, e.currentTarget)}
+          className="rounded-sm font-medium underline-offset-4 outline-none hover:text-primary hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {row.original.name}
+        </button>
       </span>
     ),
   },
@@ -71,22 +77,28 @@ const columns: DataTableColumnDef<ContactRow>[] = [
     ),
   },
   {
-    accessorKey: "tickets",
+    id: "tickets",
+    accessorFn: (c) => c.tickets.length,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Tickets" />,
-    cell: ({ row }) => <span className="font-mono tabular-nums">{row.original.tickets}</span>,
+    cell: ({ row }) => <span className="font-mono tabular-nums">{row.original.tickets.length}</span>,
   },
   {
-    accessorKey: "lastAt",
+    id: "lastAt",
+    accessorFn: (c) => c.tickets[0].createdAt,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Last ticket" />,
     cell: ({ row }) => (
       <span className="tabular-nums">
-        <span className="font-mono">#{row.original.lastTicket}</span> · {monthDay(row.original.lastAt)}
+        <span className="font-mono">#{row.original.tickets[0].id}</span> · {monthDay(row.original.tickets[0].createdAt)}
       </span>
     ),
   },
 ]
 
 export function Contacts() {
+  // Keeps the clicked name too: the dialog has no DialogTrigger, so focus goes back to it by hand.
+  const [selected, setSelected] = useState<{ contact: ContactRow; trigger: HTMLElement } | null>(null)
+  const [columns] = useState(() => buildColumns((contact, trigger) => setSelected({ contact, trigger })))
+
   return (
     <AppShell active="contact" title="Contact" description={`${contacts.length} customers across all channels · sample data`}>
       <Card className="py-0">
@@ -110,6 +122,11 @@ export function Contacts() {
           />
         </CardContent>
       </Card>
+      <ContactDetail
+        contact={selected?.contact ?? null}
+        onOpenChange={(open) => !open && setSelected(null)}
+        onClosed={() => selected?.trigger.focus()}
+      />
     </AppShell>
   )
 }
