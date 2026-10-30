@@ -9,6 +9,7 @@ import {
   BookOpenIcon,
   ChartColumnIcon,
   CircleHelpIcon,
+  ContactIcon,
   HashIcon,
   HeadsetIcon,
   InboxIcon,
@@ -51,14 +52,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Kbd } from "@/components/ui/kbd"
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 
-export type AppSection = "ticket" | "dashboard" | "report" | "setting"
+export type AppSection = "ticket" | "contact" | "dashboard" | "report" | "setting"
 
 const nav: { id: AppSection; label: string; href: string; icon: LucideIcon }[] = [
   { id: "ticket", label: "Ticket", href: "/blocks/ticket-inbox-01", icon: InboxIcon },
+  { id: "contact", label: "Contact", href: "/blocks/contacts-01", icon: ContactIcon },
   { id: "dashboard", label: "Dashboard", href: "/blocks/dashboard-01", icon: LayoutDashboardIcon },
   { id: "report", label: "Report", href: "/blocks/report-01", icon: ChartColumnIcon },
   { id: "setting", label: "Setting", href: "/blocks/settings-01", icon: SettingsIcon },
@@ -171,22 +172,19 @@ export function AppShell({
           ))}
         </nav>
 
-        <div className="flex min-w-0 flex-1 justify-end xl:justify-center">
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 md:gap-1">
+          <AgentStatus value={presence} onChange={setPresence} className="mr-1 max-sm:hidden" />
+
           <Button
-            variant="outline"
+            variant="ghost"
+            size="icon"
             onClick={() => setSearchOpen(true)}
-            aria-label="Search"
+            aria-label="Search (/)"
             aria-keyshortcuts="/ Control+K Meta+K"
-            className="h-9 w-full max-w-sm justify-start gap-2 text-muted-foreground max-md:size-9 max-md:justify-center max-md:px-0"
+            title="Search (/)"
           >
             <SearchIcon />
-            <span className="flex-1 truncate text-left font-normal max-md:hidden">Search tickets, customers, agents…</span>
-            <Kbd className="max-md:hidden">/</Kbd>
           </Button>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-0.5 md:gap-1">
-          <AgentStatus value={presence} onChange={setPresence} className="mr-1 max-sm:hidden" />
 
           <Popover>
             <PopoverTrigger asChild>
