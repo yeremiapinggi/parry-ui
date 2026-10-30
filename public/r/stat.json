@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat",
+  "title": "Stat",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/stat.tsx",
+      "content": "import * as React from \"react\"\nimport { ArrowDownRightIcon, ArrowUpRightIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\n// KPI tile: label, big value, optional change vs. previous period, icon and a slot (e.g. a Sparkline) below.\nfunction Stat({\n  label,\n  value,\n  delta,\n  deltaLabel = \"vs last period\",\n  icon,\n  className,\n  children,\n  ...props\n}: Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  label: React.ReactNode\n  value: React.ReactNode\n  // Percent change; positive is shown as good. Flip the sign for metrics where down is good.\n  delta?: number\n  deltaLabel?: string\n  icon?: React.ReactNode\n  children?: React.ReactNode\n}) {\n  return (\n    <div data-slot=\"stat\" className={cn(\"flex flex-col gap-2 rounded-xl border bg-card p-4 text-card-foreground\", className)} {...props}>\n      <div className=\"flex items-center justify-between gap-2 text-sm text-muted-foreground\">\n        <span>{label}</span>\n        {icon && <span className=\"[&_svg]:size-4\">{icon}</span>}\n      </div>\n      <div className=\"font-heading text-2xl font-semibold tabular-nums\">{value}</div>\n      {delta !== undefined && (\n        <div className=\"flex items-center gap-1 text-xs\">\n          <span className={cn(\"inline-flex items-center gap-0.5 font-medium\", delta >= 0 ? \"text-success\" : \"text-destructive\")}>\n            {delta >= 0 ? <ArrowUpRightIcon className=\"size-3.5\" /> : <ArrowDownRightIcon className=\"size-3.5\" />}\n            {Math.abs(delta)}%\n          </span>\n          <span className=\"text-muted-foreground\">{deltaLabel}</span>\n        </div>\n      )}\n      {children}\n    </div>\n  )\n}\n\nexport { Stat }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

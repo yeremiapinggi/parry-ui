@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ticker",
+  "title": "Ticker",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/ticker.tsx",
+      "content": "import * as React from \"react\"\nimport { TrendingDownIcon, TrendingUpIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\n\n// One quote: symbol, price and percent change, colored by direction.\nfunction Ticker({\n  symbol,\n  price,\n  change,\n  currency = \"USD\",\n  locale = \"en-US\",\n  icon,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  symbol: string\n  price: number\n  // Percent, e.g. 1.25 for +1.25%.\n  change: number\n  currency?: string\n  locale?: string\n  icon?: React.ReactNode\n}) {\n  const up = change >= 0\n  const Trend = up ? TrendingUpIcon : TrendingDownIcon\n\n  return (\n    <div data-slot=\"ticker\" className={cn(\"inline-flex items-center gap-2 text-sm tabular-nums\", className)} {...props}>\n      {icon}\n      <span className=\"font-semibold\">{symbol}</span>\n      <span>{new Intl.NumberFormat(locale, { style: \"currency\", currency }).format(price)}</span>\n      <span className={cn(\"inline-flex items-center gap-0.5 text-xs font-medium\", up ? \"text-success\" : \"text-destructive\")}>\n        <Trend className=\"size-3.5\" aria-hidden />\n        {up ? \"+\" : \"−\"}\n        {Math.abs(change).toFixed(2)}%\n      </span>\n    </div>\n  )\n}\n\nexport { Ticker }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

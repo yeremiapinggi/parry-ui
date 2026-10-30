@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "file-upload",
+  "title": "File Upload",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/dropzone"
+  ],
+  "files": [
+    {
+      "path": "components/ui/file-upload.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { FileIcon, XIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\nimport { Dropzone, formatBytes, type DropzoneRejection } from \"@/components/ui/dropzone\"\n\n// A Dropzone plus the list of chosen files; uploading them is left to the caller.\nfunction FileUpload({\n  value,\n  onValueChange,\n  accept,\n  maxSize,\n  maxFiles = 10,\n  description,\n  className,\n}: {\n  value: File[]\n  onValueChange: (files: File[]) => void\n  accept?: string\n  maxSize?: number\n  maxFiles?: number\n  description?: React.ReactNode\n  className?: string\n}) {\n  const [errors, setErrors] = React.useState<DropzoneRejection[]>([])\n  const full = value.length >= maxFiles\n\n  return (\n    <div data-slot=\"file-upload\" className={cn(\"flex w-full flex-col gap-3\", className)}>\n      <Dropzone\n        multiple={maxFiles > 1}\n        accept={accept}\n        maxSize={maxSize}\n        disabled={full}\n        description={full ? `Limit of ${maxFiles} files reached` : description}\n        onFiles={(files) => {\n          setErrors([])\n          onValueChange([...value, ...files].slice(0, maxFiles))\n        }}\n        onReject={setErrors}\n      />\n      {errors.length > 0 && (\n        <ul role=\"alert\" className=\"text-sm text-destructive\">\n          {errors.map(({ file, reason }) => (\n            <li key={file.name}>{file.name}: {reason}</li>\n          ))}\n        </ul>\n      )}\n      {value.length > 0 && (\n        <ul className=\"flex flex-col gap-2\">\n          {value.map((file, i) => (\n            <li key={`${file.name}-${i}`} className=\"flex items-center gap-3 rounded-lg border p-2 text-sm\">\n              <FileIcon className=\"size-4 shrink-0 text-muted-foreground\" />\n              <span className=\"min-w-0 flex-1 truncate\">{file.name}</span>\n              <span className=\"shrink-0 text-muted-foreground tabular-nums\">{formatBytes(file.size)}</span>\n              <Button\n                variant=\"ghost\"\n                size=\"icon-xs\"\n                aria-label={`Remove ${file.name}`}\n                onClick={() => onValueChange(value.filter((_, j) => j !== i))}\n              >\n                <XIcon />\n              </Button>\n            </li>\n          ))}\n        </ul>\n      )}\n    </div>\n  )\n}\n\nexport { FileUpload }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

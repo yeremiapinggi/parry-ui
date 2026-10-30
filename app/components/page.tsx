@@ -3,12 +3,91 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRightIcon, CircleCheckIcon, OctagonXIcon, PlusIcon } from "lucide-react";
 
+import { ControlSizeShowcase } from "@/components/control-size-showcase";
 import { DialogDemo, DropdownMenuDemo, ToastDemo, TooltipDemo } from "@/components/overlay-demo";
-import { ChartCatalogPreview, PopoverCatalogPreview, RadioGroupCatalogPreview, ToggleGroupCatalogPreview } from "@/components/component-catalog-previews";
-import { ApplicationShellComponentExample } from "@/components/application-shell-component-examples"
-import { ControlSizeShowcase } from "@/components/control-size-showcase"
-import { ProductSwitcher } from "@/components/product-theme"
-;
+import {
+  AccordionCatalogPreview,
+  AlertDialogCatalogPreview,
+  AnnouncementCatalogPreview,
+  AspectRatioCatalogPreview,
+  AutocompleteCatalogPreview,
+  AvatarGroupCatalogPreview,
+  AvatarStackCatalogPreview,
+  BannerCatalogPreview,
+  BentoCatalogPreview,
+  BorderButtonCatalogPreview,
+  BreadcrumbCatalogPreview,
+  ButtonGroupCatalogPreview,
+  CalendarCatalogPreview,
+  CarouselCatalogPreview,
+  ChartCatalogPreview,
+  ChoiceboxCatalogPreview,
+  CodeBlockCatalogPreview,
+  CollapsibleCatalogPreview,
+  ColorPickerCatalogPreview,
+  ComboboxCatalogPreview,
+  ContextMenuCatalogPreview,
+  CommandCatalogPreview,
+  ComparisonCatalogPreview,
+  ContributionGraphCatalogPreview,
+  CreditCardCatalogPreview,
+  CounterCatalogPreview,
+  DataTableCatalogPreview,
+  DatePickerCatalogPreview,
+  DeckCatalogPreview,
+  DialogStackCatalogPreview,
+  DrawerCatalogPreview,
+  DropzoneCatalogPreview,
+  EmptyCatalogPreview,
+  FieldCatalogPreview,
+  FileUploadCatalogPreview,
+  FilterPanelCatalogPreview,
+  GithubStarsCatalogPreview,
+  GlimpseCatalogPreview,
+  HoverCardCatalogPreview,
+  ImageZoomCatalogPreview,
+  InputGroupCatalogPreview,
+  InputOTPCatalogPreview,
+  ItemCatalogPreview,
+  KbdCatalogPreview,
+  ListCatalogPreview,
+  ListPanelCatalogPreview,
+  LoginButtonCatalogPreview,
+  LogoCatalogPreview,
+  MarqueeCatalogPreview,
+  MenubarCatalogPreview,
+  MiniCalendarCatalogPreview,
+  NavigationMenuCatalogPreview,
+  PaginationCatalogPreview,
+  PillCatalogPreview,
+  PriceCatalogPreview,
+  QRCodeCatalogPreview,
+  PopoverCatalogPreview,
+  RadioGroupCatalogPreview,
+  ProgressCatalogPreview,
+  RatingCatalogPreview,
+  ReelCatalogPreview,
+  RelativeTimeCatalogPreview,
+  ResizableCatalogPreview,
+  ScrollAreaCatalogPreview,
+  ScrollableTabsListCatalogPreview,
+  SheetCatalogPreview,
+  SliderCatalogPreview,
+  SnippetCatalogPreview,
+  SocialButtonCatalogPreview,
+  SparklineCatalogPreview,
+  StatCatalogPreview,
+  TagsInputCatalogPreview,
+  TickerCatalogPreview,
+  ToggleCatalogPreview,
+  TimelineCatalogPreview,
+  TreeCatalogPreview,
+  SpinnerCatalogPreview,
+  StatusCatalogPreview,
+  StepperCatalogPreview,
+  ToggleGroupCatalogPreview,
+} from "@/components/component-catalog-previews";
+import { ProductSwitcher } from "@/components/product-theme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +103,8 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export const metadata: Metadata = { title: "Components · Parry UI" };
 
@@ -49,11 +130,53 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
           </div>
         ),
       },
+      { name: "button-group", preview: <ButtonGroupCatalogPreview /> },
+      { name: "border-button", preview: <BorderButtonCatalogPreview /> },
+      { name: "social-button", preview: <SocialButtonCatalogPreview /> },
+      { name: "login-button", preview: <LoginButtonCatalogPreview /> },
+      { name: "github-stars", preview: <GithubStarsCatalogPreview /> },
+      { name: "kbd", preview: <KbdCatalogPreview /> },
+      {
+        name: "theme-toggle",
+        preview: (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <ThemeToggle />
+            <ThemeToggle variant="default" />
+            <ThemeToggle variant="ghost" />
+            <ThemeToggle showLabel />
+          </div>
+        ),
+      },
+      {
+        name: "theme-switcher",
+        preview: (
+          <div className="flex w-full max-w-72 flex-col gap-2">
+            <p className="text-sm font-medium">Appearance</p>
+            <ThemeSwitcher />
+          </div>
+        ),
+      },
     ],
   },
   {
     title: "Form",
     items: [
+      { name: "field", preview: <FieldCatalogPreview /> },
+      { name: "input-group", preview: <InputGroupCatalogPreview /> },
+      { name: "input-otp", preview: <InputOTPCatalogPreview /> },
+      { name: "slider", preview: <SliderCatalogPreview /> },
+      { name: "calendar", preview: <CalendarCatalogPreview /> },
+      { name: "date-picker", preview: <DatePickerCatalogPreview /> },
+      { name: "mini-calendar", preview: <MiniCalendarCatalogPreview /> },
+      { name: "command", preview: <CommandCatalogPreview /> },
+      { name: "combobox", preview: <ComboboxCatalogPreview /> },
+      { name: "autocomplete", preview: <AutocompleteCatalogPreview /> },
+      { name: "choicebox", preview: <ChoiceboxCatalogPreview /> },
+      { name: "rating", preview: <RatingCatalogPreview /> },
+      { name: "tags-input", preview: <TagsInputCatalogPreview /> },
+      { name: "color-picker", preview: <ColorPickerCatalogPreview /> },
+      { name: "dropzone", preview: <DropzoneCatalogPreview /> },
+      { name: "file-upload", preview: <FileUploadCatalogPreview /> },
       {
         name: "input",
         preview: (
@@ -145,6 +268,7 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
         ),
       },
       { name: "radio-group", preview: <RadioGroupCatalogPreview /> },
+      { name: "toggle", preview: <ToggleCatalogPreview /> },
       { name: "toggle-group", preview: <ToggleGroupCatalogPreview /> },
     ],
   },
@@ -182,6 +306,12 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
         ),
       },
       { name: "sonner", preview: <ToastDemo /> },
+      { name: "spinner", preview: <SpinnerCatalogPreview /> },
+      { name: "progress", preview: <ProgressCatalogPreview /> },
+      { name: "empty", preview: <EmptyCatalogPreview /> },
+      { name: "banner", preview: <BannerCatalogPreview /> },
+      { name: "announcement", preview: <AnnouncementCatalogPreview /> },
+      { name: "status", preview: <StatusCatalogPreview /> },
       {
         name: "skeleton",
         preview: (
@@ -200,6 +330,13 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
     title: "Overlay",
     items: [
       { name: "dialog", preview: <DialogDemo /> },
+      { name: "alert-dialog", preview: <AlertDialogCatalogPreview /> },
+      { name: "sheet", preview: <SheetCatalogPreview /> },
+      { name: "drawer", preview: <DrawerCatalogPreview /> },
+      { name: "dialog-stack", preview: <DialogStackCatalogPreview /> },
+      { name: "hover-card", preview: <HoverCardCatalogPreview /> },
+      { name: "glimpse", preview: <GlimpseCatalogPreview /> },
+      { name: "context-menu", preview: <ContextMenuCatalogPreview /> },
       { name: "dropdown-menu", preview: <DropdownMenuDemo /> },
       { name: "popover", preview: <PopoverCatalogPreview /> },
       { name: "tooltip", preview: <TooltipDemo /> },
@@ -208,20 +345,34 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
   {
     title: "Navigation",
     items: [
-      { name: "app-sidebar", description: "Grouped application navigation with workspace branding, collapsible nested routes, and an icon-only mode.", preview: <ApplicationShellComponentExample kind="app-sidebar" /> },
-      { name: "top-navbar", description: "A responsive horizontal primary navigation with workspace selection and dropdown destinations.", preview: <ApplicationShellComponentExample kind="top-navbar" /> },
-      { name: "navigation-item", description: "A reusable navigation control with active, disabled, focus, hover, and collapsed presentations.", preview: <ApplicationShellComponentExample kind="navigation-item" /> },
-      { name: "navigation-group", description: "A labelled set of routes whose nested items can be expanded and collapsed independently.", preview: <ApplicationShellComponentExample kind="navigation-group" /> },
-      { name: "breadcrumb", description: "A semantic location trail with optional interactive ancestor links.", preview: <ApplicationShellComponentExample kind="breadcrumb" /> },
-      { name: "workspace-switcher", description: "An accessible menu for changing the active workspace, with a compact icon-only option.", preview: <ApplicationShellComponentExample kind="workspace-switcher" /> },
-      { name: "user-menu", description: "An account dropdown that routes profile and settings actions into the application.", preview: <ApplicationShellComponentExample kind="user-menu" /> },
-      { name: "mobile-navigation-drawer", description: "A keyboard-accessible modal drawer that exposes the shared navigation tree on mobile.", preview: <ApplicationShellComponentExample kind="mobile-navigation-drawer" /> },
+      { name: "breadcrumb", preview: <BreadcrumbCatalogPreview /> },
+      { name: "pagination", preview: <PaginationCatalogPreview /> },
+      { name: "navigation-menu", preview: <NavigationMenuCatalogPreview /> },
+      { name: "menubar", preview: <MenubarCatalogPreview /> },
+      { name: "stepper", preview: <StepperCatalogPreview /> },
+      { name: "scrollable-tabs-list", preview: <ScrollableTabsListCatalogPreview /> },
+      { name: "accordion", preview: <AccordionCatalogPreview /> },
+      { name: "collapsible", preview: <CollapsibleCatalogPreview /> },
+    ],
+  },
+  {
+    title: "Media & dev",
+    items: [
+      { name: "code-block", preview: <CodeBlockCatalogPreview /> },
+      { name: "snippet", preview: <SnippetCatalogPreview /> },
+      { name: "qr-code", preview: <QRCodeCatalogPreview /> },
+      { name: "credit-card", preview: <CreditCardCatalogPreview /> },
+      { name: "logo", preview: <LogoCatalogPreview /> },
+      { name: "image-zoom", preview: <ImageZoomCatalogPreview /> },
     ],
   },
   {
     title: "Layout & data",
     items: [
       { name: "chart", preview: <ChartCatalogPreview /> },
+      { name: "aspect-ratio", preview: <AspectRatioCatalogPreview /> },
+      { name: "scroll-area", preview: <ScrollAreaCatalogPreview /> },
+      { name: "resizable", preview: <ResizableCatalogPreview /> },
       { name: "card", preview: <ComponentCountPreview /> },
       {
         name: "tabs",
@@ -283,6 +434,29 @@ const groups: { title: string; items: { name: string; preview: ReactNode; descri
           </div>
         ),
       },
+      { name: "avatar-group", preview: <AvatarGroupCatalogPreview /> },
+      { name: "avatar-stack", preview: <AvatarStackCatalogPreview /> },
+      { name: "pill", preview: <PillCatalogPreview /> },
+      { name: "item", preview: <ItemCatalogPreview /> },
+      { name: "list", preview: <ListCatalogPreview /> },
+      { name: "stat", preview: <StatCatalogPreview /> },
+      { name: "sparkline", preview: <SparklineCatalogPreview /> },
+      { name: "counter", preview: <CounterCatalogPreview /> },
+      { name: "price", preview: <PriceCatalogPreview /> },
+      { name: "relative-time", preview: <RelativeTimeCatalogPreview /> },
+      { name: "ticker", preview: <TickerCatalogPreview /> },
+      { name: "data-table", preview: <DataTableCatalogPreview /> },
+      { name: "filter-panel", preview: <FilterPanelCatalogPreview /> },
+      { name: "list-panel", preview: <ListPanelCatalogPreview /> },
+      { name: "tree", preview: <TreeCatalogPreview /> },
+      { name: "timeline", preview: <TimelineCatalogPreview /> },
+      { name: "comparison", preview: <ComparisonCatalogPreview /> },
+      { name: "contribution-graph", preview: <ContributionGraphCatalogPreview /> },
+      { name: "bento", preview: <BentoCatalogPreview /> },
+      { name: "carousel", preview: <CarouselCatalogPreview /> },
+      { name: "deck", preview: <DeckCatalogPreview /> },
+      { name: "marquee", preview: <MarqueeCatalogPreview /> },
+      { name: "reel", preview: <ReelCatalogPreview /> },
     ],
   },
 ];
@@ -300,7 +474,7 @@ function ComponentCountPreview() {
   );
 }
 
-const label = (name: string) => name.replace("-", " ");
+const label = (name: string) => name.replaceAll("-", " ");
 
 export default function ComponentsPage() {
   return (
@@ -347,17 +521,15 @@ export default function ComponentsPage() {
         {groups.map((g) => (
           <section key={g.title} className="flex flex-col gap-4" aria-labelledby={`group-${g.title}`}>
             <h2 id={`group-${g.title}`} className="font-heading text-xl font-semibold">{g.title}</h2>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {g.items.map(({ name, preview, description }) => (
-                  <div key={name} id={name} className="flex scroll-mt-20 flex-col gap-2">
-                    <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
-                    <div className="flex items-center justify-between gap-2 px-1">
-                      <h3 className="text-sm font-medium capitalize">{label(name)}</h3>
-                      <code className="truncate font-mono text-xs text-muted-foreground">@parry/{name}</code>
-                    </div>
-                    {description ? <p className="px-1 text-xs leading-relaxed text-muted-foreground">{description}</p> : null}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {g.items.map(({ name, preview }) => (
+                <div key={name} id={name} className="flex min-w-0 scroll-mt-20 flex-col gap-2">
+                  <div className="product-scope flex min-h-48 flex-1 items-center justify-center rounded-xl border bg-card p-6">{preview}</div>
+                  <div className="flex items-center justify-between gap-2 px-1">
+                    <h3 className="text-sm font-medium capitalize">{label(name)}</h3>
+                    <code className="truncate font-mono text-xs text-muted-foreground">@parry/{name}</code>
                   </div>
-
+                </div>
               ))}
             </div>
           </section>

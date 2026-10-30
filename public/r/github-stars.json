@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "github-stars",
+  "title": "Github Stars",
+  "dependencies": [
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/social-button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/github-stars.tsx",
+      "content": "import * as React from \"react\"\nimport { StarIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { SocialIcon } from \"@/components/ui/social-button\"\n\nconst formatStars = new Intl.NumberFormat(\"en\", { notation: \"compact\", maximumFractionDigits: 1 })\n\n// Pass `stars` from your own data source; the component never calls the GitHub API.\nfunction GithubStars({\n  repo,\n  stars,\n  showRepo = false,\n  className,\n  ...props\n}: Omit<React.ComponentProps<\"a\">, \"children\"> & {\n  repo: string\n  stars: number\n  showRepo?: boolean\n}) {\n  return (\n    <a\n      data-slot=\"github-stars\"\n      href={`https://github.com/${repo}`}\n      target=\"_blank\"\n      rel=\"noreferrer\"\n      aria-label={`${repo} on GitHub, ${stars.toLocaleString(\"en\")} stars`}\n      className={cn(\n        \"inline-flex h-8 items-stretch overflow-hidden rounded-lg border bg-background text-sm font-medium shadow-xs transition-colors outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4 [&_svg]:shrink-0\",\n        className\n      )}\n      {...props}\n    >\n      <span className=\"flex items-center gap-1.5 px-2.5\">\n        <SocialIcon provider=\"github\" />\n        {showRepo ? repo : \"Star\"}\n      </span>\n      <span className=\"flex items-center gap-1 border-l px-2.5 tabular-nums\">\n        <StarIcon className=\"fill-warning text-warning\" />\n        {formatStars.format(stars)}\n      </span>\n    </a>\n  )\n}\n\nexport { GithubStars }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

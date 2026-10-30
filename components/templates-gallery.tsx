@@ -2,18 +2,11 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRightIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
+import { ArrowUpRightIcon, Maximize2Icon, Minimize2Icon, SearchIcon, SlidersHorizontalIcon } from "lucide-react"
 
 import { AdvancedFilterableTablePreview } from "@/components/advanced-filterable-table-preview"
-import { RankingAnalyticsTable } from "@/components/ranking-analytics-table"
-import { RankingAnalyticsTableThumbnail } from "@/components/ranking-analytics-table-thumbnail"
-import { KanbanPipelineBoard } from "@/components/kanban-pipeline-board"
-import { KanbanPipelineBoardThumbnail } from "@/components/kanban-pipeline-board-thumbnail"
-import { ApplicationShellDemo, ApplicationShellThumbnail } from "@/components/application-shell-demo"
-import { AnalyticsDashboardPreview } from "@/components/analytics-dashboard-preview"
-import { AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
-import { OperationalDashboardPreview } from "@/components/operational-dashboard-preview"
-import { OperationalDashboardThumbnail } from "@/components/operational-dashboard"
+import { AnalyticsDashboard, AnalyticsDashboardThumbnail } from "@/components/analytics-dashboard"
+import { OperationalDashboard, OperationalDashboardThumbnail } from "@/components/operational-dashboard"
 import { CreateEditForm } from "@/components/create-edit-form"
 import { CreateEditFormThumbnail } from "@/components/create-edit-form-thumbnail"
 import { DataManagementListPreview } from "@/components/data-management-list-preview"
@@ -21,29 +14,22 @@ import { ConversationTable } from "@/components/conversation-table-preview"
 import { ConversationTableThumbnail } from "@/components/conversation-table-thumbnail"
 import { ConversationWorkspace } from "@/components/conversation-workspace"
 import { ConversationWorkspaceThumbnail } from "@/components/conversation-workspace-thumbnail"
-import { AiChatWorkspace } from "@/components/ai-chat-workspace"
-import { AiChatWorkspaceThumbnail } from "@/components/ai-chat-workspace-thumbnail"
 import { MultiStepFormWizard } from "@/components/multi-step-form-wizard"
-import { BulkImportWizard } from "@/components/bulk-import-wizard"
-import { BulkImportWizardThumbnail } from "@/components/bulk-import-wizard-thumbnail"
 import { IntegrationConnectionPreview } from "@/components/integration-connection"
 import { IntegrationConnectionThumbnail } from "@/components/integration-connection-thumbnail"
+import { DeveloperPortal } from "@/components/developer-portal"
+import { DeveloperPortalThumbnail } from "@/components/developer-portal-thumbnail"
 import { SettingsPanelsPreview } from "@/components/settings-panels-preview"
 import { SettingsFormPreview } from "@/components/settings-form-preview"
+import { ChangePasswordForm, ForgotPasswordForm, LoginForm, RegisterForm } from "@/components/auth-templates"
 import { SettingsDialogPreview } from "@/components/settings-dialog-preview"
 import { RecordDetailPage } from "@/components/record-detail-page"
 import { RecordDetailPageThumbnail } from "@/components/record-detail-page-thumbnail"
 import { TabbedDetailWorkspace } from "@/components/tabbed-detail-workspace"
 import { TabbedDetailWorkspaceThumbnail } from "@/components/tabbed-detail-workspace-thumbnail"
-import { MonitoringFeed } from "@/components/monitoring-feed"
-import { MonitoringFeedThumbnail } from "@/components/monitoring-feed-thumbnail"
-import { ActivityTimelineWorkspace } from "@/components/activity-timeline-workspace"
-import { ActivityTimelineThumbnail } from "@/components/activity-timeline-thumbnail"
-import { PipelinePerformanceThumbnail, PipelinePerformanceWorkspace } from "@/components/pipeline-performance-workspace"
-import { DeveloperPortalWorkspace, DeveloperPortalWorkspaceThumbnail } from "@/components/developer-portal-workspace"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -53,8 +39,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { cn } from "@/lib/utils"
 
-type TemplateCategory = "Dashboards" | "Data & Tables" | "Forms & Settings" | "Workspaces" | "Integrations" | "Layouts & Details" | "Workflows"
+type TemplateCategory = "Table & Conversation" | "Dashboard" | "Forms" | "Settings" | "AI" | "Detail & Content" | "Integration" | "Authentication"
 type CategoryFilter = "All" | TemplateCategory
 
 type Template = {
@@ -67,177 +54,141 @@ type Template = {
 
 const templates: Template[] = [
   {
-    slug: "monitoring-feed",
-    name: "Monitoring Feed",
-    description: "A content monitoring workspace for tracking incoming items, reviewing details, and managing follow-up actions.",
-    category: "Workspaces",
-    reference: "Parry UI · Content monitoring",
-  },
-  {
-    slug: "activity-timeline",
-    name: "Activity Timeline",
-    description: "A chronological activity timeline for tracking user actions, status changes, and entity history.",
-    category: "Layouts & Details",
-    reference: "Parry UI · Customer activity",
-  },
-  {
     slug: "tabbed-detail-workspace",
     name: "Tabbed Detail Workspace",
     description: "A multi-tab workspace for viewing and managing complex record information, configurations, and related activities.",
-    category: "Layouts & Details",
+    category: "Detail & Content",
     reference: "Parry UI · Workspace management",
   },
   {
     slug: "record-detail-page",
     name: "Record Detail Page",
     description: "A structured detail page for viewing record information, related data, activity history, and contextual actions.",
-    category: "Layouts & Details",
+    category: "Detail & Content",
     reference: "Parry UI · Record management",
   },
   {
     slug: "data-management-list",
     name: "Data Management List",
     description: "A reusable record management template for creating, organizing, updating, and deleting structured business data.",
-    category: "Data & Tables",
+    category: "Table & Conversation",
     reference: "Parry UI · Data management",
   },
   {
     slug: "conversation-table",
     name: "Conversation Table",
     description: "A conversation management table for monitoring, filtering, assigning, and managing customer conversations.",
-    category: "Data & Tables",
+    category: "Table & Conversation",
     reference: "Parry UI · Contact center",
   },
   {
     slug: "conversation-workspace",
     name: "Conversation Workspace",
     description: "An interactive workspace for managing customer conversations, replying to messages, and handling conversation workflows.",
-    category: "Workspaces",
+    category: "Table & Conversation",
     reference: "Parry UI · Contact center",
-  },
-  {
-    slug: "ai-chat-workspace",
-    name: "AI Chat Workspace",
-    description: "An interactive AI chat workspace with agent selection, conversation history, and AI response states.",
-    category: "Workspaces",
-    reference: "Sociomile Agentics · AI collaboration",
   },
   {
     slug: "analytics-dashboard",
     name: "Analytics Dashboard",
     description: "A data-driven dashboard for monitoring KPIs, trends, and performance breakdowns.",
-    category: "Dashboards",
+    category: "Dashboard",
     reference: "Parry UI · Product analytics",
-  },
-  {
-    slug: "pipeline-performance-workspace",
-    name: "Pipeline Performance Workspace",
-    description: "An analytical workspace for tracking pipeline conversion, stage performance, deal aging, and revenue forecasts.",
-    category: "Dashboards",
-    reference: "Parry UI · Sales performance",
   },
   {
     slug: "operational-dashboard",
     name: "Operational Dashboard",
     description: "Monitor operational workloads, service health, SLA risks, and issues requiring attention.",
-    category: "Dashboards",
+    category: "Dashboard",
     reference: "Parry UI · Operations",
   },
   {
     slug: "create-edit-form",
     name: "Create / Edit Form",
     description: "A reusable form for creating and editing structured business records.",
-    category: "Forms & Settings",
+    category: "Forms",
     reference: "Parry UI · Record management",
   },
   {
     slug: "multi-step-form-wizard",
     name: "Multi-Step Form Wizard",
     description: "A guided multi-step form for completing complex configurations with validation and progress tracking.",
-    category: "Forms & Settings",
+    category: "Forms",
     reference: "Parry UI · Integration setup",
-  },
-  {
-    slug: "bulk-import-wizard",
-    name: "Bulk Import Wizard",
-    description: "A guided workflow for importing bulk records with column mapping, validation, and import results.",
-    category: "Forms & Settings",
-    reference: "Parry UI · Data import",
   },
   {
     slug: "integration-connection",
     name: "Integration Connection",
     description: "Configure, test, and manage external service connections and authentication.",
-    category: "Integrations",
+    category: "Integration",
     reference: "Parry UI · Integration management",
+  },
+  {
+    slug: "developer-portal",
+    name: "Developer Portal",
+    description: "A developer console for apps, OAuth and API key access, scopes, webhooks, usage analytics, and logs.",
+    category: "Integration",
+    reference: "Parry UI · Developer platform",
   },
   {
     slug: "settings-panels",
     name: "Settings Panels",
     description: "A section-based settings workspace for managing complex application configurations.",
-    category: "Forms & Settings",
+    category: "Settings",
     reference: "Parry UI · Workspace settings",
   },
   {
     slug: "settings-form",
     name: "Settings Form",
     description: "A single-page settings form for managing preferences and configuration.",
-    category: "Forms & Settings",
+    category: "Settings",
     reference: "Parry UI · Workspace settings",
   },
   {
     slug: "settings-dialog",
     name: "Settings Dialog",
     description: "A contextual settings dialog for managing preferences without leaving the current page.",
-    category: "Forms & Settings",
+    category: "Settings",
     reference: "Parry UI · Notification preferences",
   },
   {
     slug: "advanced-filterable-table",
     name: "Advanced Filterable Table",
     description: "Explore complex datasets with advanced filtering, saved views, column customization, grouping, and record inspection.",
-    category: "Data & Tables",
+    category: "Table & Conversation",
     reference: "Parry UI · Data exploration",
   },
   {
-    slug: "ranking-analytics-table",
-    name: "Ranking & Analytics Table",
-    description: "A ranked analytics table for comparing entities, tracking performance changes, and exploring metric details.",
-    category: "Data & Tables",
-    reference: "Parry UI · Social analytics",
+    slug: "login",
+    name: "Login",
+    description: "A split-screen login page with email and password, social sign-in, and a testimonial panel.",
+    category: "Authentication",
+    reference: "Parry UI · Account access",
   },
   {
-    slug: "application-shell",
-    name: "Application Shell",
-    description: "A reusable application framework with sidebar, top navigation, and hybrid navigation layouts.",
-    category: "Layouts & Details",
-    reference: "Parry UI · Application architecture",
+    slug: "register",
+    name: "Register",
+    description: "A split-screen sign-up page with live password rules, terms consent, and social sign-up.",
+    category: "Authentication",
+    reference: "Parry UI · Account access",
   },
   {
-    slug: "kanban-pipeline-board",
-    name: "Kanban / Pipeline Board",
-    description: "A flexible drag-and-drop board for managing pipelines, tasks, and stage-based workflows.",
-    category: "Workflows",
-    reference: "Parry UI · Workflow management",
+    slug: "forgot-password",
+    name: "Forgot Password",
+    description: "A two-step password recovery page: request a reset link, then confirm it was sent.",
+    category: "Authentication",
+    reference: "Parry UI · Account recovery",
   },
   {
-    slug: "developer-portal-workspace",
-    name: "Developer Portal Workspace",
-    description: "An Ivosights developer portal for product API traffic, application environments, endpoint requests, and daily rate limits.",
-    category: "Integrations",
-    reference: "Parry UI · API platform",
+    slug: "change-password",
+    name: "Change Password",
+    description: "A password change page with the current password, live rules for the new one, and confirmation.",
+    category: "Authentication",
+    reference: "Parry UI · Account security",
   },
 ]
 
-const availableCategories: TemplateCategory[] = [
-  "Dashboards",
-  "Data & Tables",
-  "Forms & Settings",
-  "Workspaces",
-  "Integrations",
-  "Layouts & Details",
-  "Workflows",
-]
+const availableCategories = Array.from(new Set(templates.map(({ category }) => category)))
 
 const thumbnailRows = [
   { name: "Alya Pratama", email: "alya.pratama@northstar.co", company: "Northstar Labs", status: "Active" },
@@ -346,6 +297,31 @@ function SettingsFormThumbnail() {
       <div className="mt-auto flex justify-end gap-1.5 border-t pt-2">
         <span className="rounded border px-2 py-1 text-[8px] text-muted-foreground sm:text-[9px]">Cancel</span>
         <span className="rounded bg-primary px-2 py-1 text-[8px] text-primary-foreground sm:text-[9px]">Save Changes</span>
+      </div>
+    </div>
+  )
+}
+
+const authThumbnails: Record<string, { mode?: "Login" | "Sign Up"; title: string; fields: string[]; action: string; social?: boolean }> = {
+  login: { mode: "Login", title: "Welcome back", fields: ["Email address", "Password"], action: "Log In", social: true },
+  register: { mode: "Sign Up", title: "Create your account", fields: ["Full name", "Work email", "Password"], action: "Create account", social: true },
+  "forgot-password": { title: "Forgot your password?", fields: ["Email address"], action: "Send reset link" },
+  "change-password": { title: "Change your password", fields: ["Current password", "New password", "Confirm new password"], action: "Update password" },
+}
+
+function AuthThumbnail({ slug }: { slug: string }) {
+  const { mode, title, fields, action, social } = authThumbnails[slug]
+  return (
+    <div aria-hidden="true" className="grid h-full grid-cols-2 gap-2 bg-background p-3 text-foreground">
+      <div className="flex flex-col items-center justify-center gap-2 px-3">
+        {mode && <span className="flex gap-1 rounded-md bg-muted p-0.5 text-[8px]">{["Login", "Sign Up"].map((label) => <span key={label} className={label === mode ? "rounded bg-card px-1.5 py-0.5 shadow-sm" : "px-1.5 py-0.5 text-muted-foreground"}>{label}</span>)}</span>}
+        <span className="font-heading text-xs font-semibold sm:text-sm">{title}</span>
+        {fields.map((field) => <span key={field} className="flex h-5 w-full items-center rounded-md border bg-card px-2 text-[8px] text-muted-foreground">{field}</span>)}
+        <span className="flex h-5 w-full items-center justify-center rounded-md bg-primary text-[8px] text-primary-foreground">{action}</span>
+        {social && <span className="flex h-5 w-full items-center justify-center rounded-md border bg-card text-[8px]">Continue with Google</span>}
+      </div>
+      <div className="flex flex-col justify-end rounded-md bg-sidebar bg-[radial-gradient(120%_80%_at_85%_0%,color-mix(in_oklch,var(--ring),transparent_35%),transparent_70%)] p-2">
+        <span className="flex flex-col gap-1 rounded-md border border-white/15 bg-white/10 p-2 text-[8px] text-white"><span>&ldquo;One workspace for every regional team.&rdquo;</span><span className="font-semibold">Alya Pratama</span></span>
       </div>
     </div>
   )
@@ -464,21 +440,24 @@ export function TemplatesGallery() {
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null)
   const [formHasUnsavedChanges, setFormHasUnsavedChanges] = useState(false)
   const [closeConfirmationOpen, setCloseConfirmationOpen] = useState(false)
+  const [previewFullscreen, setPreviewFullscreen] = useState(false)
 
   function handlePreviewOpenChange(open: boolean) {
     if (open) return
-    if ((activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "bulk-import-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection") && formHasUnsavedChanges) {
+    if ((activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection" || activeTemplate?.slug === "developer-portal") && formHasUnsavedChanges) {
       setCloseConfirmationOpen(true)
       return
     }
     setActiveTemplate(null)
     setFormHasUnsavedChanges(false)
+    setPreviewFullscreen(false)
   }
 
   function closePreviewAndDiscard() {
     setCloseConfirmationOpen(false)
     setActiveTemplate(null)
     setFormHasUnsavedChanges(false)
+    setPreviewFullscreen(false)
   }
 
   const filteredTemplates = useMemo(
@@ -492,64 +471,51 @@ export function TemplatesGallery() {
       <header className="flex flex-col items-center gap-3 text-center">
         <h1 className="font-heading text-4xl font-bold tracking-tight text-balance sm:text-5xl">Templates</h1>
         <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">Reusable page templates for enterprise SaaS applications.</p>
-        <div className="mt-3 w-full max-w-full overflow-x-auto overscroll-x-contain">
-          <ToggleGroup
-            type="single"
-            value={activeCategory}
-            onValueChange={(value) => { if (value) setActiveCategory(value as CategoryFilter) }}
-            variant="outline"
-            size="sm"
-            aria-label="Filter templates by category"
-            className="mx-auto w-max min-w-full flex-nowrap justify-center px-1 py-1"
-          >
-            <ToggleGroupItem value="All">All</ToggleGroupItem>
-            {availableCategories.map((category) => <ToggleGroupItem key={category} value={category}>{category}</ToggleGroupItem>)}
-          </ToggleGroup>
-        </div>
+        <ToggleGroup
+          type="single"
+          value={activeCategory}
+          onValueChange={(value) => { if (value) setActiveCategory(value as CategoryFilter) }}
+          variant="outline"
+          size="sm"
+          aria-label="Filter templates by category"
+          className="mt-3 max-w-full flex-wrap justify-center"
+        >
+          <ToggleGroupItem value="All">All</ToggleGroupItem>
+          {availableCategories.map((category) => <ToggleGroupItem key={category} value={category}>{category}</ToggleGroupItem>)}
+        </ToggleGroup>
       </header>
 
-      <section aria-label="Template gallery" className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <section aria-label="Template gallery" className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {filteredTemplates.map((template) => (
-          <Card key={template.slug} className="group h-full gap-0 overflow-hidden py-0 transition-shadow hover:shadow-md">
-            <div className="group/preview relative aspect-[16/10] overflow-hidden bg-muted">
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-                {template.slug === "activity-timeline" ? <ActivityTimelineThumbnail /> : template.slug === "monitoring-feed" ? <MonitoringFeedThumbnail /> : template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "application-shell" ? <ApplicationShellThumbnail /> : template.slug === "developer-portal-workspace" ? <DeveloperPortalWorkspaceThumbnail /> : template.slug === "pipeline-performance-workspace" ? <PipelinePerformanceThumbnail /> : template.slug === "kanban-pipeline-board" ? <KanbanPipelineBoardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "ranking-analytics-table" ? <RankingAnalyticsTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "bulk-import-wizard" ? <BulkImportWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "ai-chat-workspace" ? <AiChatWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : <TemplateThumbnail />}
-              </div>
-              <DialogTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={`Preview ${template.name}`}
-                  onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }}
-                  className="absolute inset-0 z-0 block w-full cursor-zoom-in touch-pan-y bg-transparent p-0 text-left outline-none transition-opacity active:opacity-95 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
-                />
-              </DialogTrigger>
-              <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-end bg-black/40 p-3 opacity-0 transition-opacity duration-150 [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-hover/preview:opacity-100 [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:opacity-100 [@media(hover:none)]:hidden">
-                <div className="pointer-events-none flex items-center gap-1 rounded-lg border border-border/80 bg-background/95 p-1 shadow-md backdrop-blur-sm [@media(hover:hover)]:group-hover/preview:pointer-events-auto [@media(hover:hover)]:group-focus-within/preview:pointer-events-auto [@media(hover:none)]:hidden">
+          <Card key={template.slug} className="group overflow-hidden gap-0 py-0 transition-shadow hover:shadow-lg">
+            <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted">
+              {template.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspaceThumbnail /> : template.slug === "record-detail-page" ? <RecordDetailPageThumbnail /> : template.slug === "settings-panels" ? <SettingsPanelsThumbnail /> : template.slug === "analytics-dashboard" ? <AnalyticsDashboardThumbnail /> : template.slug === "operational-dashboard" ? <OperationalDashboardThumbnail /> : template.slug === "settings-form" ? <SettingsFormThumbnail /> : template.slug === "settings-dialog" ? <SettingsDialogThumbnail /> : template.slug === "advanced-filterable-table" ? <AdvancedFilterableTableThumbnail /> : template.slug === "create-edit-form" ? <CreateEditFormThumbnail /> : template.slug === "multi-step-form-wizard" ? <MultiStepFormWizardThumbnail /> : template.slug === "conversation-table" ? <ConversationTableThumbnail /> : template.slug === "conversation-workspace" ? <ConversationWorkspaceThumbnail /> : template.slug === "integration-connection" ? <IntegrationConnectionThumbnail /> : template.slug === "developer-portal" ? <DeveloperPortalThumbnail /> : template.category === "Authentication" ? <AuthThumbnail slug={template.slug} /> : <TemplateThumbnail />}
+              <div className="template-preview-overlay absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/65 p-5 text-center text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+                <div className="flex max-w-sm flex-col gap-1.5">
+                  <p className="font-heading text-lg font-semibold">{template.name}</p>
+                  <p className="text-sm leading-relaxed text-white/85">{template.description}</p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2">
                   <DialogTrigger asChild>
-                    <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary" className="min-h-8 text-xs [@media(hover:none)]:min-h-11">Preview</Button>
+                    <Button onClick={() => { setFormHasUnsavedChanges(false); setCloseConfirmationOpen(false); setActiveTemplate(template) }} size="sm" variant="secondary">Preview</Button>
                   </DialogTrigger>
-                  <Button asChild size="sm" variant="outline" className="min-h-8 text-xs [@media(hover:none)]:min-h-11">
-                    <Link href={`/templates/${template.slug}`} aria-label={`View documentation for ${template.name}`}>
-                      Docs <ArrowUpRightIcon aria-hidden="true" className="size-3.5" />
-                    </Link>
+                  <Button asChild size="sm" variant="outline" className="border-white/50 bg-transparent text-white hover:bg-white/15 hover:text-white">
+                    <Link href={`/templates/${template.slug}`}>View Documentation</Link>
                   </Button>
                 </div>
               </div>
             </div>
-            <CardHeader className="gap-2 px-4 py-4">
-              <CardTitle className="line-clamp-1 text-sm font-semibold leading-5">
-                <Link href={`/templates/${template.slug}`} className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50">
-                  {template.name}
-                </Link>
-              </CardTitle>
-              <CardDescription className="min-h-10 line-clamp-2 text-[13px] leading-5">{template.description}</CardDescription>
-              <p className="text-xs leading-4 text-muted-foreground">{template.category}</p>
-              <Button asChild size="sm" variant="ghost" className="hidden min-h-11 self-start justify-self-start px-3 text-xs [@media(hover:none)]:inline-flex">
-                <Link href={`/templates/${template.slug}`}>
-                  View Docs <ArrowUpRightIcon aria-hidden="true" className="size-3.5" />
-                </Link>
-              </Button>
+            <CardHeader className="gap-2 px-5 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <CardTitle className="font-heading text-lg leading-snug">{template.name}</CardTitle>
+                <Badge variant="secondary">{template.category}</Badge>
+              </div>
+              <CardDescription className="min-h-12 leading-relaxed">{template.description}</CardDescription>
             </CardHeader>
+            <CardContent className="flex items-center justify-between border-t px-5 py-3 text-sm text-muted-foreground">
+              <span>{template.reference}</span>
+              <ArrowUpRightIcon aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </CardContent>
           </Card>
         ))}
       </section>
@@ -558,17 +524,24 @@ export function TemplatesGallery() {
       {activeTemplate && (
           <DialogContent
             data-parry-theme
+            showCloseButton={!previewFullscreen}
             aria-describedby="template-preview-description"
-            className="flex h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden p-0 sm:h-[90dvh] sm:w-[90vw] sm:max-w-[90vw] xl:w-[88vw] xl:max-w-[88vw]"
+            className={cn("flex flex-col gap-0 overflow-hidden p-0", previewFullscreen ? "h-dvh w-screen max-w-none rounded-none ring-0 sm:max-w-none" : "h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:h-[90dvh] sm:w-[90vw] sm:max-w-[90vw] xl:w-[88vw] xl:max-w-[88vw]")}
           >
-            <DialogHeader className="shrink-0 border-b px-4 py-4 pr-12 sm:px-6">
+            <Button type="button" variant={previewFullscreen ? "outline" : "ghost"} size="icon-sm" className={cn("absolute z-10", previewFullscreen ? "right-4 bottom-4 bg-background shadow-md" : "top-2 right-10")} aria-pressed={previewFullscreen} onClick={() => setPreviewFullscreen((value) => !value)}>
+              {previewFullscreen ? <Minimize2Icon /> : <Maximize2Icon />}
+              <span className="sr-only">{previewFullscreen ? "Exit full screen" : "Enter full screen"}</span>
+            </Button>
+            {/* Title stays for screen readers so the dialog keeps its accessible name */}
+            <DialogHeader className={cn("shrink-0 border-b px-4 py-4 pr-20 sm:px-6 sm:pr-20", previewFullscreen && "sr-only")}>
               <DialogTitle className="font-heading text-lg font-semibold">{activeTemplate.name}</DialogTitle>
               <DialogDescription id="template-preview-description">{activeTemplate.description}</DialogDescription>
             </DialogHeader>
-            <div className="template-preview-container min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
-              {activeTemplate.slug === "activity-timeline" ? <ActivityTimelineWorkspace /> : activeTemplate.slug === "monitoring-feed" ? <MonitoringFeed /> : activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboardPreview /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboardPreview /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "ranking-analytics-table" ? <RankingAnalyticsTable /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "bulk-import-wizard" ? <BulkImportWizard onDirtyChange={setFormHasUnsavedChanges} stickyFooter /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "ai-chat-workspace" ? <AiChatWorkspace /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "application-shell" ? <ApplicationShellDemo /> : activeTemplate.slug === "developer-portal-workspace" ? <DeveloperPortalWorkspace /> : activeTemplate.slug === "pipeline-performance-workspace" ? <PipelinePerformanceWorkspace /> : activeTemplate.slug === "kanban-pipeline-board" ? <KanbanPipelineBoard /> : <DataManagementListPreview showControls />}
+            {/* Fullscreen stretches each template's root edge to edge, overriding its own card sizing */}
+            <div className={cn("min-h-0 flex-1 overflow-y-auto overscroll-contain", previewFullscreen ? "*:min-h-full! *:max-h-none! *:rounded-none! *:border-0!" : "px-3 py-4 sm:px-6")}>
+              {activeTemplate.slug === "tabbed-detail-workspace" ? <TabbedDetailWorkspace onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "record-detail-page" ? <RecordDetailPage /> : activeTemplate.slug === "analytics-dashboard" ? <AnalyticsDashboard /> : activeTemplate.slug === "operational-dashboard" ? <OperationalDashboard /> : activeTemplate.slug === "settings-panels" ? <SettingsPanelsPreview /> : activeTemplate.slug === "settings-form" ? <SettingsFormPreview /> : activeTemplate.slug === "settings-dialog" ? <SettingsDialogPreview /> : activeTemplate.slug === "advanced-filterable-table" ? <AdvancedFilterableTablePreview /> : activeTemplate.slug === "create-edit-form" ? <CreateEditForm onDirtyChange={setFormHasUnsavedChanges} onRequestBack={() => handlePreviewOpenChange(false)} /> : activeTemplate.slug === "multi-step-form-wizard" ? <MultiStepFormWizard onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "conversation-table" ? <ConversationTable /> : activeTemplate.slug === "conversation-workspace" ? <ConversationWorkspace embedded /> : activeTemplate.slug === "integration-connection" ? <IntegrationConnectionPreview onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "developer-portal" ? <DeveloperPortal onDirtyChange={setFormHasUnsavedChanges} /> : activeTemplate.slug === "login" ? <LoginForm /> : activeTemplate.slug === "register" ? <RegisterForm /> : activeTemplate.slug === "forgot-password" ? <ForgotPasswordForm /> : activeTemplate.slug === "change-password" ? <ChangePasswordForm /> : <DataManagementListPreview showControls />}
             </div>
-            <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            {!previewFullscreen && <footer className="flex shrink-0 flex-col gap-3 border-t bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">{activeTemplate.category}</Badge>
                 <span className="text-sm text-muted-foreground">{activeTemplate.reference}</span>
@@ -578,10 +551,10 @@ export function TemplatesGallery() {
                   View Documentation <ArrowUpRightIcon data-icon="inline-end" />
                 </Link>
               </Button>
-            </footer>
+            </footer>}
           </DialogContent>
       )}
-      {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "bulk-import-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection") && (
+      {(activeTemplate?.slug === "create-edit-form" || activeTemplate?.slug === "multi-step-form-wizard" || activeTemplate?.slug === "tabbed-detail-workspace" || activeTemplate?.slug === "integration-connection" || activeTemplate?.slug === "developer-portal") && (
         <Dialog open={closeConfirmationOpen} onOpenChange={setCloseConfirmationOpen}>
           <DialogContent data-parry-theme>
             <DialogHeader>

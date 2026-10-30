@@ -10,7 +10,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Parry UI",
-  description: "Ivosights design system built on shadcn/ui",
+  description: "Ivosights UI Kit built on shadcn/ui",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "list-panel",
+  "title": "List Panel",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/list-panel.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\n// Card-framed list with a header row; items take leading media, title, description, meta and a trailing slot.\nfunction ListPanel({\n  title,\n  action,\n  className,\n  children,\n  ...props\n}: Omit<React.ComponentProps<\"section\">, \"title\"> & { title?: React.ReactNode; action?: React.ReactNode }) {\n  return (\n    <section data-slot=\"list-panel\" className={cn(\"overflow-hidden rounded-xl border bg-card text-card-foreground\", className)} {...props}>\n      {(title || action) && (\n        <header className=\"flex items-center justify-between gap-2 border-b px-4 py-3\">\n          {title && <h3 className=\"text-sm font-semibold\">{title}</h3>}\n          {action}\n        </header>\n      )}\n      <ul className=\"divide-y\">{children}</ul>\n    </section>\n  )\n}\n\nfunction ListPanelItem({\n  leading,\n  title,\n  description,\n  meta,\n  trailing,\n  className,\n  ...props\n}: Omit<React.ComponentProps<\"li\">, \"title\"> & {\n  leading?: React.ReactNode\n  title: React.ReactNode\n  description?: React.ReactNode\n  meta?: React.ReactNode\n  trailing?: React.ReactNode\n}) {\n  return (\n    <li data-slot=\"list-panel-item\" className={cn(\"flex items-center gap-3 px-4 py-3 text-sm\", className)} {...props}>\n      {leading && <span className=\"flex shrink-0 items-center text-muted-foreground [&_svg]:size-4\">{leading}</span>}\n      <span className=\"flex min-w-0 flex-1 flex-col gap-0.5\">\n        <span className=\"truncate font-medium\">{title}</span>\n        {description && <span className=\"truncate text-muted-foreground\">{description}</span>}\n      </span>\n      {meta && <span className=\"shrink-0 text-xs text-muted-foreground tabular-nums\">{meta}</span>}\n      {trailing}\n    </li>\n  )\n}\n\nexport { ListPanel, ListPanelItem }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

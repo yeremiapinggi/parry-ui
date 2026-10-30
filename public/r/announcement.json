@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "announcement",
+  "title": "Announcement",
+  "dependencies": [
+    "radix-ui",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/announcement.tsx",
+      "content": "import * as React from \"react\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"cn\"\n\n// Pill for \"what's new\" links; use asChild to render it as a Link.\nfunction Announcement({\n  asChild = false,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & { asChild?: boolean }) {\n  const Comp = asChild ? Slot.Root : \"div\"\n\n  return (\n    <Comp\n      data-slot=\"announcement\"\n      className={cn(\n        \"inline-flex max-w-full items-center gap-2 rounded-full border bg-background py-0.5 pr-3 pl-0.5 text-sm shadow-xs transition-colors outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4 [&_svg]:shrink-0\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction AnnouncementTag({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"announcement-tag\"\n      className={cn(\"shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction AnnouncementTitle({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"announcement-title\" className={cn(\"flex min-w-0 items-center gap-1 truncate\", className)} {...props} />\n}\n\nexport { Announcement, AnnouncementTag, AnnouncementTitle }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog-stack",
+  "title": "Dialog Stack",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/dialog"
+  ],
+  "files": [
+    {
+      "path": "components/ui/dialog-stack.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\nimport { Dialog, DialogContent } from \"@/components/ui/dialog\"\n\nconst DialogStackContext = React.createContext<{ index: number; count: number; setIndex: (i: number) => void } | null>(null)\n\nfunction useDialogStack() {\n  const ctx = React.useContext(DialogStackContext)\n  if (!ctx) throw new Error(\"useDialogStack must be used inside <DialogStack>\")\n  return ctx\n}\n\n// A Dialog that walks through its child panels one at a time; finished panels peek out behind the active one.\nfunction DialogStack({\n  trigger,\n  children,\n  onOpenChange,\n  className,\n  ...props\n}: React.ComponentProps<typeof Dialog> & { trigger?: React.ReactNode; className?: string }) {\n  const panels = React.Children.toArray(children)\n  const [index, setIndex] = React.useState(0)\n\n  return (\n    <DialogStackContext.Provider value={{ index, count: panels.length, setIndex }}>\n      <Dialog\n        onOpenChange={(open) => {\n          if (!open) setIndex(0)\n          onOpenChange?.(open)\n        }}\n        {...props}\n      >\n        {trigger}\n        <DialogContent data-slot=\"dialog-stack\" className={cn(\"overflow-visible\", className)}>\n          {Array.from({ length: Math.min(index, 2) }, (_, i) => (\n            <div\n              key={i}\n              aria-hidden\n              className=\"absolute inset-x-0 -z-10 h-full rounded-[inherit] border bg-muted\"\n              style={{ top: `${-(i + 1) * 12}px`, scale: `${1 - (i + 1) * 0.05}`, opacity: 1 - (i + 1) * 0.3 }}\n            />\n          ))}\n          {panels[index]}\n        </DialogContent>\n      </Dialog>\n    </DialogStackContext.Provider>\n  )\n}\n\nfunction DialogStackFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  const { index, count } = useDialogStack()\n  return (\n    <div data-slot=\"dialog-stack-footer\" className={cn(\"flex items-center justify-between gap-2\", className)}>\n      <span className=\"text-xs text-muted-foreground tabular-nums\">\n        Step {index + 1} of {count}\n      </span>\n      <div className=\"flex gap-2\" {...props} />\n    </div>\n  )\n}\n\nfunction DialogStackPrevious(props: React.ComponentProps<typeof Button>) {\n  const { index, setIndex } = useDialogStack()\n  return <Button variant=\"outline\" disabled={index === 0} onClick={() => setIndex(index - 1)} {...props} />\n}\n\nfunction DialogStackNext(props: React.ComponentProps<typeof Button>) {\n  const { index, count, setIndex } = useDialogStack()\n  return <Button disabled={index === count - 1} onClick={() => setIndex(index + 1)} {...props} />\n}\n\nexport { DialogStack, DialogStackFooter, DialogStackNext, DialogStackPrevious, useDialogStack }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

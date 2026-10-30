@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-toolbar",
+  "title": "Data Toolbar",
+  "dependencies": [
+    "@tanstack/react-table",
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/data-table",
+    "@parry/dropdown-menu",
+    "@parry/input-group"
+  ],
+  "files": [
+    {
+      "path": "components/ui/data-toolbar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport type { RowData } from \"@tanstack/react-table\"\nimport { Columns3Icon, SearchIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\nimport type { DataTableInstance } from \"@/components/ui/data-table\"\nimport { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from \"@/components/ui/dropdown-menu\"\nimport { InputGroup, InputGroupAddon, InputGroupInput } from \"@/components/ui/input-group\"\n\n// Search box + column visibility menu for a DataTable; put extra filters in `children`.\nfunction DataToolbar<TData extends RowData>({\n  table,\n  searchPlaceholder = \"Search…\",\n  className,\n  children,\n}: {\n  table: DataTableInstance<TData>\n  searchPlaceholder?: string\n  className?: string\n  children?: React.ReactNode\n}) {\n  return (\n    <div data-slot=\"data-toolbar\" className={cn(\"flex flex-wrap items-center gap-2\", className)}>\n      <InputGroup className=\"w-full sm:w-60\">\n        <InputGroupAddon>\n          <SearchIcon />\n        </InputGroupAddon>\n        <InputGroupInput\n          aria-label=\"Search rows\"\n          placeholder={searchPlaceholder}\n          value={String(table.state.globalFilter ?? \"\")}\n          onChange={(e) => table.setGlobalFilter(e.target.value)}\n        />\n      </InputGroup>\n      {children}\n      <DropdownMenu>\n        <DropdownMenuTrigger asChild>\n          <Button variant=\"outline\" size=\"sm\" className=\"ml-auto\">\n            <Columns3Icon /> Columns\n          </Button>\n        </DropdownMenuTrigger>\n        <DropdownMenuContent align=\"end\">\n          <DropdownMenuLabel>Show columns</DropdownMenuLabel>\n          {table\n            .getAllLeafColumns()\n            .filter((column) => column.getCanHide())\n            .map((column) => (\n              <DropdownMenuCheckboxItem\n                key={column.id}\n                checked={column.getIsVisible()}\n                onCheckedChange={(visible) => column.toggleVisibility(visible)}\n                onSelect={(e) => e.preventDefault()}\n              >\n                {typeof column.columnDef.header === \"string\" ? column.columnDef.header : column.id.charAt(0).toUpperCase() + column.id.slice(1)}\n              </DropdownMenuCheckboxItem>\n            ))}\n        </DropdownMenuContent>\n      </DropdownMenu>\n    </div>\n  )\n}\n\nexport { DataToolbar }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "timeline",
+  "title": "Timeline",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/timeline.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\n// Vertical activity feed; each item gets a dot (or icon) on a connecting line.\nfunction Timeline({ className, ...props }: React.ComponentProps<\"ol\">) {\n  return <ol data-slot=\"timeline\" className={cn(\"flex flex-col\", className)} {...props} />\n}\n\nfunction TimelineItem({\n  title,\n  time,\n  icon,\n  className,\n  children,\n  ...props\n}: Omit<React.ComponentProps<\"li\">, \"title\"> & {\n  title: React.ReactNode\n  time?: React.ReactNode\n  icon?: React.ReactNode\n}) {\n  return (\n    <li data-slot=\"timeline-item\" className={cn(\"group/timeline relative flex gap-3 pb-5 last:pb-0\", className)} {...props}>\n      <span aria-hidden className=\"absolute top-6 bottom-0 left-3 w-px -translate-x-1/2 bg-border group-last/timeline:hidden\" />\n      <span className=\"relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-muted-foreground [&_svg]:size-3.5\">\n        {icon ?? <span className=\"size-2 rounded-full bg-primary\" />}\n      </span>\n      <div className=\"flex min-w-0 flex-1 flex-col gap-0.5 pt-0.5 text-sm\">\n        <div className=\"flex flex-wrap items-baseline justify-between gap-x-2\">\n          <span className=\"font-medium\">{title}</span>\n          {time && <span className=\"text-xs text-muted-foreground\">{time}</span>}\n        </div>\n        {children && <div className=\"text-muted-foreground\">{children}</div>}\n      </div>\n    </li>\n  )\n}\n\nexport { Timeline, TimelineItem }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

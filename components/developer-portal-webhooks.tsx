@@ -1,127 +1,287 @@
 "use client"
 
-import { Fragment, useMemo, useState, type FormEvent } from "react"
-import { CheckCircle2Icon, EllipsisIcon, Link2Icon, PlusIcon, SendIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react"
+import { useEffect, useRef, useState, type Dispatch, type FormEvent, type SetStateAction } from "react"
 import { toast } from "sonner"
+import { ArrowLeftIcon, PlusIcon, SendIcon, WebhookIcon } from "lucide-react"
 
-import { availableWebhookEvents, type DeveloperApp, type WebhookEndpoint } from "@/lib/developer-portal-data"
+import { PRODUCTS, WEBHOOK_EVENTS, eventsForScopes, randomToken, simulateDelivery, validateWebhookDraft, type PortalApp, type Webhook, type WebhookDelivery, type WebhookDraft, type WebhookDraftErrors } from "@/lib/developer-portal-data"
+import { ConfirmDialog, SecretRevealDialog, type Confirmation, type RevealedSecret } from "@/components/developer-portal-shared"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-const formDefault = { appId: "", url: "", events: [] as string[] }
-
-function deliveryBadge(status: WebhookEndpoint["lastDeliveryStatus"]) {
-  if (status === "Success") return "border-success/30 bg-success-soft text-success"
-  if (status === "Failed") return "border-destructive/30 bg-destructive-soft text-destructive"
-  return "border-warning/30 bg-warning-soft text-warning"
+function DeliveryStatus({ delivery }: { delivery?: WebhookDelivery }) {
+  if (!delivery) return <span className="text-sm text-muted-foreground">No deliveries</span>
+  const ok = delivery.status < 300
+  return <Badge variant="outline" className={ok ? "border-success/30 bg-success-soft text-success" : "border-destructive/30 bg-destructive-soft text-destructive"}>{delivery.status} {ok ? "OK" : "Failed"}</Badge>
 }
 
-function formatTimestamp(value: string) {
-  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(new Date(value))
+function nowStamp() {
+  return new Date().toISOString().slice(0, 19).replace("T", " ")
 }
 
-export function DeveloperPortalWebhooks({
-  apps,
-  webhooks,
-  onUpdate,
-  onDelete,
-  onTestDelivery,
-}: {
-  apps: DeveloperApp[]
-  webhooks: WebhookEndpoint[]
-  onUpdate: (webhook: WebhookEndpoint) => void
-  onDelete: (webhook: WebhookEndpoint) => void
-  onTestDelivery: (webhook: WebhookEndpoint, shouldFail: boolean) => void
-}) {
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingWebhook, setEditingWebhook] = useState<WebhookEndpoint | null>(null)
-  const [form, setForm] = useState(formDefault)
-  const [deleteTarget, setDeleteTarget] = useState<WebhookEndpoint | null>(null)
-  const enabledCount = useMemo(() => webhooks.filter((webhook) => webhook.enabled).length, [webhooks])
+export function WebhooksSection({ webhooks, setWebhooks, apps, onDirtyChange }: { webhooks: Webhook[]; setWebhooks: Dispatch<SetStateAction<Webhook[]>>; apps: PortalApp[]; onDirtyChange?: (dirty: boolean) => void }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [editor, setEditor] = useState<{ editingId: string | null; draft: WebhookDraft; initial: WebhookDraft } | null>(null)
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [errors, setErrors] = useState<WebhookDraftErrors>({})
+  const [secret, setSecret] = useState<RevealedSecret | null>(null)
+  const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
+  const urlRef = useRef<HTMLInputElement>(null)
+  const selected = webhooks.find((webhook) => webhook.id === selectedId)
+  const appName = (id: string) => apps.find((app) => app.id === id)?.name ?? "Unknown app"
+  const dirty = Boolean(editorOpen && editor && JSON.stringify(editor.draft) !== JSON.stringify(editor.initial))
+  const editorApp = apps.find((app) => app.id === editor?.draft.appId)
+  const allowedEvents = editorApp ? eventsForScopes(editorApp.scopes) : []
 
-  function openCreate() {
-    setEditingWebhook(null)
-    setForm({ ...formDefault, appId: apps[0]?.id ?? "" })
-    setDialogOpen(true)
+  useEffect(() => {
+    onDirtyChange?.(dirty)
+  }, [dirty, onDirtyChange])
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange])
+
+  function update(id: string, change: (webhook: Webhook) => Webhook) {
+    setWebhooks((current) => current.map((webhook) => (webhook.id === id ? change(webhook) : webhook)))
   }
 
-  function openEdit(webhook: WebhookEndpoint) {
-    setEditingWebhook(webhook)
-    setForm({ appId: webhook.appId, url: webhook.url, events: [...webhook.events] })
-    setDialogOpen(true)
+  function openEditor(webhook?: Webhook) {
+    const draft: WebhookDraft = webhook ? { url: webhook.url, appId: webhook.appId, events: webhook.events } : { url: "", appId: apps[0]?.id ?? "", events: [] }
+    setErrors({})
+    setEditor({ editingId: webhook?.id ?? null, draft, initial: draft })
+    setEditorOpen(true)
   }
 
-  function toggleEvent(eventName: string) {
-    setForm((current) => ({ ...current, events: current.events.includes(eventName) ? current.events.filter((event) => event !== eventName) : [...current.events, eventName] }))
+  function updateDraft(patch: Partial<WebhookDraft>) {
+    setEditor((current) => current && { ...current, draft: { ...current.draft, ...patch } })
+    setErrors((current) => ({ ...current, ...Object.fromEntries(Object.keys(patch).map((key) => [key, undefined])) }))
   }
 
-  function saveWebhook(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent) {
     event.preventDefault()
-    const url = form.url.trim()
-    if (!form.appId || !url || form.events.length === 0) return
-    try {
-      const parsed = new URL(url)
-      if (parsed.protocol !== "https:" && parsed.hostname !== "localhost") return
-    } catch {
-      return
-    }
-    if (editingWebhook) {
-      onUpdate({ ...editingWebhook, appId: form.appId, url, events: form.events })
-      toast.success("Webhook updated", { position: "bottom-right" })
+    if (!editor) return
+    const nextErrors = validateWebhookDraft(editor.draft, apps)
+    setErrors(nextErrors)
+    if (nextErrors.url) return urlRef.current?.focus()
+    if (nextErrors.appId) return document.getElementById("webhook-app")?.focus()
+    if (nextErrors.events) return document.getElementById("webhook-events")?.focus()
+
+    const draft = { ...editor.draft, url: editor.draft.url.trim() }
+    if (editor.editingId) {
+      update(editor.editingId, (webhook) => ({ ...webhook, ...draft }))
+      toast.success("Endpoint updated")
     } else {
-      const suffix = Math.random().toString(36).slice(2, 7)
-      onUpdate({ id: `wh_${suffix}`, appId: form.appId, url, events: form.events, enabled: true, lastDeliveryAt: new Date().toISOString(), lastDeliveryStatus: "Pending" })
-      toast.success("Webhook endpoint added", { position: "bottom-right" })
+      const signingSecret = `whsec_${randomToken(32)}`
+      const webhook: Webhook = { ...draft, id: `wh-${randomToken(8)}`, enabled: true, secretLast4: signingSecret.slice(-4), deliveries: [] }
+      setWebhooks((current) => [...current, webhook])
+      setSecret({ title: "Endpoint added", description: "Verify the X-Ivosights-Signature header on every delivery with this signing secret.", items: [{ label: "Signing secret", value: signingSecret, secret: true }] })
     }
-    setDialogOpen(false)
+    setEditorOpen(false)
   }
 
-  function testDelivery(webhook: WebhookEndpoint, shouldFail: boolean) {
-    onTestDelivery(webhook, shouldFail)
-    toast[shouldFail ? "error" : "success"](shouldFail ? "Simulated delivery failed" : "Test delivery succeeded", {
-      description: shouldFail ? "The endpoint returned HTTP 503. Review the response and retry." : "The endpoint returned HTTP 200 in 142 ms.",
-      position: "bottom-right",
+  function sendTest(webhook: Webhook) {
+    const event = webhook.events[0]
+    const result = simulateDelivery(webhook.url, webhook.deliveries.length + 1)
+    update(webhook.id, (current) => ({ ...current, deliveries: [{ id: `d-${randomToken(6)}`, at: nowStamp(), event, ...result }, ...current.deliveries] }))
+    if (result.status < 300) toast.success("Test event delivered", { description: `${event} returned ${result.status}.` })
+    else toast.error("Test event failed", { description: `The endpoint returned ${result.status}. Check that it is reachable and returns 2xx.` })
+  }
+
+  function rotateSecret(webhook: Webhook) {
+    setConfirmation({
+      title: "Rotate signing secret?",
+      description: "Deliveries are signed with the new secret immediately. Update your signature check first.",
+      action: "Rotate secret",
+      onConfirm: () => {
+        const value = `whsec_${randomToken(32)}`
+        update(webhook.id, (current) => ({ ...current, secretLast4: value.slice(-4) }))
+        setSecret({ title: "New signing secret", description: "Use this secret to verify deliveries from now on.", items: [{ label: "Signing secret", value, secret: true }] })
+      },
     })
   }
 
+  function requestDelete(webhook: Webhook) {
+    setConfirmation({
+      title: "Delete endpoint?",
+      description: `${webhook.url} stops receiving events immediately.`,
+      action: "Delete endpoint",
+      onConfirm: () => {
+        setWebhooks((current) => current.filter((item) => item.id !== webhook.id))
+        setSelectedId(null)
+        toast.success("Endpoint deleted")
+      },
+    })
+  }
+
+  const enabledSwitch = (webhook: Webhook) => (
+    <Switch
+      checked={webhook.enabled}
+      aria-label={`${webhook.enabled ? "Pause" : "Resume"} ${webhook.url}`}
+      onCheckedChange={(enabled) => update(webhook.id, (current) => ({ ...current, enabled }))}
+    />
+  )
+
   return (
-    <div className="flex min-w-0 flex-col gap-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div className="flex flex-col gap-1.5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-info">Integrations</p><h1 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">Webhooks</h1><p className="text-sm leading-relaxed text-muted-foreground">Send event notifications to endpoints you control.</p></div><Button onClick={openCreate} disabled={!apps.length}><PlusIcon data-icon="inline-start" />Add endpoint</Button></header>
+    <div className="flex flex-col gap-6">
+      {selected ? (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <Button variant="ghost" size="sm" className="self-start" onClick={() => setSelectedId(null)}><ArrowLeftIcon data-icon="inline-start" />Webhooks</Button>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex min-w-0 flex-col gap-1">
+                <h2 className="truncate font-mono text-lg font-semibold">{selected.url}</h2>
+                <span className="text-sm text-muted-foreground">Owned by {appName(selected.appId)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="flex items-center gap-2 font-normal">{enabledSwitch(selected)}{selected.enabled ? "Active" : "Paused"}</Label>
+                <Button variant="outline" onClick={() => openEditor(selected)}>Edit</Button>
+                <Button variant="outline" className="text-destructive" onClick={() => requestDelete(selected)}>Delete</Button>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader><CardTitle className="text-base">Subscribed events</CardTitle></CardHeader>
+              <CardContent className="flex flex-wrap gap-1">{selected.events.map((event) => <Badge key={event} variant="outline" className="font-mono text-xs">{event}</Badge>)}</CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-base">Signing secret</CardTitle><CardDescription>Sent as an HMAC-SHA256 signature in X-Ivosights-Signature.</CardDescription></CardHeader>
+              <CardContent className="flex flex-wrap items-center justify-between gap-3">
+                <code className="font-mono text-sm" aria-label={`Secret ending in ${selected.secretLast4}`}>whsec_••••••••••••{selected.secretLast4}</code>
+                <Button variant="outline" size="sm" onClick={() => rotateSecret(selected)}>Rotate secret</Button>
+              </CardContent>
+            </Card>
+          </div>
+          <Card>
+            <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3">
+              <div className="flex flex-col gap-1">
+                <CardTitle className="text-base">Recent deliveries</CardTitle>
+                <CardDescription>{selected.enabled ? `Test events send ${selected.events[0]} with sample data.` : "Resume the endpoint to send test events."}</CardDescription>
+              </div>
+              <Button size="sm" variant="outline" disabled={!selected.enabled} onClick={() => sendTest(selected)}><SendIcon data-icon="inline-start" />Send test event</Button>
+            </CardHeader>
+            <CardContent>
+              {selected.deliveries.length ? (
+                <div className="rounded-lg border">
+                  <Table>
+                    <TableHeader><TableRow><TableHead className="pl-3">Time (UTC)</TableHead><TableHead>Event</TableHead><TableHead>Status</TableHead><TableHead className="text-right pr-3">Latency</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {selected.deliveries.map((delivery) => (
+                        <TableRow key={delivery.id}>
+                          <TableCell className="pl-3 font-mono text-xs">{delivery.at}</TableCell>
+                          <TableCell className="font-mono text-xs">{delivery.event}</TableCell>
+                          <TableCell><DeliveryStatus delivery={delivery} /></TableCell>
+                          <TableCell className="pr-3 text-right tabular-nums">{delivery.latencyMs} ms</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : <p className="text-sm text-muted-foreground">No deliveries yet.</p>}
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col gap-1">
+              <h2 className="font-heading text-2xl font-semibold tracking-tight">Webhooks</h2>
+              <p className="text-sm text-muted-foreground">Receive real-time events from Ivosights products at your own endpoint.</p>
+            </div>
+            {webhooks.length > 0 && <Button disabled={!apps.length} onClick={() => openEditor()}><PlusIcon data-icon="inline-start" />Add endpoint</Button>}
+          </div>
+          {webhooks.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-16 text-center">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-secondary"><WebhookIcon className="size-5" /></span>
+              <div className="flex flex-col gap-1">
+                <h3 className="font-medium">No endpoints yet</h3>
+                <p className="max-w-sm text-sm text-muted-foreground">{apps.length ? "Add an endpoint to receive events as they happen." : "Create an app first. Endpoints receive events for the products in its scopes."}</p>
+              </div>
+              <Button disabled={!apps.length} onClick={() => openEditor()}><PlusIcon data-icon="inline-start" />Add endpoint</Button>
+            </div>
+          ) : (
+            <div className="rounded-xl border">
+              <Table>
+                <TableHeader><TableRow><TableHead className="pl-4">Endpoint</TableHead><TableHead>App</TableHead><TableHead>Events</TableHead><TableHead>Last delivery</TableHead><TableHead>Enabled</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {webhooks.map((webhook) => (
+                    <TableRow key={webhook.id}>
+                      <TableCell className="max-w-72 pl-4">
+                        <button type="button" onClick={() => setSelectedId(webhook.id)} className="block max-w-full truncate rounded-sm font-mono text-sm text-link hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{webhook.url}</button>
+                      </TableCell>
+                      <TableCell>{appName(webhook.appId)}</TableCell>
+                      <TableCell>{webhook.events.length}</TableCell>
+                      <TableCell>{webhook.enabled ? <DeliveryStatus delivery={webhook.deliveries[0]} /> : <Badge variant="secondary">Paused</Badge>}</TableCell>
+                      <TableCell>{enabledSwitch(webhook)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
+      )}
 
-      <section aria-label="Webhook status" className="grid gap-3 sm:grid-cols-3"><Card className="gap-0 py-0"><CardContent className="flex items-center gap-3 px-4 py-4"><span className="grid size-9 place-items-center rounded-lg bg-info-soft text-info"><Link2Icon className="size-4" /></span><div><p className="text-xs text-muted-foreground">Total endpoints</p><p className="font-data text-xl font-semibold tabular-nums">{webhooks.length}</p></div></CardContent></Card><Card className="gap-0 py-0"><CardContent className="flex items-center gap-3 px-4 py-4"><span className="grid size-9 place-items-center rounded-lg bg-success-soft text-success"><CheckCircle2Icon className="size-4" /></span><div><p className="text-xs text-muted-foreground">Enabled</p><p className="font-data text-xl font-semibold tabular-nums">{enabledCount}</p></div></CardContent></Card><Card className="gap-0 py-0"><CardContent className="flex items-center gap-3 px-4 py-4"><span className="grid size-9 place-items-center rounded-lg bg-warning-soft text-warning"><SendIcon className="size-4" /></span><div><p className="text-xs text-muted-foreground">Delivery mode</p><p className="text-sm font-semibold">Simulated</p></div></CardContent></Card></section>
+      <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
+        <DialogContent data-parry-theme className="flex max-h-[calc(100dvh-2rem)] flex-col gap-0 p-0 sm:max-w-lg">
+          <DialogHeader className="border-b px-6 py-4">
+            <DialogTitle>{editor?.editingId ? "Edit endpoint" : "Add endpoint"}</DialogTitle>
+            <DialogDescription>Events are limited to the products the owning app can read.</DialogDescription>
+          </DialogHeader>
+          {editor && (
+            <form id="webhook-editor" noValidate onSubmit={submit} className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 py-5">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="webhook-url">Endpoint URL</Label>
+                <Input ref={urlRef} id="webhook-url" placeholder="https://example.com/webhooks/ivosights" value={editor.draft.url} onChange={(event) => updateDraft({ url: event.target.value })} aria-invalid={Boolean(errors.url)} aria-describedby={errors.url ? "webhook-url-error" : undefined} />
+                {errors.url && <p id="webhook-url-error" className="text-sm text-destructive">{errors.url}</p>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="webhook-app">App</Label>
+                <Select value={editor.draft.appId} onValueChange={(appId) => {
+                  const allowed = eventsForScopes(apps.find((app) => app.id === appId)?.scopes ?? [])
+                  updateDraft({ appId, events: editor.draft.events.filter((event) => allowed.includes(event)) })
+                }}>
+                  <SelectTrigger id="webhook-app" className="w-full" aria-invalid={Boolean(errors.appId)}><SelectValue placeholder="Choose an app" /></SelectTrigger>
+                  <SelectContent>{apps.map((app) => <SelectItem key={app.id} value={app.id}>{app.name}</SelectItem>)}</SelectContent>
+                </Select>
+                {errors.appId && <p className="text-sm text-destructive">{errors.appId}</p>}
+              </div>
+              <fieldset id="webhook-events" tabIndex={-1} aria-describedby={errors.events ? "webhook-events-error" : undefined} className="flex flex-col gap-3 outline-none">
+                <legend className="mb-2 text-sm font-medium">Events</legend>
+                {PRODUCTS.filter(({ key }) => WEBHOOK_EVENTS[key].some((event) => allowedEvents.includes(event))).map(({ key, name }) => (
+                  <div key={key} className="flex flex-col gap-2 rounded-lg border p-3">
+                    <span className="text-xs font-medium text-muted-foreground">{name}</span>
+                    {WEBHOOK_EVENTS[key].map((event) => (
+                      <Label key={event} className="flex items-center gap-2 font-mono text-xs font-normal">
+                        <Checkbox
+                          checked={editor.draft.events.includes(event)}
+                          onCheckedChange={(checked) => updateDraft({ events: checked === true ? [...editor.draft.events, event] : editor.draft.events.filter((item) => item !== event) })}
+                        />
+                        {event}
+                      </Label>
+                    ))}
+                  </div>
+                ))}
+                {!allowedEvents.length && <p className="text-sm text-muted-foreground">This app has no scopes with events.</p>}
+                {errors.events && <p id="webhook-events-error" className="text-sm text-destructive">{errors.events}</p>}
+              </fieldset>
+            </form>
+          )}
+          <DialogFooter className="mx-0 mb-0 px-6 py-4">
+            <Button variant="outline" onClick={() => setEditorOpen(false)}>Cancel</Button>
+            <Button type="submit" form="webhook-editor">{editor?.editingId ? "Save changes" : "Add endpoint"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      <Card className="gap-0 py-0"><CardHeader className="px-4 py-4 sm:px-5"><CardTitle className="text-base">Endpoint directory</CardTitle><CardDescription>Configure event subscriptions and inspect recent delivery status.</CardDescription></CardHeader><CardContent className="p-0">{webhooks.length ? <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Endpoint</TableHead><TableHead>Application</TableHead><TableHead>Events</TableHead><TableHead>Last delivery</TableHead><TableHead>Status</TableHead><TableHead>Enabled</TableHead><TableHead className="w-12"><span className="sr-only">Actions</span></TableHead></TableRow></TableHeader><TableBody>{webhooks.map((webhook) => {
-        const appName = apps.find((app) => app.id === webhook.appId)?.name ?? "Deleted app"
-        return <Fragment key={webhook.id}><TableRow>
-          <TableCell className="min-w-56"><div className="flex flex-col gap-1"><span className="break-all font-mono text-xs font-medium">{webhook.url}</span><span className="font-mono text-[10px] text-muted-foreground">{webhook.id}</span></div></TableCell>
-          <TableCell className="min-w-32 text-sm">{appName}</TableCell>
-          <TableCell className="min-w-40"><div className="flex max-w-56 flex-wrap gap-1">{webhook.events.slice(0, 2).map((eventName) => <Badge key={eventName} variant="secondary" className="font-mono text-[10px]">{eventName}</Badge>)}{webhook.events.length > 2 ? <Badge variant="outline" className="text-[10px]">+{webhook.events.length - 2}</Badge> : null}</div></TableCell>
-          <TableCell className="min-w-32"><div className="flex flex-col gap-1"><span className="text-xs">{formatTimestamp(webhook.lastDeliveryAt)}</span><Badge variant="outline" className={`w-fit ${deliveryBadge(webhook.lastDeliveryStatus)}`}>{webhook.lastDeliveryStatus}</Badge></div></TableCell>
-          <TableCell><Badge variant={webhook.enabled ? "default" : "secondary"}>{webhook.enabled ? "Active" : "Disabled"}</Badge></TableCell>
-          <TableCell><Switch checked={webhook.enabled} onCheckedChange={(enabled) => onUpdate({ ...webhook, enabled })} aria-label={`${webhook.enabled ? "Disable" : "Enable"} webhook ${webhook.id}`} /></TableCell>
-          <TableCell><DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label={`Actions for ${webhook.url}`}><EllipsisIcon /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem onSelect={() => testDelivery(webhook, false)}><SendIcon />Simulate success</DropdownMenuItem><DropdownMenuItem onSelect={() => testDelivery(webhook, true)}><TriangleAlertIcon />Simulate failure</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem onSelect={() => openEdit(webhook)}>Edit endpoint</DropdownMenuItem><DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={() => setDeleteTarget(webhook)}><Trash2Icon />Delete endpoint</DropdownMenuItem></DropdownMenuContent></DropdownMenu></TableCell>
-        </TableRow>{webhook.lastDeliveryStatus === "Failed" && webhook.lastDeliveryError ? <TableRow><TableCell colSpan={7} className="bg-destructive-soft/30 py-2 text-xs text-destructive"><span className="inline-flex items-center gap-2"><TriangleAlertIcon className="size-3.5" />{webhook.lastDeliveryError}</span></TableCell></TableRow> : null}</Fragment>
-      })}</TableBody></Table></div> : <div className="flex min-h-64 flex-col items-center justify-center gap-3 px-6 py-10 text-center"><span className="grid size-11 place-items-center rounded-full bg-muted text-muted-foreground"><Link2Icon className="size-5" /></span><div className="flex max-w-sm flex-col gap-1"><p className="text-sm font-medium">No webhook endpoints</p><p className="text-sm leading-relaxed text-muted-foreground">Add an endpoint to subscribe an application to platform events.</p></div><Button size="sm" onClick={openCreate} disabled={!apps.length}><PlusIcon data-icon="inline-start" />Add endpoint</Button>{!apps.length ? <p className="text-xs text-muted-foreground">Create an application before adding webhook endpoints.</p> : null}</div>}</CardContent></Card>
-
-      <Card className="gap-0 border-info/20 bg-info-soft/30 py-0"><CardContent className="flex items-start gap-3 px-4 py-3.5"><TriangleAlertIcon className="mt-0.5 size-4 shrink-0 text-info" /><p className="text-xs leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Local simulation.</span> Test deliveries do not contact these URLs. Choose a success or failure outcome to explore the delivery states.</p></CardContent></Card>
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}><DialogContent><form onSubmit={saveWebhook} className="flex flex-col gap-5"><DialogHeader><DialogTitle>{editingWebhook ? "Edit webhook endpoint" : "Add webhook endpoint"}</DialogTitle><DialogDescription>Choose an application, endpoint URL, and event subscriptions.</DialogDescription></DialogHeader>
-        <div className="flex flex-col gap-2"><Label htmlFor="webhook-app">Application <span className="text-destructive">*</span></Label><Select value={form.appId} onValueChange={(appId) => setForm((current) => ({ ...current, appId }))}><SelectTrigger id="webhook-app"><SelectValue placeholder="Select an application" /></SelectTrigger><SelectContent>{apps.map((app) => <SelectItem key={app.id} value={app.id}>{app.name}</SelectItem>)}</SelectContent></Select></div>
-        <div className="flex flex-col gap-2"><Label htmlFor="webhook-url">Endpoint URL <span className="text-destructive">*</span></Label><Input id="webhook-url" type="url" value={form.url} onChange={(event) => setForm((current) => ({ ...current, url: event.target.value }))} placeholder="https://api.example.com/webhooks" required /><p className="text-xs text-muted-foreground">Use HTTPS, or localhost for a local development endpoint.</p></div>
-        <fieldset className="flex flex-col gap-3"><legend className="text-sm font-medium">Subscribed events <span className="text-destructive">*</span></legend><div className="grid gap-2 sm:grid-cols-2">{availableWebhookEvents.map((eventName) => <label key={eventName} className="flex items-center gap-2 rounded-md border px-3 py-2.5 text-xs"><Checkbox checked={form.events.includes(eventName)} onCheckedChange={() => toggleEvent(eventName)} /><span className="font-mono">{eventName}</span></label>)}</div><p className="text-xs text-muted-foreground">Select at least one event.</p></fieldset>
-        <DialogFooter><Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button><Button type="submit" disabled={!form.appId || !form.url.trim() || form.events.length === 0}>{editingWebhook ? "Save changes" : "Add endpoint"}</Button></DialogFooter>
-      </form></DialogContent></Dialog>
-
-      <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}><DialogContent><DialogHeader><DialogTitle>Delete webhook endpoint?</DialogTitle><DialogDescription>Remove this endpoint and its event subscriptions from the local demo workspace.</DialogDescription></DialogHeader><DialogFooter><Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button><Button variant="destructive" onClick={() => { if (deleteTarget) { onDelete(deleteTarget); toast.success("Webhook endpoint deleted", { position: "bottom-right" }) } setDeleteTarget(null) }}>Delete endpoint</Button></DialogFooter></DialogContent></Dialog>
+      <SecretRevealDialog secret={secret} onClose={() => setSecret(null)} />
+      <ConfirmDialog confirmation={confirmation} onClose={() => setConfirmation(null)} />
     </div>
   )
 }

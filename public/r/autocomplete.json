@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "autocomplete",
+  "title": "Autocomplete",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/command"
+  ],
+  "files": [
+    {
+      "path": "components/ui/autocomplete.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \"@/components/ui/command\"\n\n// Free-text input that suggests matches while typing; unlike Combobox, any value is allowed.\nfunction Autocomplete({\n  value,\n  onValueChange,\n  suggestions,\n  placeholder,\n  emptyText,\n  className,\n  \"aria-label\": ariaLabel,\n}: {\n  value: string\n  onValueChange: (value: string) => void\n  suggestions: string[]\n  placeholder?: string\n  // Omit to hide the list when nothing matches.\n  emptyText?: string\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const [open, setOpen] = React.useState(false)\n\n  return (\n    <Command\n      data-slot=\"autocomplete\"\n      className={cn(\"relative h-auto overflow-visible bg-transparent p-0\", className)}\n      onKeyDown={(e) => {\n        if (e.key === \"Escape\") setOpen(false)\n      }}\n    >\n      <CommandInput\n        aria-label={ariaLabel}\n        placeholder={placeholder}\n        value={value}\n        onValueChange={(next) => {\n          onValueChange(next)\n          setOpen(next.length > 0)\n        }}\n        onFocus={() => setOpen(value.length > 0)}\n        onBlur={() => setOpen(false)}\n      />\n      <CommandList\n        hidden={!open}\n        className={cn(\"absolute inset-x-0 top-full z-50 mt-1 rounded-lg border bg-popover p-1 shadow-md\", !emptyText && \"[&:not(:has([cmdk-item]))]:hidden\")}\n      >\n        {emptyText && <CommandEmpty>{emptyText}</CommandEmpty>}\n        {suggestions.map((suggestion) => (\n          <CommandItem\n            key={suggestion}\n            value={suggestion}\n            // Keep focus in the input so the blur handler doesn't close the list before selection.\n            onMouseDown={(e) => e.preventDefault()}\n            onSelect={() => {\n              onValueChange(suggestion)\n              setOpen(false)\n            }}\n          >\n            {suggestion}\n          </CommandItem>\n        ))}\n      </CommandList>\n    </Command>\n  )\n}\n\nexport { Autocomplete }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

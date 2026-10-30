@@ -27,7 +27,7 @@ export default function Home() {
             <span className="sr-only"> UI</span>
           </h1>
           <p className="max-w-2xl text-balance text-3xl leading-tight tracking-tight sm:text-5xl">
-            The Ivosights design system, <span className="font-bold">ready for Next.js and Vite</span>
+            The Ivosights UI Kit, <span className="font-bold">ready for Next.js and Vite</span>
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="h-12 rounded-full px-8 text-base">
@@ -186,7 +186,7 @@ export default function Home() {
             <LayersIcon aria-hidden className="absolute -top-6 -left-6 size-40 -rotate-12 text-primary/10" />
             <BlocksIcon aria-hidden className="absolute -right-8 -bottom-8 size-48 rotate-12 text-primary/10" />
             <h2 className="max-w-xl font-heading text-4xl font-bold tracking-tight text-balance">
-              Discover the full <span className="text-link">parry</span> design system
+              Discover the full <span className="text-link">Ivosights</span> UI Kit
             </h2>
             <p className="max-w-lg text-muted-foreground">
               Install the theme once, then add components one at a time as you need them.

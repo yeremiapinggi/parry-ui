@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "snippet",
+  "title": "Snippet",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/code-block",
+    "@parry/tabs"
+  ],
+  "files": [
+    {
+      "path": "components/ui/snippet.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { CopyButton } from \"@/components/ui/code-block\"\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from \"@/components/ui/tabs\"\n\ntype SnippetCommand = { label: string; code: string }\n\n// One-line commands (e.g. per package manager) in tabs, each with a copy button.\nfunction Snippet({\n  commands,\n  defaultValue,\n  value,\n  onValueChange,\n  className,\n}: {\n  commands: SnippetCommand[]\n  defaultValue?: string\n  value?: string\n  onValueChange?: (value: string) => void\n  className?: string\n}) {\n  return (\n    <Tabs\n      data-slot=\"snippet\"\n      defaultValue={defaultValue ?? commands[0]?.label}\n      value={value}\n      onValueChange={onValueChange}\n      className={cn(\"gap-0 overflow-hidden rounded-lg border bg-muted/40\", className)}\n    >\n      {commands.length > 1 && (\n        <TabsList variant=\"line\" className=\"h-9 w-full justify-start rounded-none border-b px-2\">\n          {commands.map((command) => (\n            <TabsTrigger key={command.label} value={command.label} className=\"flex-none text-xs\">\n              {command.label}\n            </TabsTrigger>\n          ))}\n        </TabsList>\n      )}\n      {commands.map((command) => (\n        <TabsContent key={command.label} value={command.label} className=\"flex items-center gap-2 py-1.5 pr-1.5 pl-3\">\n          <code className=\"min-w-0 flex-1 overflow-x-auto font-mono text-[13px] whitespace-nowrap\">\n            <span aria-hidden className=\"mr-2 text-muted-foreground select-none\">$</span>\n            {command.code}\n          </code>\n          <CopyButton value={command.code} />\n        </TabsContent>\n      ))}\n    </Tabs>\n  )\n}\n\nexport { Snippet, type SnippetCommand }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "color-picker",
+  "title": "Color Picker",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/input",
+    "@parry/popover"
+  ],
+  "files": [
+    {
+      "path": "components/ui/color-picker.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\nimport { Input } from \"@/components/ui/input\"\nimport { Popover, PopoverContent, PopoverTrigger } from \"@/components/ui/popover\"\n\nconst HEX = /^#[0-9a-f]{6}$/i\n\nfunction ColorPicker({\n  value,\n  onValueChange,\n  swatches = [],\n  className,\n  \"aria-label\": ariaLabel = \"Color\",\n}: {\n  // Six-digit hex, e.g. \"#3366e0\".\n  value: string\n  onValueChange: (value: string) => void\n  swatches?: string[]\n  className?: string\n  \"aria-label\"?: string\n}) {\n  const [draft, setDraft] = React.useState(value)\n  const [lastValue, setLastValue] = React.useState(value)\n  // Keep the hex field in sync when the value changes from outside.\n  if (value !== lastValue) {\n    setLastValue(value)\n    setDraft(value)\n  }\n\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button data-slot=\"color-picker\" variant=\"outline\" aria-label={`${ariaLabel}: ${value}`} className={cn(\"w-36 justify-start font-mono\", className)}>\n          <span className=\"size-4 rounded-sm border\" style={{ backgroundColor: value }} />\n          {value.toUpperCase()}\n        </Button>\n      </PopoverTrigger>\n      <PopoverContent align=\"start\" className=\"flex w-56 flex-col gap-3\">\n        {/* The native picker gives the full spectrum without a custom canvas. */}\n        <input\n          type=\"color\"\n          aria-label={ariaLabel}\n          value={value}\n          onChange={(e) => onValueChange(e.target.value)}\n          className=\"h-24 w-full cursor-pointer rounded-md border bg-transparent\"\n        />\n        {swatches.length > 0 && (\n          <div className=\"grid grid-cols-8 gap-1.5\">\n            {swatches.map((swatch) => (\n              <button\n                key={swatch}\n                type=\"button\"\n                aria-label={swatch}\n                aria-pressed={swatch.toLowerCase() === value.toLowerCase()}\n                onClick={() => onValueChange(swatch)}\n                className=\"aspect-square rounded-sm border outline-none aria-pressed:ring-2 aria-pressed:ring-ring focus-visible:ring-2 focus-visible:ring-ring/50\"\n                style={{ backgroundColor: swatch }}\n              />\n            ))}\n          </div>\n        )}\n        <Input\n          aria-label={`${ariaLabel} hex`}\n          value={draft}\n          aria-invalid={!HEX.test(draft)}\n          onChange={(e) => {\n            setDraft(e.target.value)\n            if (HEX.test(e.target.value)) onValueChange(e.target.value)\n          }}\n          className=\"font-mono\"\n        />\n      </PopoverContent>\n    </Popover>\n  )\n}\n\nexport { ColorPicker }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

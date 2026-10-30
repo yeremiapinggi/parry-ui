@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scrollable-tabs-list",
+  "title": "Scrollable Tabs List",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/scroll-area",
+    "@parry/tabs"
+  ],
+  "files": [
+    {
+      "path": "components/ui/scrollable-tabs-list.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\"\nimport { TabsList } from \"@/components/ui/tabs\"\n\n// TabsList that scrolls sideways instead of wrapping or squeezing when there are many tabs.\nfunction ScrollableTabsList({ className, ...props }: React.ComponentProps<typeof TabsList>) {\n  return (\n    <ScrollArea data-slot=\"scrollable-tabs-list\" className=\"w-full pb-2.5 whitespace-nowrap\">\n      <TabsList className={cn(\"w-max\", className)} {...props} />\n      <ScrollBar orientation=\"horizontal\" />\n    </ScrollArea>\n  )\n}\n\nexport { ScrollableTabsList }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

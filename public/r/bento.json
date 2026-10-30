@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bento",
+  "title": "Bento",
+  "dependencies": [
+    "class-variance-authority",
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/bento.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"cn\"\n\n// Responsive grid for feature tiles; tiles span columns/rows on larger screens and stack on phones.\nfunction BentoGrid({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"bento-grid\" className={cn(\"grid auto-rows-[minmax(9rem,auto)] grid-cols-1 gap-3 sm:grid-cols-3\", className)} {...props} />\n}\n\nconst bentoTileVariants = cva(\n  \"group/bento relative flex flex-col justify-end gap-1 overflow-hidden rounded-xl border bg-card p-4 text-card-foreground\",\n  {\n    variants: {\n      size: {\n        default: \"\",\n        wide: \"sm:col-span-2\",\n        tall: \"sm:row-span-2\",\n        large: \"sm:col-span-2 sm:row-span-2\",\n      },\n    },\n    defaultVariants: { size: \"default\" },\n  }\n)\n\nfunction BentoTile({\n  size,\n  title,\n  description,\n  visual,\n  className,\n  children,\n  ...props\n}: Omit<React.ComponentProps<\"div\">, \"title\"> &\n  VariantProps<typeof bentoTileVariants> & {\n    title?: React.ReactNode\n    description?: React.ReactNode\n    // Decorative content filling the top of the tile (chart, image, icon art).\n    visual?: React.ReactNode\n  }) {\n  return (\n    <div data-slot=\"bento-tile\" className={cn(bentoTileVariants({ size }), className)} {...props}>\n      {visual && <div className=\"mb-auto flex flex-1 items-center justify-center pb-3\">{visual}</div>}\n      {title && <h3 className=\"text-sm font-semibold\">{title}</h3>}\n      {description && <p className=\"text-sm text-muted-foreground\">{description}</p>}\n      {children}\n    </div>\n  )\n}\n\nexport { BentoGrid, BentoTile, bentoTileVariants }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

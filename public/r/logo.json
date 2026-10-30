@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo",
+  "title": "Logo",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "components/ui/logo.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\n\n// Brand mark + optional wordmark, as a link home. Pass `mark` (an <img> or inline SVG) and/or `name`.\nfunction Logo({\n  mark,\n  name,\n  href = \"/\",\n  className,\n  ...props\n}: Omit<React.ComponentProps<\"a\">, \"children\"> & {\n  mark?: React.ReactNode\n  name?: React.ReactNode\n}) {\n  return (\n    <a\n      data-slot=\"logo\"\n      href={href}\n      className={cn(\n        \"inline-flex items-center gap-2 rounded-md font-heading text-lg font-bold tracking-tight outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_img]:size-8 [&_svg]:size-8\",\n        className\n      )}\n      {...props}\n    >\n      {mark}\n      {name}\n    </a>\n  )\n}\n\nexport { Logo }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

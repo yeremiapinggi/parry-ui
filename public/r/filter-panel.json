@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "filter-panel",
+  "title": "Filter Panel",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/checkbox",
+    "@parry/label"
+  ],
+  "files": [
+    {
+      "path": "components/ui/filter-panel.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\nimport { Checkbox } from \"@/components/ui/checkbox\"\nimport { Label } from \"@/components/ui/label\"\n\ntype FilterPanelSection = {\n  id: string\n  title: string\n  options: { value: string; label: string; count?: number }[]\n}\n\n// Faceted checkbox filters grouped in sections; `value` maps section id → checked option values.\nfunction FilterPanel({\n  sections,\n  value,\n  onValueChange,\n  className,\n}: {\n  sections: FilterPanelSection[]\n  value: Record<string, string[]>\n  onValueChange: (value: Record<string, string[]>) => void\n  className?: string\n}) {\n  const id = React.useId()\n  const active = Object.values(value).reduce((n, v) => n + v.length, 0)\n  const toggle = (section: string, option: string, checked: boolean) => {\n    const current = value[section] ?? []\n    onValueChange({ ...value, [section]: checked ? [...current, option] : current.filter((v) => v !== option) })\n  }\n\n  return (\n    <aside data-slot=\"filter-panel\" aria-label=\"Filters\" className={cn(\"flex w-full flex-col gap-4 text-sm\", className)}>\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-medium\">Filters{active > 0 && <span className=\"text-muted-foreground\"> · {active}</span>}</span>\n        <Button variant=\"ghost\" size=\"xs\" disabled={active === 0} onClick={() => onValueChange({})}>\n          Clear all\n        </Button>\n      </div>\n      {sections.map((section) => (\n        <fieldset key={section.id} className=\"flex flex-col gap-2 border-t pt-3\">\n          <legend className=\"float-left mb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase\">{section.title}</legend>\n          {section.options.map((option) => {\n            const optionId = `${id}-${section.id}-${option.value}`\n            return (\n              <div key={option.value} className=\"flex items-center gap-2\">\n                <Checkbox\n                  id={optionId}\n                  checked={value[section.id]?.includes(option.value) ?? false}\n                  onCheckedChange={(checked) => toggle(section.id, option.value, checked === true)}\n                />\n                <Label htmlFor={optionId} className=\"flex-1 font-normal\">{option.label}</Label>\n                {option.count !== undefined && <span className=\"text-xs text-muted-foreground tabular-nums\">{option.count}</span>}\n              </div>\n            )\n          })}\n        </fieldset>\n      ))}\n    </aside>\n  )\n}\n\nexport { FilterPanel, type FilterPanelSection }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

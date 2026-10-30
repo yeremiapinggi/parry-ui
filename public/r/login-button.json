@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "login-button",
+  "title": "Login Button",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@parry/button",
+    "@parry/social-button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/login-button.tsx",
+      "content": "import * as React from \"react\"\nimport { LogInIcon, MailIcon, UserPlusIcon } from \"lucide-react\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { SocialIcon, type SocialProvider } from \"@/components/ui/social-button\"\n\nconst intents = {\n  login: { label: \"Log in\", icon: <LogInIcon /> },\n  signup: { label: \"Sign up\", icon: <UserPlusIcon /> },\n  email: { label: \"Continue with email\", icon: <MailIcon /> },\n} as const\n\nfunction LoginButton({\n  intent = \"login\",\n  provider,\n  hideIcon = false,\n  children,\n  ...props\n}: React.ComponentProps<typeof Button> & {\n  intent?: keyof typeof intents\n  // A provider logo replaces the intent icon, e.g. \"Sign in with GitHub\".\n  provider?: SocialProvider\n  hideIcon?: boolean\n}) {\n  const { label, icon } = intents[intent]\n\n  return (\n    <Button data-slot=\"login-button\" {...props}>\n      {!hideIcon && (provider ? <SocialIcon provider={provider} /> : icon)}\n      {children ?? label}\n    </Button>\n  )\n}\n\nexport { LoginButton }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

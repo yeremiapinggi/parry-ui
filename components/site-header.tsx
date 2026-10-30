@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MenuIcon } from "lucide-react"
 
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ export const siteNav = [
   { href: "/docs", label: "Docs" },
   { href: "/components", label: "Components" },
   { href: "/templates", label: "Templates" },
+  { href: "/blocks", label: "Blocks" },
   { href: "/themes", label: "Themes" },
 ] as const
 
@@ -31,9 +32,13 @@ export function Logo() {
   )
 }
 
+// Full-screen block previews (/blocks/<id>) render without site chrome.
+export const isBlockPage = (pathname: string) => /^\/blocks\/[^/]+/.test(pathname)
+
 export function SiteHeader() {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  if (isBlockPage(pathname)) return null
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">

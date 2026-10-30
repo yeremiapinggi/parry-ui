@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mini-calendar",
+  "title": "Mini Calendar",
+  "dependencies": [
+    "date-fns",
+    "lucide-react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/mini-calendar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { addDays, format, isSameDay, startOfDay } from \"date-fns\"\nimport { ChevronLeftIcon, ChevronRightIcon } from \"lucide-react\"\n\nimport { cn } from \"cn\"\nimport { Button } from \"@/components/ui/button\"\n\n// A compact strip of consecutive days with prev/next paging.\nfunction MiniCalendar({\n  value,\n  onValueChange,\n  defaultStartDate,\n  days = 5,\n  className,\n  ...props\n}: Omit<React.ComponentProps<\"div\">, \"onChange\"> & {\n  value?: Date\n  onValueChange?: (date: Date) => void\n  defaultStartDate?: Date\n  days?: number\n}) {\n  const [start, setStart] = React.useState(() => startOfDay(defaultStartDate ?? value ?? new Date()))\n  const dates = Array.from({ length: days }, (_, i) => addDays(start, i))\n\n  return (\n    <div data-slot=\"mini-calendar\" role=\"group\" className={cn(\"inline-flex items-center gap-1 rounded-lg border bg-background p-1\", className)} {...props}>\n      <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Previous days\" onClick={() => setStart(addDays(start, -days))}>\n        <ChevronLeftIcon />\n      </Button>\n      {dates.map((date) => {\n        const selected = value ? isSameDay(date, value) : false\n        return (\n          <button\n            key={date.toISOString()}\n            type=\"button\"\n            aria-pressed={selected}\n            aria-label={format(date, \"EEEE, d MMMM yyyy\")}\n            onClick={() => onValueChange?.(date)}\n            className={cn(\n              \"flex w-10 flex-col items-center gap-0.5 rounded-md py-1.5 text-xs outline-none transition-colors hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50\",\n              selected && \"bg-primary text-primary-foreground hover:bg-primary-hover\"\n            )}\n          >\n            <span className={cn(\"text-muted-foreground\", selected && \"text-primary-foreground/80\")}>{format(date, \"EEE\")}</span>\n            <span className=\"text-sm font-medium tabular-nums\">{format(date, \"d\")}</span>\n          </button>\n        )\n      })}\n      <Button variant=\"ghost\" size=\"icon-sm\" aria-label=\"Next days\" onClick={() => setStart(addDays(start, days))}>\n        <ChevronRightIcon />\n      </Button>\n    </div>\n  )\n}\n\nexport { MiniCalendar }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

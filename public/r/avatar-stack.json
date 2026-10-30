@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-stack",
+  "title": "Avatar Stack",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@parry/avatar"
+  ],
+  "files": [
+    {
+      "path": "components/ui/avatar-stack.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"cn\"\nimport { AvatarGroup, AvatarGroupCount } from \"@/components/ui/avatar\"\n\n// AvatarGroup that caps the visible avatars at `max` (the rest become a +N count) and can fan out on hover.\nfunction AvatarStack({\n  max,\n  spreadOnHover = false,\n  label,\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  max?: number\n  spreadOnHover?: boolean\n  label?: React.ReactNode\n}) {\n  const avatars = React.Children.toArray(children)\n  const shown = max ? avatars.slice(0, max) : avatars\n  const hidden = avatars.length - shown.length\n\n  return (\n    <div data-slot=\"avatar-stack\" className={cn(\"inline-flex items-center gap-2\", className)} {...props}>\n      <AvatarGroup\n        className={cn(\n          spreadOnHover && \"*:transition-[margin] motion-safe:hover:space-x-1\"\n        )}\n      >\n        {shown}\n        {hidden > 0 && <AvatarGroupCount aria-label={`${hidden} more`}>+{hidden}</AvatarGroupCount>}\n      </AvatarGroup>\n      {label && <span className=\"text-sm text-muted-foreground\">{label}</span>}\n    </div>\n  )\n}\n\nexport { AvatarStack }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

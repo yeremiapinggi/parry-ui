@@ -1,0 +1,169 @@
+"use client"
+
+import {
+  BanIcon,
+  BookmarkIcon,
+  CircleCheckIcon,
+  CopyIcon,
+  EllipsisIcon,
+  FileSpreadsheetIcon,
+  GitMergeIcon,
+  Maximize2Icon,
+  Minimize2Icon,
+  PanelRightIcon,
+  RotateCcwIcon,
+  XIcon,
+} from "lucide-react"
+
+import type { Sentiment, Ticket, TicketStatus } from "@/components/blocks/_data/tickets"
+import { sentimentMeta, shortcuts } from "@/components/blocks/ticket-inbox-01/components/ticket-meta"
+import { Button } from "@/components/ui/button"
+import { DialogClose, DialogTitle } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Kbd } from "@/components/ui/kbd"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+
+function Hint({ label, keys, children }: { label: string; keys?: string; children: React.ReactElement }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent className="flex items-center gap-2">
+        {label}
+        {keys && <Kbd>{keys}</Kbd>}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+export function TicketHeader({
+  ticket: t,
+  status,
+  onStatusChange,
+  sentiment,
+  onSentimentChange,
+  bookmarked,
+  onBookmarkedChange,
+  expanded,
+  onToggleExpanded,
+  onOpenDetails,
+}: {
+  ticket: Ticket
+  status: TicketStatus
+  onStatusChange: (s: TicketStatus) => void
+  sentiment: Sentiment
+  onSentimentChange: (s: Sentiment) => void
+  bookmarked: boolean
+  onBookmarkedChange: (b: boolean) => void
+  expanded: boolean
+  onToggleExpanded: () => void
+  onOpenDetails: () => void
+}) {
+  const closed = status === "closed"
+
+  return (
+    <header className="border-b bg-card px-4 py-2.5 text-card-foreground md:px-6">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <DialogTitle className="font-heading text-lg font-semibold">
+          Ticket <span className="font-mono">#{t.id}</span>
+        </DialogTitle>
+
+
+        <div className="ml-auto flex items-center gap-1.5">
+
+          <Hint label={closed ? "Reopen ticket" : "Close ticket"} keys={shortcuts.closeReopen}>
+            <Button size="sm" variant={closed ? "default" : "outline"} onClick={() => onStatusChange(closed ? "open" : "closed")}>
+              {closed ? <RotateCcwIcon /> : <CircleCheckIcon />}
+              {closed ? "Reopen" : "Close ticket"}
+            </Button>
+          </Hint>
+
+          <DropdownMenu>
+            <Hint label="More actions">
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="More actions">
+                  <EllipsisIcon />
+                </Button>
+              </DropdownMenuTrigger>
+            </Hint>
+            <DropdownMenuContent align="end" className="w-60">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Sentiment</DropdownMenuLabel>
+                {(Object.keys(sentimentMeta) as Sentiment[]).map((s) => {
+                  const M = sentimentMeta[s]
+                  return (
+                    <DropdownMenuItem key={s} disabled={s === sentiment} onSelect={() => onSentimentChange(s)}>
+                      <M.icon className={M.tone} />
+                      Set {M.label}
+                      {s === sentiment && <DropdownMenuShortcut>Current</DropdownMenuShortcut>}
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Flags</DropdownMenuLabel>
+                <DropdownMenuCheckboxItem checked={bookmarked} onCheckedChange={(v) => onBookmarkedChange(v === true)}>
+                  <BookmarkIcon />
+                  Bookmark
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuItem variant="destructive">
+                  <BanIcon />
+                  Blacklist customer
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Contact</DropdownMenuLabel>
+                <DropdownMenuItem>
+                  <GitMergeIcon />
+                  Search &amp; Merge contact
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Export</DropdownMenuLabel>
+                <DropdownMenuItem>
+                  <FileSpreadsheetIcon />
+                  Download Excel
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <CopyIcon />
+                  Copy ticket link
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Hint label="Ticket details">
+            <Button variant="ghost" size="icon-sm" className="xl:hidden" aria-label="Show ticket details" onClick={onOpenDetails}>
+              <PanelRightIcon />
+            </Button>
+          </Hint>
+          <Hint label={expanded ? "Exit full screen" : "Full screen"}>
+            <Button variant="ghost" size="icon-sm" className="max-md:hidden" aria-label={expanded ? "Exit full screen" : "Full screen"} onClick={onToggleExpanded}>
+              {expanded ? <Minimize2Icon /> : <Maximize2Icon />}
+            </Button>
+          </Hint>
+          <Hint label="Close" keys="Esc">
+            <DialogClose asChild>
+              <Button variant="ghost" size="icon-sm" aria-label="Close ticket window">
+                <XIcon />
+              </Button>
+            </DialogClose>
+          </Hint>
+        </div>
+      </div>
+
+    </header>
+  )
+}

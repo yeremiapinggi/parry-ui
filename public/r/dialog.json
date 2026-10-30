@@ -8,7 +8,7 @@
     "cn"
   ],
   "registryDependencies": [
-    "button"
+    "@parry/button"
   ],
   "files": [
     {

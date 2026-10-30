@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-switcher",
+  "title": "Theme Switcher",
+  "description": "Light / dark / system picker. Needs a next-themes ThemeProvider with enableSystem.",
+  "dependencies": [
+    "next-themes",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@parry/button"
+  ],
+  "files": [
+    {
+      "path": "components/ui/theme-switcher.tsx",
+      "content": "\"use client\"\n\nimport { useSyncExternalStore } from \"react\"\nimport { LaptopIcon, MoonIcon, SunIcon } from \"lucide-react\"\nimport { useTheme } from \"next-themes\"\n\nimport { Button } from \"@/components/ui/button\"\n\nconst modes = [\n  { value: \"light\", label: \"Light\", icon: SunIcon },\n  { value: \"dark\", label: \"Dark\", icon: MoonIcon },\n  { value: \"system\", label: \"System\", icon: LaptopIcon },\n] as const\n\n// The stored theme is only known on the client; render no selection on the server to avoid a hydration mismatch.\nconst useMounted = () => useSyncExternalStore(() => () => {}, () => true, () => false)\n\nfunction ThemeSwitcher() {\n  const { theme, setTheme } = useTheme()\n  const mounted = useMounted()\n\n  return (\n    <div data-slot=\"theme-switcher\" role=\"group\" aria-label=\"Theme mode\" className=\"grid grid-cols-3 gap-2\">\n      {modes.map(({ value, label, icon: Icon }) => {\n        const active = mounted && theme === value\n        return (\n          <Button\n            key={value}\n            variant={active ? \"default\" : \"outline\"}\n            aria-pressed={active}\n            onClick={() => setTheme(value)}\n            className=\"h-auto flex-col gap-1 py-3\"\n          >\n            <Icon />\n            {label}\n          </Button>\n        )\n      })}\n    </div>\n  )\n}\n\nexport { ThemeSwitcher }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

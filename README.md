@@ -1,6 +1,6 @@
 # Parry UI
 
-The Ivosights design system, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
+The Ivosights UI Kit, built on [shadcn/ui](https://ui.shadcn.com) (Radix primitives, `radix-nova` style) with the
 **Midnight + Frost Blue** palette, **Plus Jakarta Sans** and **JetBrains Mono** fonts, and light/dark modes.
 
 Parry UI is a **shadcn registry**: components are copied into your project with the `shadcn` CLI instead of being installed
@@ -69,9 +69,17 @@ theme from `next-themes`.
 | Item | Contents |
 |------|----------|
 | `parry-theme` | Light/dark tokens, fonts, radius |
-| Form | `button`, `input`, `label`, `textarea`, `select`, `checkbox`, `switch` |
-| Feedback & overlay | `alert`, `badge`, `dialog`, `dropdown-menu`, `tooltip`, `sonner` |
-| Layout & data | `card`, `tabs`, `table`, `separator`, `avatar`, `skeleton` |
+| Action | `button`, `button-group`, `border-button`, `social-button`, `login-button`, `github-stars`, `kbd`, `theme-toggle`, `theme-switcher` |
+| Form | `input`, `label`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `toggle`, `toggle-group`, `field`, `input-group`, `input-otp`, `slider`, `calendar`, `date-picker`, `mini-calendar`, `command`, `combobox`, `autocomplete`, `choicebox`, `rating`, `tags-input`, `color-picker`, `dropzone`, `file-upload` |
+| Feedback | `alert`, `badge`, `sonner`, `spinner`, `progress`, `empty`, `banner`, `announcement`, `status`, `skeleton` |
+| Overlay | `dialog`, `alert-dialog`, `sheet`, `drawer`, `dialog-stack`, `hover-card`, `glimpse`, `context-menu`, `dropdown-menu`, `popover`, `tooltip` |
+| Navigation | `breadcrumb`, `pagination`, `navigation-menu`, `menubar`, `stepper`, `scrollable-tabs-list`, `accordion`, `collapsible` |
+| Layout & data | `card`, `tabs`, `table`, `separator`, `avatar`, `avatar-stack`, `aspect-ratio`, `scroll-area`, `resizable`, `chart`, `sparkline`, `stat`, `pill`, `item`, `list`, `list-panel`, `counter`, `price`, `relative-time`, `ticker`, `data-table`, `data-toolbar`, `filter-panel`, `tree`, `timeline`, `comparison`, `contribution-graph`, `bento`, `carousel`, `deck`, `marquee`, `reel` |
+| Media & dev | `code-block`, `snippet`, `qr-code`, `credit-card`, `logo`, `image-zoom` |
+
+Items that depend on other items reference them as `@parry/<name>`, so installing one pulls in the themed versions.
+`data-table` is built on TanStack Table **v9** (`tableFeatures` + `useTable`), not the v8 API in shadcn's docs.
+The checklist of shadcnblocks components and what each item covers is tracked in `tasks/ui-kit-plan.md`.
 
 On top of the built-in shadcn tokens, the theme adds the semantic colors `success`, `warning`, `info` and their `*-soft`
 pairs (plus `destructive-soft`), and `primary-hover`, `link`, and `placeholder`. Alert and Badge have no dedicated variants for these; use the token utilities:
@@ -108,9 +116,13 @@ npm run dev            # site (/, /docs, /components, /themes) at http://localho
 `npm run registry:build`. Don't edit the `parry-theme` section of `registry.json` by hand; the script overwrites it.
 
 **Adding a component:** run `npx shadcn@latest add <name>` in this repo, register it as a `registry:ui` item in
-`registry.json` (fill `dependencies` from the file's imports), add its preview to `app/components/page.tsx`, then run
-`npm run registry:build`. Components stay as close to the shadcn output as possible so upstream updates are easy to diff. The only Parry changes
-are color/state classes required by the brand spec:
+`registry.json` (fill `dependencies` from the file's imports and `registryDependencies` as `@parry/<name>`), add its
+preview to `app/components/page.tsx` (larger ones in `components/component-catalog-previews.tsx`), then run
+`npm run registry:build`. Answer **no** when the CLI offers to overwrite an existing file (pipe `yes n |` into it), or it
+replaces the themed `button`, `input` and `textarea`. The CLI installs dependencies with pnpm because `pnpm-lock.yaml`
+exists; keep `package-lock.json` in sync with `npm install --package-lock-only` afterwards. Previews must not read the
+current time while rendering (`cacheComponents` fails the build), so use fixed demo dates. Components stay as close to the shadcn output as possible so upstream updates are easy to diff. The only Parry changes
+are color/state classes required by the brand spec, plus two upstream fixes:
 
 | Component | Parry change |
 |-----------|--------------|
@@ -118,6 +130,8 @@ are color/state classes required by the brand spec:
 | `input`, `textarea`, `select` | White field (`bg-card`, no dark fill), `--placeholder` text, `bg-muted` when disabled |
 | `tabs` | Active tab uses `bg-accent` + `text-foreground`; line indicator uses `--ring`; inactive text `muted-foreground` |
 | `table` | Header row `bg-muted/50`, row hover `bg-muted` |
+| `progress` | Passes `value` to the Radix root so `aria-valuenow` is set |
+| `carousel` | Reads the first scroll state on the next frame (lint: no setState in effect) and removes its `reInit` listener |
 
 When re-adding a component from shadcn, re-apply these changes.
 
