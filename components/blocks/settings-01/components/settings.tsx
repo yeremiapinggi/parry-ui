@@ -52,7 +52,7 @@ function ChannelCard({ channel: c, onToggle }: { channel: ChannelCardData; onTog
   return (
     <Card className="gap-0 py-0">
       <CardContent className="flex items-start gap-3 p-4">
-        <ChannelIcon channel={c.id} muted={!c.connected} className="size-10 rounded-lg [&_svg]:size-5" />
+        <ChannelIcon channel={c.id} muted={!c.connected} className="size-10 rounded-lg bg-muted p-2.5" />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-medium">{meta.label}</h3>

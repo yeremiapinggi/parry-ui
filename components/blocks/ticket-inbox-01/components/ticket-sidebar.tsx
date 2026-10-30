@@ -365,7 +365,7 @@ function ContactInfo({ contact: c }: { contact: Ticket["contact"] }) {
         {identities.map((id) => (
           <ContactRow
             key={id.handle}
-            icon={<ChannelIcon channel={id.channel} className="size-4 [&_svg]:size-2.5" />}
+            icon={<ChannelIcon channel={id.channel} className="size-4" />}
             type={channelMeta[id.channel].label}
           >
             <span className="block truncate">{id.handle}</span>
@@ -534,7 +534,7 @@ export function TicketSidebar({
               <Tooltip key={ch}>
                 <TooltipTrigger asChild>
                   <span className="inline-flex">
-                    <ChannelIcon channel={ch} className="size-3.5 [&_svg]:size-2.5" />
+                    <ChannelIcon channel={ch} className="size-3.5" />
                     <span className="sr-only">{channelMeta[ch].typeLabel}</span>
                   </span>
                 </TooltipTrigger>

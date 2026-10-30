@@ -39,7 +39,7 @@ function journeyOf(c: ContactRow) {
     steps.push({
       key: `open-${t.id}`,
       at: t.createdAt,
-      icon: <ChannelIcon channel={t.channel} className="size-4 [&_svg]:size-2.5" />,
+      icon: <ChannelIcon channel={t.channel} className="size-4" />,
       title: (
         <>
           <Id id={t.id} /> via {channelMeta[t.channel].typeLabel}
@@ -132,7 +132,7 @@ export function ContactDetail({
                 {c.identities
                   .filter((i) => i.handle !== c.email && i.handle !== c.phone)
                   .map((i) => (
-                    <InfoItem key={i.channel + i.handle} icon={<ChannelIcon channel={i.channel} className="size-4 [&_svg]:size-2.5" />} label={channelMeta[i.channel].label}>
+                    <InfoItem key={i.channel + i.handle} icon={<ChannelIcon channel={i.channel} className="size-4" />} label={channelMeta[i.channel].label}>
                       {i.handle}
                     </InfoItem>
                   ))}

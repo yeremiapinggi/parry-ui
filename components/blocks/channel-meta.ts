@@ -1,17 +1,42 @@
-import { AtSignIcon, CameraIcon, MailIcon, MessagesSquareIcon, SendIcon, StoreIcon, ThumbsUpIcon, type LucideIcon } from "lucide-react"
+export type ChannelId =
+  | "facebook"
+  | "instagram"
+  | "twitter"
+  | "email"
+  | "chat"
+  | "telegram"
+  | "google-business"
+  | "whatsapp"
+  | "whatsapp-business"
+  | "whatsapp-scan"
+  | "line"
+  | "threads"
+  | "youtube"
+  | "play-store"
+  | "gmail"
+  | "exchange"
+  | "voice"
+  | "custom"
 
-export type ChannelId = "facebook" | "instagram" | "twitter" | "email" | "chat" | "telegram" | "google-business"
-
-// The only place brand colours live (blocks otherwise use theme tokens). lucide v1 ships no brand logos,
-// so each channel gets a generic glyph (in channelGlyphColor) on its brand colour.
-export const channelGlyphColor = "#FFFFFF"
-
-export const channelMeta: Record<ChannelId, { label: string; typeLabel: string; icon: LucideIcon; color: string }> = {
-  facebook: { label: "Facebook", typeLabel: "Facebook", icon: ThumbsUpIcon, color: "#1877F2" },
-  instagram: { label: "Instagram", typeLabel: "Instagram DM", icon: CameraIcon, color: "#C13584" },
-  twitter: { label: "Twitter", typeLabel: "Twitter DM", icon: AtSignIcon, color: "#0F1419" },
-  email: { label: "Email", typeLabel: "Email", icon: MailIcon, color: "#B45309" },
-  chat: { label: "Chat", typeLabel: "Webchat", icon: MessagesSquareIcon, color: "#1A6CCC" },
-  telegram: { label: "Telegram", typeLabel: "Telegram", icon: SendIcon, color: "#1C7CB0" },
-  "google-business": { label: "Google Business", typeLabel: "Google Business", icon: StoreIcon, color: "#1E7E34" },
+// Brand logos live as full-colour SVGs in public/channels/<id>.svg, so blocks stay free of brand hex values.
+// monoLogo: a near-black logo that ChannelIcon inverts in dark themes.
+export const channelMeta: Record<ChannelId, { label: string; typeLabel: string; monoLogo?: boolean }> = {
+  facebook: { label: "Facebook", typeLabel: "Facebook" },
+  instagram: { label: "Instagram", typeLabel: "Instagram DM" },
+  twitter: { label: "Twitter", typeLabel: "Twitter DM", monoLogo: true },
+  email: { label: "Email", typeLabel: "Email" },
+  chat: { label: "Chat", typeLabel: "Webchat" },
+  telegram: { label: "Telegram", typeLabel: "Telegram" },
+  "google-business": { label: "Google Business", typeLabel: "Google Business" },
+  whatsapp: { label: "WhatsApp", typeLabel: "WhatsApp" },
+  "whatsapp-business": { label: "WhatsApp Business", typeLabel: "WhatsApp Business" },
+  "whatsapp-scan": { label: "WhatsApp Scan", typeLabel: "WhatsApp Scan" },
+  line: { label: "LINE", typeLabel: "LINE" },
+  threads: { label: "Threads", typeLabel: "Threads" },
+  youtube: { label: "YouTube", typeLabel: "YouTube comment" },
+  "play-store": { label: "Play Store", typeLabel: "Play Store review" },
+  gmail: { label: "Gmail", typeLabel: "Gmail" },
+  exchange: { label: "Exchange", typeLabel: "Exchange mail" },
+  voice: { label: "Voice", typeLabel: "Voice call" },
+  custom: { label: "Custom channel", typeLabel: "Custom channel" },
 }

@@ -102,7 +102,7 @@ export function TicketRow({
         </Pill>
         {statePill(t)}
         <Pill className="max-w-48">
-          <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5!" />
+          <ChannelIcon channel={t.channel} className="size-3.5" />
           <span className="truncate">{t.account}</span>
         </Pill>
         {t.category && (

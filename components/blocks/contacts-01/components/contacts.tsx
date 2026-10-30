@@ -53,7 +53,7 @@ const buildColumns = (open: (c: ContactRow, trigger: HTMLElement) => void): Data
       <span className="flex flex-col gap-1">
         {row.original.identities.map((i) => (
           <span key={i.channel + i.handle} className="flex items-center gap-1.5">
-            <ChannelIcon channel={i.channel} className="size-4 [&_svg]:size-2.5" />
+            <ChannelIcon channel={i.channel} className="size-4" />
             <span className="sr-only">{channelMeta[i.channel].label}:</span>
             <span className="truncate">{i.handle}</span>
           </span>

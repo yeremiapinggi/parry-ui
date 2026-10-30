@@ -169,7 +169,7 @@ export function TicketComposer({
           // Channel and sending account sit right above the text box; a picker only when there is a choice.
           <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
             via
-            <ChannelIcon channel={ticket.channel} className="size-4 [&_svg]:size-2.5" />
+            <ChannelIcon channel={ticket.channel} className="size-4" />
             <span className="font-medium text-foreground">{channelMeta[ticket.channel].typeLabel}</span>
             ·
             {accounts.length > 1 ? (
