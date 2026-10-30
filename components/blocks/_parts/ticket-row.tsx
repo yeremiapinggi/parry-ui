@@ -1,36 +1,47 @@
 "use client"
 
-import { ClockIcon, EllipsisIcon, MessageSquareIcon } from "lucide-react"
+import { ClockIcon, EllipsisIcon, FlagIcon, MessageSquareIcon, TagIcon } from "lucide-react"
 
 import type { Ticket } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { monthDay } from "@/components/blocks/_parts/time"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Pill, PillIndicator } from "@/components/ui/pill"
 
-const stateBadge = (t: Ticket) => {
+// State reads from the indicator colour; pending and out-SLA add a clock since both are about waiting time.
+const statePill = (t: Ticket) => {
   switch (t.state) {
     case "replied":
-      return <Badge variant="secondary">Replied</Badge>
+      return (
+        <Pill>
+          <PillIndicator variant="success" />
+          Replied
+        </Pill>
+      )
     case "unreplied":
-      return <Badge>Unreplied</Badge>
+      return (
+        <Pill>
+          <PillIndicator variant="info" />
+          Unreplied
+        </Pill>
+      )
     case "pending":
       return (
-        <Badge variant="outline">
-          <ClockIcon />
+        <Pill>
+          <ClockIcon className="text-warning" />
           Pending
-        </Badge>
+        </Pill>
       )
     case "out-sla":
       return (
-        <Badge variant="destructive">
+        <Pill className="text-destructive">
           <ClockIcon />
           {t.slaOverdue}
           <span className="sr-only">over SLA</span>
-        </Badge>
+        </Pill>
       )
   }
 }
@@ -83,21 +94,22 @@ export function TicketRow({
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1 [&_[data-slot=badge]]:rounded-md">
-        <Badge variant="outline">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Pill>
+          <FlagIcon className="text-muted-foreground" />
           {t.priority}
           <span className="sr-only">priority</span>
-        </Badge>
-        {stateBadge(t)}
-        <Badge variant="outline" className="max-w-48">
-          <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5" />
+        </Pill>
+        {statePill(t)}
+        <Pill className="max-w-48">
+          <ChannelIcon channel={t.channel} className="size-3.5 [&_svg]:size-2.5!" />
           <span className="truncate">{t.account}</span>
-        </Badge>
+        </Pill>
         {t.category && (
-          <Badge variant="outline">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-primary" />
+          <Pill>
+            <TagIcon className="text-muted-foreground" />
             {t.category}
-          </Badge>
+          </Pill>
         )}
       </div>
 
