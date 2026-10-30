@@ -1,9 +1,8 @@
 "use client"
 
-import { ClockIcon, EllipsisIcon, MessageSquareIcon, SignalHighIcon, SignalIcon, SignalLowIcon, SignalMediumIcon } from "lucide-react"
+import { ClockIcon, EllipsisIcon, MessageSquareIcon } from "lucide-react"
 
-import type { Priority, Ticket } from "@/components/blocks/_data/tickets"
-import { team } from "@/components/blocks/_data/team"
+import type { Ticket } from "@/components/blocks/_data/tickets"
 import { ChannelIcon } from "@/components/blocks/_parts/channel-icon"
 import { monthDay } from "@/components/blocks/_parts/time"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -11,13 +10,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-
-const priorityIcon: Record<Priority, React.ComponentType<{ className?: string }>> = {
-  Low: SignalLowIcon,
-  Medium: SignalMediumIcon,
-  High: SignalHighIcon,
-  Urgent: SignalIcon,
-}
 
 const stateBadge = (t: Ticket) => {
   switch (t.state) {
@@ -59,29 +51,26 @@ export function TicketRow({
   onSelect: () => void
   menu: React.ReactNode
 }) {
-  const Priority = priorityIcon[t.priority]
-  const assignee = team.find((a) => a.name === t.assignee)
-
   return (
     <li
       data-active={active}
       className="group relative flex flex-col gap-2 rounded-lg border bg-card p-3 text-card-foreground shadow-xs hover:border-ring/50 data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary"
     >
       <div className="flex items-center gap-2 pr-9 text-xs text-muted-foreground">
-        <span className="font-mono">#{t.id}</span>
-        <span className="truncate">{t.customer}</span>
-      </div>
-      <Avatar size="sm" className="absolute top-3 right-3" title={`Assigned to ${t.assignee}`}>
-        <AvatarFallback>{assignee?.initials ?? t.assignee.slice(0, 2)}</AvatarFallback>
-      </Avatar>
-
-      <div className="flex items-center gap-2">
         <Checkbox
           className="relative z-10"
           checked={checked}
           onCheckedChange={(v) => onCheckedChange(v === true)}
           aria-label={`Select ticket #${t.id} from ${t.customer}`}
         />
+        <span className="font-mono">#{t.id}</span>
+        <Avatar size="sm" aria-hidden="true">
+          <AvatarFallback>{t.initials}</AvatarFallback>
+        </Avatar>
+        <span className="truncate font-medium text-foreground">{t.customer}</span>
+      </div>
+
+      <div className="flex items-center gap-2">
         <button
           type="button"
           data-ticket-row
@@ -94,9 +83,9 @@ export function TicketRow({
       </div>
 
       <div className="flex flex-wrap items-center gap-1">
-        <Badge variant="outline" title={`${t.priority} priority`}>
-          <Priority />
-          <span className="sr-only">{t.priority} priority</span>
+        <Badge variant="outline">
+          {t.priority}
+          <span className="sr-only">priority</span>
         </Badge>
         {stateBadge(t)}
         <Badge variant="outline" className="max-w-48">
@@ -120,7 +109,7 @@ export function TicketRow({
         <span>{t.time}</span>
       </div>
 
-      {/* Shown on hover/focus over the avatar; always visible on touch screens, which have no hover. */}
+      {/* Shown on hover/focus; always visible on touch screens, which have no hover. */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
