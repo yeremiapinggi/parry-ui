@@ -48,13 +48,13 @@ ContactRow menyimpan tickets ──► Dialog + info kontak (Task 1) ──► C
 Lihat `tasks/contact-detail-todo.md`.
 
 ### Phase 1: Popup
-- [ ] Task 1: Nama bisa diklik → Dialog dengan informasi kontak
+- [x] Task 1: Nama bisa diklik → Dialog dengan informasi kontak
 
 ### Checkpoint A
 - [ ] Dialog buka/tutup, keyboard & fokus benar; checks bersih
 
 ### Phase 2: Journey
-- [ ] Task 2: Customer journey timeline di Dialog
+- [x] Task 2: Customer journey timeline di Dialog
 
 ### Checkpoint: Complete
 - [ ] Semua acceptance criteria terpenuhi, cek 4 tema + mobile, review dengan user
