@@ -54,7 +54,7 @@ export function TicketRow({
   return (
     <li
       data-active={active}
-      className="group relative flex flex-col gap-2 rounded-lg border border-border/60 bg-card p-3 text-card-foreground shadow-xs hover:border-ring/50 data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary"
+      className="group relative flex flex-col gap-2 rounded-lg border border-border/60 bg-card p-3 text-card-foreground shadow-xs hover:border-ring/50 data-[active=true]:border-ring/50"
     >
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Checkbox
